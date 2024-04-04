@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,3 @@ Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'inde
 Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
 Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
 Route::get('/request', [App\Http\Controllers\RequestController::class, 'index'])->name('request');
-
