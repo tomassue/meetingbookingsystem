@@ -22,8 +22,6 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-
-
 Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'index'])->name('schedule');
 Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
 Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
