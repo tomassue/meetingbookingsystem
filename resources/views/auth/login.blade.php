@@ -24,12 +24,9 @@
   <link href="{{asset('theme/vendor/quill/quill.snow.css')}}" rel="stylesheet">
   <link href="{{asset('theme/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
   <link href="{{asset('theme/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
-  <link href="{{asset('theme/vendor/simple-datatables/style.css')}}" rel="stylesheet">
-  <link href="{{asset('theme/vendor/apexcharts/css/bootstrap.min.css')}}" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="{{asset('theme/css/login.css')}}" rel="stylesheet">
-  <link href="{{asset('theme/app.css')}}" rel="stylesheet">
 </head>
 
 <body>
@@ -45,11 +42,11 @@
                   <div class="row">
                     <div class="col mt-5">
                       <div class="col-md 6 pt-4 pb-2 d-flex justify-content-center">
-                        <div class="row ">
+                        <div class="row">
                           <div class="col d-flex justify-content-center">
                             <img src="images/cdo-seal.png" alt="booking" class="img-fluid">
                           </div>
-                          <div class="col" style="">
+                          <div class="col my-auto">
                             <img src="images/rise.png" alt="booking" class="img-fluid">
                           </div>
                         </div>
@@ -59,10 +56,7 @@
                         @csrf
                         <div class="col-12">
                           <div class="input-group has-validation">
-                            <!-- <input type="text" name="username" class="form-control" placeholder="Username" required>
-                            <div class="invalid-feedback">Please enter your username.</div> -->
-
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="Email" autofocus>
 
                             @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -73,7 +67,7 @@
                         </div>
 
                         <div class="col-12">
-                          <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
+                          <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
 
                           @error('password')
                           <span class="invalid-feedback" role="alert">
@@ -100,19 +94,6 @@
       </section>
     </div>
   </main><!-- End #main -->
-
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="assets/vendor/quill/quill.min.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-
-  <!-- Template Main JS File -->
-  <script src="assets/js/main.js"></script>
 </body>
 
 </html>
