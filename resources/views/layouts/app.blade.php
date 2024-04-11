@@ -27,7 +27,7 @@
 
   <!-- Template Main CSS File -->
   <link href="{{asset('theme/css/style.css')}}" rel="stylesheet">
-  <link href="{{asset('theme/app.css')}}" rel="stylesheet">
+  <link href="{{asset('theme/css/app.css')}}" rel="stylesheet">
   <link href="{{asset('theme/css/calendar.css')}}" rel="stylesheet">
 
   <style>
@@ -48,7 +48,9 @@
   <main id="main" class="main mt-5">
 
     <!-- @yield('content') -->
-    {{ $slot }}
+    <section class="section">
+      {{ $slot }}
+    </section>
 
   </main>
 
@@ -56,21 +58,6 @@
   @include('layouts.footer')
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Vendor JS Files -->
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-  <script src="theme/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.umd.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="theme/vendor/quill/quill.min.js"></script>
-  <script src="theme/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="theme/vendor/tinymce/tinymce.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-
-  <script src="theme/js/main.js"></script>
-  @yield('scripts')
 
   @livewireScripts
 </body>

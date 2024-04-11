@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Livewire\BookMeeting;
+use App\Http\Livewire\Request;
 use App\Http\Livewire\Schedule;
+use App\Http\Livewire\ViewSchedule;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,10 +30,14 @@ Auth::routes();
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware'  =>  'auth'], function () {
+
     // Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'index'])->name('schedule');
-    Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
-    Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
-    Route::get('/request', [App\Http\Controllers\RequestController::class, 'index'])->name('request');
+    // Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
+    // Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
+    // Route::get('/request', [App\Http\Controllers\RequestController::class, 'index'])->name('request');
 
     Route::get('/schedule', Schedule::class)->name('schedule');
+    Route::get('/book', BookMeeting::class)->name('book');
+    Route::get('/viewsched', ViewSchedule::class)->name('viewsched');
+    Route::get('/request', Request::class)->name('request');
 });

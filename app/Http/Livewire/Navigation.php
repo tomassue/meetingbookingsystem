@@ -83,7 +83,7 @@ class Navigation extends Component
                         <li class="nav-item">
                         <a class="nav-link collapsed {{ 'book' == request()->path() ? 'active' : '' }}" href="{{route('book')}} " href="{{route('book')}}">
                             <span class="bi bi-layout-text-window-reverse"> </span>
-                            <span>Book Meeting</span>
+                            <span>Book a Meeting</span>
                         </a>
                         </li>
                 
@@ -104,6 +104,23 @@ class Navigation extends Component
 
                     </ul>
                 </aside>
+
+                <!-- Vendor JS Files -->
+                <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                <script src="theme/vendor/apexcharts/apexcharts.min.js"></script>
+                <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                <script src="theme/vendor/chart.js/chart.umd.js"></script>
+                <script src="theme/vendor/echarts/echarts.min.js"></script>
+                <script src="theme/vendor/quill/quill.min.js"></script>
+                <script src="theme/vendor/simple-datatables/simple-datatables.js"></script>
+                <script src="theme/vendor/tinymce/tinymce.min.js"></script>
+                <script src="theme/vendor/php-email-form/validate.js"></script>
+
+                <script src="theme/js/main.js"></script>
+                @yield('scripts')
+                
             </div>
         blade;
     }

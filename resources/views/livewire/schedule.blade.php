@@ -1,16 +1,16 @@
 <div>
     <div class="card mt-5">
 
-        <div class="row mt-3 col-md-6 p-3">
+        <div class="row p-3">
             <div class="col">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <span class="input-group-text">From</span>
                     <input type="date" class="form-control">
                 </div>
             </div>
 
             <div class="col">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <span class="input-group-text">To</span>
                     <input type="date" class="form-control">
 
@@ -22,10 +22,14 @@
             </div>
         </div>
 
+    </div>
 
-        <div id='wrap'>
-            <div id='calendar'></div>
-            <div style='clear:both'></div>
+    <div class="card">
+        <div class="mt-5 mb-5">
+            <div id="wrap">
+                <div id='calendar'></div>
+                <div style='clear:both'></div>
+            </div>
         </div>
     </div>
 
@@ -65,7 +69,7 @@
                     right: 'prev,next today'
                 },
                 editable: true,
-                firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
+                firstDay: 0, //  1(Monday) this can be changed to 0(Sunday) for the USA system
                 selectable: true,
                 defaultView: 'month',
                 axisFormat: 'h:mm',
@@ -91,37 +95,37 @@
                 },
                 select: function(startDate, endDate, allDay) {
                     if (!allDay) {
-                        swal({
-                            input: 'text',
-                            title: 'Event title:',
-                            showCancelButton: true
-                        }).then((result) => {
-                            swal.resetDefaults();
-                            console.log("result: " + result);
-                            if (result) {
-                                calendar.fullCalendar('renderEvent', {
-                                        title: result,
-                                        start: startDate,
-                                        end: endDate,
-                                        allDay: allDay
-                                    },
-                                    true // make the event "stick"
-                                );
-                                swal({
-                                    type: 'success',
-                                    title: 'Agended!',
-                                    html: 'Event title: ' + result
-                                });
-                            } else {
-                                swal({
-                                    type: 'warning',
-                                    title: 'Not Agended!',
-                                    html: 'Title is empty! '
-                                })
-                            }
-                            calendar.fullCalendar('unselect');
-
-                        });
+                        // swal({
+                        //     input: 'text',
+                        //     title: 'Event title:',
+                        //     showCancelButton: true
+                        // }).then((result) => {
+                        //     swal.resetDefaults();
+                        //     console.log("result: " + result);
+                        //     if (result) {
+                        //         calendar.fullCalendar('renderEvent', {
+                        //                 title: result,
+                        //                 start: startDate,
+                        //                 end: endDate,
+                        //                 allDay: allDay
+                        //             },
+                        //             true // make the event "stick"
+                        //         );
+                        //         swal({
+                        //             type: 'success',
+                        //             title: 'Agended!',
+                        //             html: 'Event title: ' + result
+                        //         });
+                        //     } else {
+                        //         swal({
+                        //             type: 'warning',
+                        //             title: 'Not Agended!',
+                        //             html: 'Title is empty! '
+                        //         })
+                        //     }
+                        //     calendar.fullCalendar('unselect');
+                        // });
+                        Livewire.emit(console.log(startDate));
                     }
                 },
                 droppable: true, // this allows things to be dropped onto the calendar !!!
