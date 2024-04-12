@@ -23,12 +23,15 @@
   <link href="{{asset('theme/vendor/quill/quill.bubble.css')}}" rel="stylesheet">
   <link href="{{asset('theme/vendor/remixicon/remixicon.css')}}" rel="stylesheet">
   <link href="{{asset('theme/vendor/simple-datatables/style.css')}}" rel="stylesheet">
-  <link href="{{asset('theme/vendor/apexcharts/css/bootstrap.min.css')}}" rel="stylesheet">
+  <!-- <link href="{{asset('theme/vendor/apexcharts/css/bootstrap.min.css')}}" rel="stylesheet"> -->
 
   <!-- Template Main CSS File -->
   <link href="{{asset('theme/css/style.css')}}" rel="stylesheet">
-  <link href="{{asset('theme/css/app.css')}}" rel="stylesheet">
+  <!-- <link href="{{asset('theme/css/app.css')}}" rel="stylesheet"> -->
   <link href="{{asset('theme/css/calendar.css')}}" rel="stylesheet">
+
+  <!-- JQuery 1.13 -->
+  <link rel="stylesheet" href="{{asset('jquery-ui-1.13.2/jquery-ui.min.css')}}">
 
   <style>
     .sidebar-nav .nav-link.collapsed {
@@ -46,12 +49,10 @@
   <livewire:navigation />
 
   <main id="main" class="main mt-5">
-
     <!-- @yield('content') -->
     <section class="section">
       {{ $slot }}
     </section>
-
   </main>
 
   <!-- ======= Footer ======= -->

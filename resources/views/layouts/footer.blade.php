@@ -161,7 +161,7 @@
                                 <div class="col-md-11 col-sm-6 col-xs-12">
                                     <div class="d-flex justify-content-center">
                                         <div>
-                                            <img src="{{ asset('assets/img/ict-logo.png') }}">
+                                            <img src="{{ asset('images/ict.png') }}">
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-center">

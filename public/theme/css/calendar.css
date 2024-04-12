@@ -124,7 +124,8 @@ html .fc,
 }
 
 .fc-state-highlight > div > div.fc-day-number {
-    background-color: #ff3b30;
+    /* background-color: #ff3b30; */
+    background-color: #09907c;
     color: #ffffff;
     border-radius: 50%;
     margin: 4px;
@@ -203,8 +204,10 @@ html .fc,
 }
 
 .fc-state-default {
-    border-color: #ff3b30;
-    color: #ff3b30;
+    /* border-color: #ff3b30; */
+    /* color: #ff3b30; */
+    border-color: #09907c;
+    color: #09907c;
 }
 .fc-button-month.fc-state-default,
 .fc-button-agendaWeek.fc-state-default,
@@ -219,11 +222,13 @@ html .fc,
 .fc-state-active,
 .fc-state-disabled {
     color: #333333;
-    background-color: #ffe3e3;
+    /* background-color: #ffe3e3; */
+    background-color: #09907c16;
 }
 
 .fc-state-hover {
-    color: #ff3b30;
+    /* color: #ff3b30; */
+    color: #09907c;
     text-decoration: none;
     background-position: 0 -15px;
     -webkit-transition: background-position 0.1s linear;
@@ -234,7 +239,8 @@ html .fc,
 
 .fc-state-down,
 .fc-state-active {
-    background-color: #ff3b30;
+    /* background-color: #ff3b30; */
+    background-color: #09907c;
     background-image: none;
     outline: 0;
     color: #ffffff;
@@ -243,11 +249,14 @@ html .fc,
 .fc-state-disabled {
     cursor: default;
     background-image: none;
-    background-color: #ffe3e3;
+    /* background-color: #ffe3e3; */
+    background-color: #09907c16;
     filter: alpha(opacity=65);
     box-shadow: none;
-    border: 1px solid #ffe3e3;
-    color: #ff3b30;
+    /* border: 1px solid #ffe3e3; */
+    border: 1px solid #09907c;
+    /* color: #ff3b30; */
+    color: #09907c;
 }
 
 /* Global Event Styles
@@ -613,7 +622,7 @@ table.fc-header {
     font-size: 15px;
     margin: 2px;
     min-width: 19px;
-    padding: 6px;
+    /* padding: 6px; */
     text-align: center;
 }
 .fc-sun,
@@ -631,7 +640,8 @@ table.fc-header {
     background-color: #ff3b30;
 }
 .fc-button-today {
-    border: 1px solid rgba(255, 255, 255, 0);
+    /* border: 1px solid rgba(255, 255, 255, 0); */
+    border: 1px solid rgba(9, 144, 124, 1);
 }
 .fc-view-agendaDay thead tr.fc-first .fc-widget-header {
     text-align: right;
@@ -688,7 +698,7 @@ body {
 
 #calendar {
     /* float: right; */
-    margin: 0 auto;
+    /* margin: 0 auto; */
     width: 900px;
     background-color: #ffffff;
     border-radius: 6px;
