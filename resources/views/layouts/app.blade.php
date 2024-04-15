@@ -63,4 +63,10 @@
   @livewireScripts
 </body>
 
+<script>
+  window.livewire.on('createBookMeetingModal', startDate => {
+    $('#createBookMeetingModal').modal('show');
+  })
+</script>
+
 </html>

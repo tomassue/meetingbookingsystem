@@ -93,7 +93,7 @@
 
                     // Livewire.emit(console.log(startDate));
 
-                    Livewire.emit('createBookMeetingModal', [startDate => startDate]);
+                    Livewire.emit('createBookMeetingModal', startDate);
                 }
             },
             droppable: true, // this allows things to be dropped onto the calendar !!!

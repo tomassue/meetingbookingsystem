@@ -24,7 +24,7 @@
 
     </div>
 
-    <div class="card">
+    <div class="card" wire:ignore>
         <div id="wrap">
             <div id='calendar'></div>
             <div style='clear:both'></div>
@@ -32,11 +32,11 @@
     </div>
 
     <!-- createBookMeetingModal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createBookMeetingModal" tabindex="-1" aria-labelledby="createBookMeetingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="createBookMeetingModalLabel">Modal title</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -49,6 +49,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- Calendar Script -->
     @include('livewire.calendar-script.calendar-script')
