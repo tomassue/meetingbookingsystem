@@ -45,7 +45,7 @@ class Navigation extends Component
                         @else
                         <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->name }}
+                            {{ Auth::user()->account_type }}
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -74,21 +74,21 @@ class Navigation extends Component
                     <ul class="sidebar-nav" id="sidebar-nav">
                 
                         <li class="nav-item ">
-                        <a class="nav-link collapsed {{ 'schedule' == request()->path() ? 'active' : '' }}" href="{{route('schedule')}} " href="{{route('schedule')}}">
+                        <a class="nav-link collapsed {{ 'schedule' == request()->path() ? 'active' : '' }}" href="{{route('schedule')}}">
                             <span class="bi bi-grid"> </span>
                             <span>My Schedule</span>
                         </a>
                         </li>
                 
                         <li class="nav-item">
-                        <a class="nav-link collapsed {{ 'book' == request()->path() ? 'active' : '' }}" href="{{route('book')}} " href="{{route('book')}}">
+                        <a class="nav-link collapsed {{ 'book' == request()->path() ? 'active' : '' }}" href="{{route('book')}}">
                             <span class="bi bi-layout-text-window-reverse"> </span>
                             <span>Book a Meeting</span>
                         </a>
                         </li>
                 
                         <li class="nav-item">
-                        <a class="nav-link collapsed {{ 'viewsched' == request()->path() ? 'active' : '' }}" href="{{route('viewsched')}} " href="{{route('viewsched')}}">
+                        <a class="nav-link collapsed {{ 'viewsched' == request()->path() ? 'active' : '' }}" href="{{route('viewsched')}}">
                             <span class="bi bi-calendar2-week"> </span>
                 
                             <span>View Schedule</span>
@@ -96,10 +96,31 @@ class Navigation extends Component
                         </li>
                 
                         <li class="nav-item">
-                        <a class="nav-link collapsed {{ 'request' == request()->path() ? 'active' : '' }}" href="{{route('request')}} " href="{{route('request')}}">
+                        <a class="nav-link collapsed {{ 'request' == request()->path() ? 'active' : '' }}" href="{{route('request')}}">
                             <span class="ri-git-pull-request-line"> </span>
                             <span>Request</span>
                         </a>
+                        </li>
+
+                        <li class="nav-item">
+                        <a class="nav-link collapsed {{ 'user-management' == request()->path() ? 'active' : '' }}" href="{{route('user-management')}}">
+                            <span class="ri-folder-user-line"> </span>
+                            <span>User Management</span>
+                        </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#" aria-expanded="false" style="padding: 10px 15px !important; border-radius: unset !important;">
+                            <span class="ri-links-fill"> </span>
+                            <span>References</span>
+                            </a>
+                            <ul id="icons-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav" style="">
+                            <li>
+                                <a href="{{ route('ref-departments') }}">
+                                <i class="bi bi-circle"></i>
+                                <span class="ref">Departments</span>
+                                </a>
+                            </li>
                         </li>
 
                     </ul>
@@ -109,20 +130,20 @@ class Navigation extends Component
                 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-                <script src="theme/vendor/apexcharts/apexcharts.min.js"></script>
-                <script src="theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-                <script src="theme/vendor/chart.js/chart.umd.js"></script>
-                <script src="theme/vendor/echarts/echarts.min.js"></script>
-                <script src="theme/vendor/quill/quill.min.js"></script>
-                <script src="theme/vendor/simple-datatables/simple-datatables.js"></script>
-                <script src="theme/vendor/tinymce/tinymce.min.js"></script>
-                <script src="theme/vendor/php-email-form/validate.js"></script>
+                <script src="{{asset('theme/vendor/apexcharts/apexcharts.min.js')}}"></script>
+                <script src="{{asset('theme/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+                <script src="{{asset('theme/vendor/chart.js/chart.umd.js')}}"></script>
+                <script src="{{asset('theme/vendor/echarts/echarts.min.js')}}"></script>
+                <script src="{{asset('theme/vendor/quill/quill.min.js')}}"></script>
+                <script src="{{asset('theme/vendor/simple-datatables/simple-datatables.js')}}"></script>
+                <script src="{{asset('theme/vendor/tinymce/tinymce.min.js')}}"></script>
+                <script src="{{asset('theme/vendor/php-email-form/validate.js')}}"></script>
 
                 <script src="{{asset('jquery-ui-1.13.2/external/jquery/jquery.js')}}"></script>
                 <script src="{{asset('jquery-ui-1.13.2/jquery-ui.min.js')}}"></script>
                 <script src="{{asset('jquery-ui-1.13.2/jquery-ui.js')}}"></script>
                 
-                <script src="theme/js/main.js"></script>
+                <script src="{{asset('theme/js/main.js')}}"></script>
                 @yield('scripts')
                 
             </div>

@@ -67,6 +67,10 @@
   window.livewire.on('createBookMeetingModal', startDate => {
     $('#createBookMeetingModal').modal('show');
   })
+
+  Livewire.on('hideaddDepartmentModal', key => {
+    $('#addDepartmentModal').modal('hide');
+  })
 </script>
 
 </html>

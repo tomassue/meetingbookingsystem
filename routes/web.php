@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Livewire\BookMeeting;
+use App\Http\Livewire\RefDepartments;
 use App\Http\Livewire\Request;
 use App\Http\Livewire\Schedule;
+use App\Http\Livewire\UserManagement;
 use App\Http\Livewire\ViewSchedule;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -40,4 +42,6 @@ Route::group(['middleware'  =>  'auth'], function () {
     Route::get('/book', BookMeeting::class)->name('book');
     Route::get('/viewsched', ViewSchedule::class)->name('viewsched');
     Route::get('/request', Request::class)->name('request');
+    Route::get('/user-mgmt', UserManagement::class)->name('user-management');
+    Route::get('/ref/departments', RefDepartments::class)->name('ref-departments');
 });

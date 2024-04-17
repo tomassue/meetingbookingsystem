@@ -25,21 +25,23 @@
                     </div>
                 </div>
 
-                <div class="col-12">
-                    <label for="attendees" class="form-label">Attendees</label>
-                    <div id="formfield" class="row">
-                        <div class="col-12 row">
-                            <div class="col-6">
-                                <input type="text" class="form-control mb-3" wire:model="attendees" placeholder="Input Name">
-                            </div>
-                            <div class="col-6">
-                                <input type="text" class="form-control mb-3" placeholder="DANI IBUTANG ANG DEPARTMENT" readonly>
+                <div class="row mt-3 p-3">
+                    <div class="col-12">
+                        <label for="attendees" class="form-label">Attendees</label>
+                        <div id="formfield">
+                            <div class="col-12 row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control mb-3" wire:model="attendees" placeholder="Input Name">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control mb-3" placeholder="DANI IBUTANG ANG DEPARTMENT" readonly>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <a class="btn btn-primary add" href="#" role="button" onclick="add()">Add</a>
+                        <div>
+                            <a class="btn btn-primary add" href="#" role="button" onclick="add()">Add</a>
+                        </div>
                     </div>
                 </div>
 
