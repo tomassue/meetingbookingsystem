@@ -9,6 +9,7 @@ class RefDepartments extends Component
 {
     # modal
     public $editModal;
+    public $id_ref_department; # For update
 
     # wire:model
     public $department_name;
@@ -53,8 +54,20 @@ class RefDepartments extends Component
     public function edit(RefDepartmentsModel $key)
     {
         $this->resetValidation();
-        $this->editModal = true;
-        $this->id = $key->id;
-        $this->department_name = $key->department_name;
+        $this->editModal         = true;
+        $this->id_ref_department = $key->id;
+        $this->department_name   = $key->department_name;
+    }
+
+    public function update()
+    {
+        $this->validate();
+        $query = RefDepartmentsModel::findOrFail($this->id_ref_department);
+        $query->update([
+            'department_name'   =>  $this->department_name
+        ]);
+        $this->emit('hideaddDepartmentModal');
+        session()->flash('success', 'Department updated successfully.');
+        $this->reset('id_ref_department', 'department_name');
     }
 }

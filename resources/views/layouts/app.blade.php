@@ -33,6 +33,9 @@
   <!-- JQuery 1.13 -->
   <link rel="stylesheet" href="{{asset('jquery-ui-1.13.2/jquery-ui.min.css')}}">
 
+  <!-- Select 2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
   <style>
     .sidebar-nav .nav-link.collapsed {
       color: #fff;
@@ -64,6 +67,12 @@
 </body>
 
 <script>
+  // To make bootstrap tooltip work
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+
   window.livewire.on('createBookMeetingModal', startDate => {
     $('#createBookMeetingModal').modal('show');
   })
@@ -71,6 +80,19 @@
   Livewire.on('hideaddDepartmentModal', key => {
     $('#addDepartmentModal').modal('hide');
   })
+
+  Livewire.on('hideaddUserModal', key => {
+    $('#addUserModal').modal('hide');
+  })
+
+  // In your Javascript (external .js resource or <script> tag)
+  Livewire.on('attendeeAdded', function() {
+    $('.js-example-basic-single').select2();
+  });
+
+  $(document).ready(function() {
+    $('.js-example-basic-single').select2();
+  });
 </script>
 
 </html>
