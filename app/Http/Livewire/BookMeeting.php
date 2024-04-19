@@ -17,27 +17,33 @@ class BookMeeting extends Component
 
     public function render()
     {
-        $users = User::select('id', DB::raw("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name, IF(extension IS NOT NULL, CONCAT(', ', extension), '')) AS full_name"))->get();
+        $users = User::select(
+            'id',
+            DB::raw("CONCAT(first_name, ' ', COALESCE(middle_name, ''), ' ', last_name, IF(extension IS NOT NULL, CONCAT(', ', extension), '')) AS full_name"),
+            'id_department'
+        )
+            ->where('account_type', '!=',  0)
+            ->get();
 
         return view('livewire.book-meeting', [
             'users' =>  $users
         ]);
     }
 
-    public function addAttendee()
-    {
-        $this->attendees[] = ['users_id' => null];
-        $this->emit('attendeeAdded');
-    }
+    // public function addAttendee()
+    // {
+    //     $this->attendees[] = ['users_id' => null];
+    //     $this->emit('attendeeAdded');
+    // }
 
-    public function removeAttendee($index)
-    {
-        unset($this->attendees[$index]);
-        $this->attendees = array_values($this->attendees);
-    }
+    // public function removeAttendee($index)
+    // {
+    //     unset($this->attendees[$index]);
+    //     $this->attendees = array_values($this->attendees);
+    // }
 
     public function save()
     {
-        dd($this->start_date_time, $this->end_date_time, $this->type_of_attendees, $this->attendees[], $this->subject, $this->file, $this->meeting_description);
+        dd($this);
     }
 }

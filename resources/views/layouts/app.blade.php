@@ -86,13 +86,17 @@
   })
 
   // In your Javascript (external .js resource or <script> tag)
-  Livewire.on('attendeeAdded', function() {
-    $('.js-example-basic-single').select2();
-  });
+  // Livewire.on('attendeeAdded', function() {
+  //   $('.js-example-basic-single').select2();
+  // });
 
-  $(document).ready(function() {
-    $('.js-example-basic-single').select2();
-  });
+  // $(document).ready(function() {
+  //   $('.js-example-basic-single').select2();
+  // });
+
+  // $(document).ready(function() {
+  //   $('.multiple').select2();
+  // });
 </script>
 
 </html>
