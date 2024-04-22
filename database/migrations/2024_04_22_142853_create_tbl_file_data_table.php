@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRefDepartmentsTable extends Migration
+class CreateTblFileDataTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class CreateRefDepartmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ref_departments', function (Blueprint $table) {
+        Schema::create('tbl_file_data', function (Blueprint $table) {
             $table->id();
-            $table->string('department_name');
+            $table->string('file_name');
+            $table->string('file_size');
+            $table->string('file_type');
+            $table->binary('file_data');
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ class CreateRefDepartmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ref_department');
+        Schema::dropIfExists('tbl_file_data');
     }
 }
