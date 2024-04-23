@@ -20,7 +20,7 @@ class CreateTblBookedMeetingsTable extends Migration
             $table->string('type_of_attendees');
             $table->string('attendees');
             $table->string('subject');
-            $table->integer('id_file_data');
+            $table->string('id_file_data'); # We will be storing array here. Same goes with the attendees.
             $table->string('meeting_description');
             $table->timestamps();
         });

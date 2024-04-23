@@ -85,6 +85,10 @@
     $('#addUserModal').modal('hide');
   })
 
+  Livewire.on('hideaddNewFileModal', key => {
+    $('#addNewFileModal').modal('hide');
+  })
+
   // In your Javascript (external .js resource or <script> tag)
   // Livewire.on('attendeeAdded', function() {
   //   $('.js-example-basic-single').select2();
