@@ -24,9 +24,9 @@
 
     </div>
 
-    <div class="card" wire:ignore>
+    <div class="card">
         <div id="wrap">
-            <div id='calendar'></div>
+            <div id='calendar' wire:ignore.self></div>
             <div style='clear:both'></div>
         </div>
     </div>
@@ -50,6 +50,9 @@
         </div>
     </div>
 
+    <script>
+        var booked_meetings = @json($booked_meetings); // Convert booked_meetings array to JSON
+    </script>
 
     <!-- Calendar Script -->
     @include('livewire.calendar-script.calendar-script')

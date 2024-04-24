@@ -63,6 +63,7 @@ class BookMeeting extends Component
         $this->validate($rules);
         $this->files = array_merge($this->files, $this->newFile);
         $this->newFile = []; // Clear additionalFiles array
+        $this->reset('newFile');
         $this->emit('hideaddNewFileModal');
     }
 

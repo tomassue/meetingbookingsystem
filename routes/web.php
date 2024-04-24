@@ -42,6 +42,6 @@ Route::group(['middleware'  =>  'auth'], function () {
     Route::get('/book', BookMeeting::class)->name('book');
     Route::get('/viewsched', ViewSchedule::class)->name('viewsched');
     Route::get('/request', Request::class)->name('request');
-    Route::get('/user-mgmt', UserManagement::class)->name('user-management');
+    Route::get('/user-management', UserManagement::class)->name('user-management');
     Route::get('/ref/departments', RefDepartments::class)->name('ref-departments');
 });
