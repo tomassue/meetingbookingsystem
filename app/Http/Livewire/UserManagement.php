@@ -11,13 +11,14 @@ use Livewire\Component;
 class UserManagement extends Component
 {
     # wire:model
-    public $first_name, $middle_name, $last_name, $extension, $email, $id_department, $account_type;
+    public $first_name, $middle_name, $last_name, $extension, $sex, $email, $id_department, $account_type;
 
     # Validation
     protected $rules = [
         'first_name'    =>  'required',
         'last_name'     =>  'required',
         'email'         =>  'required|string',
+        'sex'           =>  'required',
         'id_department' =>  'required',
         'account_type'  =>  'required'
     ];
@@ -41,7 +42,6 @@ class UserManagement extends Component
 
         return view('livewire.user-management', [
             'departments'   =>  $ref_departments,
-
             'users'         =>  $users
         ]);
     }
@@ -55,6 +55,7 @@ class UserManagement extends Component
             'last_name'     =>  $this->last_name,
             'extension'     =>  $this->extension,
             'email'         =>  $this->email . '@email.com',
+            'sex'           =>  $this->sex,
             'id_department' =>  $this->id_department,
             'password'      =>  Hash::make('password'),
             'account_type'  =>  $this->account_type

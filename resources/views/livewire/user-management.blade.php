@@ -82,7 +82,7 @@
                             <input type="text" class="form-control @error('last_name') is-invalid @enderror" wire:model="last_name">
                             @error('last_name') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <label for="inputName5" class="form-label">Extension Name</label>
                             <select class="form-select @error('extension') is-invalid @enderror" name="extension" id="extension" aria-label="extension" wire:model="extension">
                                 <option value="" {{ old('extension') ? '' : 'selected' }}>Select...</option>
@@ -116,8 +116,16 @@
                                     }
                                     @endphp
                             </select>
-
                             @error('extension') <div class="invalid-feedback"> {{$message}} </div> @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <label for="sex" class="form-label">Sex</label>
+                            <select class="form-select @error('sex') is-invalid @enderror" name="sex" id="sex" aria-label="sex" wire:model="sex">
+                                <option value="">Choose...</option>
+                                <option value="M">Male</option>
+                                <option value="F">Female</option>
+                            </select>
+                            @error('sex') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>
                         <div class="col-12">
                             <label for="inputEmail5" class="form-label">
