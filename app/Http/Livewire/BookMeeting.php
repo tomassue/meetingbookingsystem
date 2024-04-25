@@ -58,7 +58,7 @@ class BookMeeting extends Component
     public function addAdditionalFile()
     {
         $rules = [
-            'newFile'                =>  'required'
+            'newFile'   =>  'required'
         ];
         $this->validate($rules);
         $this->files = array_merge($this->files, $this->newFile);
@@ -71,6 +71,30 @@ class BookMeeting extends Component
     {
         unset($this->files[$index]);
         $this->files = array_values($this->files); // Re-index the array
+    }
+
+    # Method to generate a unique number
+    private function generateUniqueNumber()
+    {
+        // Get the current Unix timestamp
+        $timestamp = time();
+
+        // Extract the last four digits of the timestamp
+        $uniqueIdentifier = substr($timestamp, -4);
+
+        // Generate two random lowercase letters (a-z)
+        $randomLetters = '';
+        for ($i = 0; $i < 2; $i++) {
+            $randomLetters .= strtoupper(chr(mt_rand(97, 122))); // ASCII values for lowercase letters
+        }
+
+        // Concatenate the random letters with the four-digit number
+        $uniqueNumber = $uniqueIdentifier . $randomLetters;
+
+        // Shuffle the unique number (digits and letters)
+        $shuffledNumber = str_shuffle($uniqueNumber);
+
+        return $shuffledNumber;
     }
 
     public function save()
@@ -94,6 +118,7 @@ class BookMeeting extends Component
                 dd($e->getMessage());
             }
             TblBookedMeetingsModel::create([
+                'booking_no'            =>  $this->generateUniqueNumber(),
                 'start_date_time'       =>  $this->start_date_time,
                 'end_date_time'         =>  $this->end_date_time,
                 'type_of_attendees'     =>  $this->type_of_attendees,

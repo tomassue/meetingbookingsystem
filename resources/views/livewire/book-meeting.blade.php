@@ -1,7 +1,7 @@
 <div>
     <div class="card mt-5 ">
         <div class="card-body">
-            <h5 class="text-start card-title">DILI NA NI SIYA MANUAL.</h5>
+            <h5 class="text-start text-uppercase card-title">Book a Meeting</h5>
 
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -36,9 +36,9 @@
                         <select id="type_of_attendees" class="form-select @error('type_of_attendees') is-invalid @enderror" wire:model="type_of_attendees">
                             <option selected>Choose...</option>
                             <option value="Department Heads">Department Heads</option>
-                            <option value="Department Shoulders">Department Shoulders</option>
-                            <option value="Department Knees">Department Knees</option>
-                            <option value="Department Toes">Department Toes</option>
+                            <option value="Assistant Head Departments">Assistant Head Departments</option>
+                            <option value="Something Chier">Something Chier</option>
+                            <option value="Officer Something">Officer Something</option>
                         </select>
                         @error('type_of_attendees')
                         <div class="invalid-feedback text-start">

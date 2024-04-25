@@ -25,14 +25,24 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Tests</td>
-                        <td>Tests</td>
-                        <td>Tests</td>
-                        <td>Tests</td>
-                        <td>Tests</td>
-                        <td>Tests</td>
+                    @foreach($request as $item)
+                    <tr wire:key="item-{{ $item->booking_no }}">
+                        <td>{{ $item->booking_no }}</td>
+                        <td width="15%">{{ $item->start }}<br>{{ $item->end }}</td>
+                        <td>{{ $item->subject }}</td>
+                        <td>{{ $item->type_of_attendees }}</td>
+                        <td width="9%">
+                            <a href="#" role="button">
+                                <img src="{{asset('images/file-plus.png')}}" alt="attach-file">
+                            </a>
+                        </td>
+                        <td width="5%">
+                            <a href="#" role="button">
+                                <img src="{{asset('images/file-text.png')}}" alt="attach-file">
+                            </a>
+                        </td>
                     </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

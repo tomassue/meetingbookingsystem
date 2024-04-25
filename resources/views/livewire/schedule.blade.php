@@ -32,26 +32,27 @@
     </div>
 
     <!-- createBookMeetingModal -->
-    <div wire:ignore.self class="modal fade" id="createBookMeetingModal" tabindex="-1" aria-labelledby="createBookMeetingModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade" id="createBookMeetingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="createBookMeetingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="createBookMeetingModalLabel">Meeting Details</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="closeMeetingDetails"></button>
                 </div>
                 <div class="modal-body text-start">
                     <table class="table table-borderless">
                         <tr>
                             <th scope="col" width="10%">Date:</th>
-                            <th><span class="text-uppercase fw-light">{{$start_date_time . ' - ' . $end_date_time}}</span></th>
+                            <th><span class="fw-light">{{$start_date_time . ' - ' . $end_date_time}}</span></th>
                         </tr>
                         <tr>
                             <th scope="col" width="10%">To:</th>
                             <th>
+                                <span class="text-uppercase fw-bold fst-italic">{{ $type_of_attendees }}</span> <br><br>
                                 <span class="text-uppercase fw-light">
                                     @if($attendees)
                                     @foreach($attendees as $item)
-                                    <span class="fw-bold">{{ ($item->sex == 'M') ? 'Mr.' : 'Ms.' }}</span> {{ $item->full_name }} <br>
+                                    <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>, <span class="fst-italic fw-lighter">{{ $item['department_name'] }}</span> <br>
                                     @endforeach
                                     @endif
                                 </span>
@@ -59,17 +60,17 @@
                         </tr>
                         <tr>
                             <th scope="col" width="10%">Re:</th>
-                            <th><span class="text-uppercase fw-light">Subject</span></th>
+                            <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
                         </tr>
                         <tr>
                             <th></th>
-                            <th><span class="fw-light">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</span></th>
+                            <th><span class="fw-light">{{ $meeting_description }}</span></th>
                         </tr>
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="closeMeetingDetails">Close</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
                 </div>
             </div>
         </div>

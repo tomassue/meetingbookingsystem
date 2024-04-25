@@ -14,7 +14,7 @@ class Schedule extends Component
     public $booked_meetings;
 
     # Event Details
-    public $start_date_time, $end_date_time, $attendees = [], $subject, $meeting_description;
+    public $id_booked_meeting, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description;
 
     # Listens for an event and proceed to the method.
     protected $listeners = ['createBookMeetingModal' => 'viewMeetingDetails'];
@@ -27,7 +27,7 @@ class Schedule extends Component
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
             return [
-                'id'    => $meetings->id,
+                'id'    => $meetings->booking_no,
                 'title' => $meetings->subject,
                 'start' => $start_date_time,
                 'end'   => $end_date_time,
@@ -48,19 +48,29 @@ class Schedule extends Component
 
         $e_attendees = explode(',', $id->attendees);
         foreach ($e_attendees as $item) {
-            $query = User::where('id', $item)
+            $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+                ->where('users.id', $item)
                 ->select(
-                    DB::raw("CONCAT(first_name, COALESCE(middle_name, ''), ' ',last_name, IF(extension IS NOT NULL, CONCAT(', ', extension), '')) as full_name"),
-                    'sex'
+                    DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                    'users.sex',
+                    'ref_departments.department_name'
                 )
                 ->first(); // Using first() to get a single result
             if ($query) {
+                # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
                 $this->attendees[] = $query;
             }
         }
         $this->start_date_time = $start_datetime->format('M d, Y h:i A');
         $this->end_date_time = $end_datetime->format('M d, Y h:i A');
         $this->subject = $id->subject;
+        $this->type_of_attendees = $id->type_of_attendees;
         $this->meeting_description = $id->meeting_description;
+    }
+
+    public function closeMeetingDetails()
+    {
+        # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
+        $this->reset('attendees');
     }
 }

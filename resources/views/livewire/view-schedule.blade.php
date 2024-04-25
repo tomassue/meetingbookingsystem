@@ -40,4 +40,14 @@
             <button type="submit" class="btn btn-success">FIlter</button>
         </div>
     </div>
+
+    <div class="card" wire:ignore>
+        <div id="wrap">
+            <div id='calendar'></div>
+            <div style='clear:both'></div>
+        </div>
+    </div>
+
+    <!-- Calendar Script -->
+    @include('livewire.calendar-script.calendar-script-2')
 </div>
