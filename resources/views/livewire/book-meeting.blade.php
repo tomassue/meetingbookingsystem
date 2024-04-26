@@ -79,7 +79,7 @@
                             <label class="form-label">Attach File</label>
                         </div>
                         <div>
-                            <input type="file" id="myFile" class="form-control @error('files') is-invalid @enderror" wire:model="files" multiple hidden />
+                            <input type="file" id="myFile" class="form-control @error('files') is-invalid @enderror" accept="application/pdf" wire:model="files" multiple hidden />
                             <label for="myFile" role="button" class="btn" style="background-color: #0A927C; border-color: #0A927C; color: #ffffff" wire:loading.remove wire:target="files" @if(!empty($files)) hidden @endif>
                                 Upload file
                             </label>
@@ -161,7 +161,7 @@
                     <div class="modal-body">
                         <form wire:submit.prevent="addAdditionalFile" class="row g-3" data-bitwarden-watching="1" novalidate>
                             <div class="col" wire:loading.remove wire:target="newFile">
-                                <input type="file" class="form-control @error('newFile') is-invalid @enderror" wire:model="newFile" multiple>
+                                <input type="file" class="form-control @error('newFile') is-invalid @enderror" accept="application/pdf" wire:model="newFile" multiple>
                                 @error('newFile') <div class="invalid-feedback"> {{$message}} </div> @enderror
                             </div>
                             <div class="col text-center" wire:loading wire:target="newFile">

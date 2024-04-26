@@ -745,7 +745,8 @@ div.modal-header {
 .sidebar-nav .nav-link.collapsed.active {
     background-color: #fff !important;
     color: #0a927c;
-    width: 110%;
+    /* width: 110%; */
+    border-radius: unset;
 }
 
 .sidebar-nav .nav-link.collapsed i {

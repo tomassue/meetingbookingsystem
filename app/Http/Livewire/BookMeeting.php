@@ -14,18 +14,23 @@ class BookMeeting extends Component
     use WithFileUploads;
 
     # wire:model
-    public $start_date_time, $end_date_time, $type_of_attendees, $subject, $files = [], $newFile = [], $meeting_description, $attendees = [];
+    public $start_date_time, $end_date_time, $type_of_attendees, $subject, $files, $newFile, $meeting_description, $attendees;
 
     # Validation
     protected $rules = [
         'start_date_time'        =>  'required',
-        'end_date_time'          =>  'required',
+        'end_date_time'          =>  'required|after_or_equal:start_date_time',
         'type_of_attendees'      =>  'required',
         'attendees'              =>  'required',
         'subject'                =>  'required',
         'files'                  =>  'required',
         'meeting_description'    =>  'required'
     ];
+
+    public function updated($file)
+    {
+        $this->validateOnly($file);
+    }
 
     public function render()
     {
@@ -99,6 +104,7 @@ class BookMeeting extends Component
 
     public function save()
     {
+        // dd($this);
         $this->validate();
         if ($this->files) {
             # Iterate over each file.

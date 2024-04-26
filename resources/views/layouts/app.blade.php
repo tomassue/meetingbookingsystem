@@ -40,7 +40,6 @@
     .sidebar-nav .nav-link.collapsed {
       color: #fff;
       background-color: #0a927c !important;
-      width: 110% !important;
     }
   </style>
 
@@ -73,8 +72,8 @@
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 
-  window.livewire.on('createBookMeetingModal', startDate => {
-    $('#createBookMeetingModal').modal('show');
+  window.livewire.on('viewBookMeetingModal', startDate => {
+    $('#viewBookMeetingModal').modal('show');
   })
 
   Livewire.on('hideaddDepartmentModal', key => {

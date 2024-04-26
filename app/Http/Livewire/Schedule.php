@@ -17,7 +17,7 @@ class Schedule extends Component
     public $id_booked_meeting, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description;
 
     # Listens for an event and proceed to the method.
-    protected $listeners = ['createBookMeetingModal' => 'viewMeetingDetails'];
+    protected $listeners = ['viewBookMeetingModal' => 'viewMeetingDetails'];
 
     public function render()
     {
@@ -39,6 +39,13 @@ class Schedule extends Component
         return view('livewire.schedule', [
             'booked_meetings'   =>  $this->booked_meetings
         ]);
+    }
+
+    public function booted()
+    {
+        # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
+        # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
+        $this->reset('attendees');
     }
 
     public function viewMeetingDetails(TblBookedMeetingsModel $id)
@@ -66,11 +73,5 @@ class Schedule extends Component
         $this->subject = $id->subject;
         $this->type_of_attendees = $id->type_of_attendees;
         $this->meeting_description = $id->meeting_description;
-    }
-
-    public function closeMeetingDetails()
-    {
-        # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
-        $this->reset('attendees');
     }
 }
