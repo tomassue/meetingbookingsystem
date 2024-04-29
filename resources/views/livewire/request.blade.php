@@ -49,7 +49,7 @@
                             </a>
                         </td>
                         <td width="5%">
-                            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal">
+                            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="addMemo('{{ $item->booking_no }}')">
                                 <img src="{{asset('images/file-text.png')}}" alt="attach-file">
                             </a>
                         </td>
@@ -110,23 +110,74 @@
 
     <!-- addMemoModal -->
     <div wire:ignore.self class="modal fade" id="addMemoModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="addMemoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content text-start">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="addMemoModalLabel">Add Memo</h1>
                     <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body">
-                    <form wire:submit.prevent="addMemo" class="row g-3" data-bitwarden-watching="1" novalidate>
-
+                    <form wire:submit.prevent="addMemo" data-bitwarden-watching="1" novalidate>
+                        <div class="row mb-3">
+                            <label for="Date" class="col-sm-2 col-form-label">
+                                Date
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="The date is based on when the request is created.">
+                                    <path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5" stroke="#555555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M11.995 16h.009" stroke="#555555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" wire:model="created_at_date" readonly>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Attendees</label>
+                            <div class="col-sm-10" wire:ignore>
+                                <select class="form-select multiple @error('attendees') is-invalid @enderror" id="multiple-select2" multiple="multiple" wire:loading.remove>
+                                    @foreach($users as $item)
+                                    <option value="{{ $item->id }}">{{ $item->full_name . ' - ' . $item->department_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputSubject" class="col-sm-2 col-form-label">Subject</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" wire:model="subject">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Message</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" style="height: 190px" spellcheck="false" wire:model="message"></textarea>
+                            </div>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
-                    <button type="submit" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:loading.attr="disabled">Add file</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:loading.attr="disabled">Add Memo</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#multiple-select2').select2({
+                dropdownAutoWidth: true,
+                width: '100%'
+            });
+
+            $('#multiple-select2').on('change', function(e) {
+                var selectedValues = [];
+                $('#multiple-select2 option:selected').each(function() {
+                    selectedValues.push($(this).val());
+                    // console.log(typeof selectedValues);
+                });
+                @this.set('attendees', selectedValues);
+            });
+        });
+    </script>
 
 </div>

@@ -15,10 +15,10 @@ class CreateTblMemoTable extends Migration
     {
         Schema::create('tbl_memo', function (Blueprint $table) {
             $table->id();
-            $table->string('file_name');
-            $table->string('file_size');
-            $table->string('file_type');
-            $table->binary('file_data');
+            $table->string('id_booking_no'); # FK from tbl_booked_meeting. We will be accessing some info from this table.
+            $table->integer('id_meeting_feedback'); # FK from tbl_meeting_feedback. We will be accessing some info from this table.
+            $table->string('subject'); # Though it is auto-filled (data from tbl_booked_meeting), we will give the admin the option to edit it in case of typos or grammatically errors.
+            $table->longText('message'); # Though it is auto-filled (data from tbl_booked_meeting), we will give the admin the option to edit it in case of typos or grammatically errors.
             $table->timestamps();
         });
     }

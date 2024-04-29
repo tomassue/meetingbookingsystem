@@ -43,7 +43,11 @@
                     <table class="table table-borderless">
                         <tr>
                             <th scope="col" width="10%">Date:</th>
-                            <th><span class="fw-light">{{$start_date_time . ' - ' . $end_date_time}}</span></th>
+                            <th><span class="fw-light">{{ $created_at_date }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Schedule:</th>
+                            <th><span class="fw-light">{{ $start_date_time }} <br> {{ $end_date_time }}</span></th>
                         </tr>
                         <tr>
                             <th scope="col" width="10%">To:</th>

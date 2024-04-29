@@ -4,6 +4,8 @@ namespace App\Http\Livewire;
 
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblFileDataModel;
+use App\Models\User;
+use DateTime;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -16,7 +18,7 @@ class Request extends Component
     public $files, $previewFile, $title;
 
     # addMemoModal
-    public $memo;
+    public $created_at_date, $attendees, $subject, $message;
 
     protected $rules = [
         'memo' => 'required'
@@ -34,8 +36,20 @@ class Request extends Component
         )
             ->orderBy('start_date_time', 'ASC');
         $request = $query->get();
+
+        # Attendees
+        $users = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+            ->select(
+                'users.id',
+                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.middle_name, ''), ' ', users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) AS full_name"),
+                'ref_departments.department_name'
+            )
+            ->where('account_type', '!=',  0)
+            ->get();
+
         return view('livewire.request', [
-            'request'   =>  $request
+            'request'   =>  $request,
+            'users'     =>  $users
         ]);
     }
 
@@ -74,9 +88,10 @@ class Request extends Component
         $this->previewFile = $file_content;
     }
 
-    public function addMemo()
+    public function addMemo($booking_no)
     {
-        $this->validate();
-        dd($this->memo);
+        // $this->validate();
+        $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
+        $this->created_at_date = (new DateTime($booked_meeting->created_at_date))->format('Y-m-d');
     }
 }

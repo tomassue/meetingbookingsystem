@@ -14,7 +14,7 @@ class Schedule extends Component
     public $booked_meetings;
 
     # Event Details
-    public $id_booked_meeting, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description;
+    public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description;
 
     # Listens for an event and proceed to the method.
     protected $listeners = ['viewBookMeetingModal' => 'viewMeetingDetails'];
@@ -52,6 +52,7 @@ class Schedule extends Component
     {
         $start_datetime = new DateTime($id->start_date_time);
         $end_datetime = new DateTime($id->end_date_time);
+        $created_at = new DateTime($id->created_at);
 
         $e_attendees = explode(',', $id->attendees);
         foreach ($e_attendees as $item) {
@@ -70,6 +71,7 @@ class Schedule extends Component
         }
         $this->start_date_time = $start_datetime->format('M d, Y h:i A');
         $this->end_date_time = $end_datetime->format('M d, Y h:i A');
+        $this->created_at_date = $created_at->format('M d, Y h:i A');
         $this->subject = $id->subject;
         $this->type_of_attendees = $id->type_of_attendees;
         $this->meeting_description = $id->meeting_description;
