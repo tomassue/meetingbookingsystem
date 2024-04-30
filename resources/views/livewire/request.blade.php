@@ -1,10 +1,16 @@
 <div>
+    <style>
+        .select2-container--open .select2-dropdown {
+            z-index: 9999;
+            /**increasing the z-index of the Select2 dropdown to ensure it appears above the modal. */
+        }
+    </style>
 
     <div class="card mt-5">
         <div class="row m-3">
             <div class="col-lg-6">
                 <div class="input-group">
-                    <span class="input-group-text">Search</span>
+                    <span class="input-group-text text-white">Search</span>
                     <input type="text" class="form-control">
                 </div>
             </div>
@@ -12,6 +18,9 @@
     </div>
 
     <div class="card mt-2" style="margin-bottom: 13px;">
+
+        <div id="summernote">dsdf</div>
+
         <div class="m-3">
             <table class="table table-borderless" style="margin-bottom: 0px;">
                 <thead>
@@ -49,7 +58,7 @@
                             </a>
                         </td>
                         <td width="5%">
-                            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="addMemo('{{ $item->booking_no }}')">
+                            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')">
                                 <img src="{{asset('images/file-text.png')}}" alt="attach-file">
                             </a>
                         </td>
@@ -117,41 +126,35 @@
                     <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body">
-                    <form wire:submit.prevent="addMemo" data-bitwarden-watching="1" novalidate>
-                        <div class="row mb-3">
-                            <label for="Date" class="col-sm-2 col-form-label">
-                                Date
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="The date is based on when the request is created.">
-                                    <path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5" stroke="#555555" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                                    <path d="M11.995 16h.009" stroke="#555555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </label>
-                            <div class="col-sm-10">
-                                <input type="date" class="form-control" wire:model="created_at_date" readonly>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="inputEmail3" class="col-sm-2 col-form-label">Attendees</label>
-                            <div class="col-sm-10" wire:ignore>
-                                <select class="form-select multiple @error('attendees') is-invalid @enderror" id="multiple-select2" multiple="multiple" wire:loading.remove>
-                                    @foreach($users as $item)
-                                    <option value="{{ $item->id }}">{{ $item->full_name . ' - ' . $item->department_name }}</option>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th scope="col" width="10%">Date:</th>
+                            <th><span class="fw-light">{{ $created_at_date }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Attendees:</th>
+                            <th>
+                                <span class="text-uppercase fw-light">
+                                    @if($attendees)
+                                    @foreach($attendees as $item)
+                                    <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>, <span class="fst-italic fw-lighter">{{ $item['department_name'] }}</span> <br>
                                     @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="inputSubject" class="col-sm-2 col-form-label">Subject</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" wire:model="subject">
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label for="inputPassword3" class="col-sm-2 col-form-label">Message</label>
-                            <div class="col-sm-10">
-                                <textarea class="form-control" style="height: 190px" spellcheck="false" wire:model="message"></textarea>
-                            </div>
-                        </div>
+                                    @endif
+                                </span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Subject:</th>
+                            <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
+                        </tr>
+                        <form wire:submit.prevent="saveMemo">
+                            <tr>
+                                <th scope="col" width="10%">Message:</th>
+                                <th>
+                                    <textarea class="form-control" style="height: 100px"></textarea>
+                                </th>
+                            </tr>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
@@ -161,23 +164,5 @@
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $('#multiple-select2').select2({
-                dropdownAutoWidth: true,
-                width: '100%'
-            });
-
-            $('#multiple-select2').on('change', function(e) {
-                var selectedValues = [];
-                $('#multiple-select2 option:selected').each(function() {
-                    selectedValues.push($(this).val());
-                    // console.log(typeof selectedValues);
-                });
-                @this.set('attendees', selectedValues);
-            });
-        });
-    </script>
 
 </div>

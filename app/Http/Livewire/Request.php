@@ -37,19 +37,8 @@ class Request extends Component
             ->orderBy('start_date_time', 'ASC');
         $request = $query->get();
 
-        # Attendees
-        $users = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-            ->select(
-                'users.id',
-                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.middle_name, ''), ' ', users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) AS full_name"),
-                'ref_departments.department_name'
-            )
-            ->where('account_type', '!=',  0)
-            ->get();
-
         return view('livewire.request', [
             'request'   =>  $request,
-            'users'     =>  $users
         ]);
     }
 
@@ -88,10 +77,31 @@ class Request extends Component
         $this->previewFile = $file_content;
     }
 
-    public function addMemo($booking_no)
+    public function memo($booking_no)
     {
         // $this->validate();
         $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
-        $this->created_at_date = (new DateTime($booked_meeting->created_at_date))->format('Y-m-d');
+        $this->created_at_date = (new DateTime($booked_meeting->created_at))->format('F d, Y');
+        $e_attendees = explode(',', $booked_meeting->attendees);
+        foreach ($e_attendees as $item) {
+            $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+                ->where('users.id', $item)
+                ->select(
+                    DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                    'users.sex',
+                    'ref_departments.department_name'
+                )
+                ->first(); // Using first() to get a single result
+            if ($query) {
+                # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
+                $this->attendees[] = $query;
+            }
+        }
+        $this->subject = $booked_meeting->subject;
+    }
+
+    public function saveMemo()
+    {
+        dd('wew');
     }
 }
