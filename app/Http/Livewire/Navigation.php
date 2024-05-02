@@ -139,16 +139,14 @@ class Navigation extends Component
                 <script src="{{asset('theme/vendor/tinymce/tinymce.min.js')}}"></script>
                 <script src="{{asset('theme/vendor/php-email-form/validate.js')}}"></script>
 
+                <script src="{{asset('theme/js/main.js')}}"></script>
                 <script src="{{asset('jquery-ui-1.13.2/external/jquery/jquery.js')}}"></script>
                 <script src="{{asset('jquery-ui-1.13.2/jquery-ui.min.js')}}"></script>
                 <script src="{{asset('jquery-ui-1.13.2/jquery-ui.js')}}"></script>
-                
-                <script src="{{asset('theme/js/main.js')}}"></script>
 
+                <!-- select2 -->
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-                
-                @yield('scripts')
+                <script src="{{asset('select2/js/select2.full.min.js')}}"></script>
                 
             </div>
         blade;

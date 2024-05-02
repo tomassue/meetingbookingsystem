@@ -19,8 +19,6 @@
 
     <div class="card mt-2" style="margin-bottom: 13px;">
 
-        <div id="summernote">dsdf</div>
-
         <div class="m-3">
             <table class="table table-borderless" style="margin-bottom: 0px;">
                 <thead>
@@ -147,22 +145,54 @@
                             <th scope="col" width="10%">Subject:</th>
                             <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
                         </tr>
-                        <form wire:submit.prevent="saveMemo">
-                            <tr>
-                                <th scope="col" width="10%">Message:</th>
-                                <th>
-                                    <textarea class="form-control" style="height: 100px"></textarea>
-                                </th>
-                            </tr>
+                        <tr>
+                            <th scope="col" width="10%">Message: {{ $memo_message }}</th>
+                            <th>
+                                <div wire:ignore>
+                                    <textarea class="form-control" id="memo_message" wire:model="memo_message"></textarea>
+                                    <!-- <textarea wire:model="memo_message"></textarea> -->
+                                </div>
+                                @error('memo_message')
+                                <span style="color: red;">{{ $message }}</span>
+                                @enderror
+                            </th>
+                        </tr>
                     </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
-                    <button type="submit" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:loading.attr="disabled">Add Memo</button>
-                    </form>
+                    <button type="button" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:click="saveMemo">Add Memo</button>
                 </div>
             </div>
         </div>
     </div>
 
 </div>
+
+@push('scripts')
+<!-- Summernote initialization script -->
+<script>
+    $(document).ready(function() {
+        $('#memo_message').summernote({
+            placeholder: '...',
+            tabsize: 2,
+            height: 300,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'italic', 'underline', 'clear']],
+                ['fontname', ['fontname']], // Add font name option here
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['view', ['fullscreen', 'help']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana'], // Define the font names here
+            callbacks: {
+                onChange: function(contents, $editable) {
+                    @this.set('memo_message', contents);
+                }
+            }
+        });
+    });
+</script>
+@endpush

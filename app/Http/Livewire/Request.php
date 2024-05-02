@@ -7,6 +7,7 @@ use App\Models\TblFileDataModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -18,10 +19,10 @@ class Request extends Component
     public $files, $previewFile, $title;
 
     # addMemoModal
-    public $created_at_date, $attendees, $subject, $message;
+    public $created_at_date, $attendees, $subject, $memo_message;
 
     protected $rules = [
-        'memo' => 'required'
+        'memo_message' => 'required'
     ];
 
     public function render()
@@ -79,7 +80,6 @@ class Request extends Component
 
     public function memo($booking_no)
     {
-        // $this->validate();
         $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
         $this->created_at_date = (new DateTime($booked_meeting->created_at))->format('F d, Y');
         $e_attendees = explode(',', $booked_meeting->attendees);
@@ -102,6 +102,7 @@ class Request extends Component
 
     public function saveMemo()
     {
-        dd('wew');
+        $this->validate();
+        dd($this->memo_message);
     }
 }

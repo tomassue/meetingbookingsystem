@@ -56,12 +56,12 @@
                             <option value="{{ $item->id }}">{{ $item->full_name . ' - ' . $item->department_name }}</option>
                             @endforeach
                         </select>
-                        @error('attendees')
-                        <div class="invalid-feedback text-start">
-                            <span>{{$message}}</span>
-                        </div>
-                        @enderror
                     </div>
+                    @error('attendees')
+                    <div class="text-start">
+                        <span style="color: red;">{{$message}}</span>
+                    </div>
+                    @enderror
                 </div>
 
                 <div class="row p-3">
@@ -180,21 +180,24 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            $('#multiple-select').select2({
-                dropdownAutoWidth: true,
-                width: '100%'
-            });
-
-            $('#multiple-select').on('change', function(e) {
-                var selectedValues = [];
-                $('#multiple-select option:selected').each(function() {
-                    selectedValues.push($(this).val());
-                    // console.log(typeof selectedValues);
-                });
-                @this.set('attendees', selectedValues);
-            });
-        });
-    </script>
 </div>
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        $('#multiple-select').select2({
+            dropdownAutoWidth: true,
+            width: '100%'
+        });
+
+        $('#multiple-select').on('change', function(e) {
+            var selectedValues = [];
+            $('#multiple-select option:selected').each(function() {
+                selectedValues.push($(this).val());
+                // console.log(typeof selectedValues);
+            });
+            @this.set('attendees', selectedValues);
+        });
+    });
+</script>
+@endpush
