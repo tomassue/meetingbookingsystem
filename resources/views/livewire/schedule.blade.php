@@ -3,7 +3,7 @@
 
         <div class="row p-3">
             <div class="col">
-                <div class="input-group"> {{ Auth::user()->account_type == 0 ? 'super admin' : 'something else' }}
+                <div class="input-group">
                     <span class="input-group-text text-white">From</span>
                     <input type="date" class="form-control">
                 </div>
