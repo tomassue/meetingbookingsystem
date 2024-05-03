@@ -45,7 +45,7 @@ class Navigation extends Component
                         @else
                         <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            {{ Auth::user()->account_type }}
+                            {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -94,6 +94,8 @@ class Navigation extends Component
                             <span>View Schedule</span>
                         </a>
                         </li>
+
+                        @if(Auth::user()->account_type == 0)
                 
                         <li class="nav-item">
                         <a class="nav-link collapsed {{ 'request' == request()->path() ? 'active' : '' }}" href="{{route('request')}}">
@@ -121,8 +123,10 @@ class Navigation extends Component
                                 <span class="ref">Departments</span>
                                 </a>
                             </li>
+                            </ul>
                         </li>
 
+                        @endif
                     </ul>
                 </aside>
 

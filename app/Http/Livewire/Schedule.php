@@ -6,6 +6,7 @@ use App\Models\TblBookedMeetingsModel;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -21,8 +22,10 @@ class Schedule extends Component
 
     public function render()
     {
+        $id_attendees = Auth::user()->id;
+
         # Fetch data from DB
-        $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
+        $TblBookedMeetingsModel = TblBookedMeetingsModel::whereRaw("FIND_IN_SET($id_attendees, attendees)")->get();
         $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();

@@ -6,6 +6,7 @@ use App\Http\Livewire\Request;
 use App\Http\Livewire\Schedule;
 use App\Http\Livewire\UserManagement;
 use App\Http\Livewire\ViewSchedule;
+use App\Http\Middleware\SuperadminAccess;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -33,6 +34,7 @@ Auth::routes();
 
 Route::group(['middleware'  =>  'auth'], function () {
 
+    # Old routes
     // Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'index'])->name('schedule');
     // Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
     // Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
@@ -41,6 +43,9 @@ Route::group(['middleware'  =>  'auth'], function () {
     Route::get('/schedule', Schedule::class)->name('schedule');
     Route::get('/book', BookMeeting::class)->name('book');
     Route::get('/viewsched', ViewSchedule::class)->name('viewsched');
+});
+
+Route::group(['middleware' => ['auth', SuperadminAccess::class]], function () {
     Route::get('/request', Request::class)->name('request');
     Route::get('/user-management', UserManagement::class)->name('user-management');
     Route::get('/ref/departments', RefDepartments::class)->name('ref-departments');
