@@ -33,16 +33,15 @@
   <!-- JQuery 1.13 -->
   <link rel="stylesheet" href="{{asset('jquery-ui-1.13.2/jquery-ui.min.css')}}">
 
-  <!-- Select 2 -->
-  <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
-
   <!-- Select2 -->
   <link rel="stylesheet" href="{{asset('select2/css/select2.min.css')}}">
   <link rel="stylesheet" href="{{asset('select2-bootstrap4-theme/select2-bootstrap4.min.css')}}">
 
   <!-- SUMMERNOTE -->
-  <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
   <link href="{{asset('summernote/summernote-lite.css')}}" rel="stylesheet">
+
+  <!-- AlpineJS -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
     .sidebar-nav .nav-link.collapsed {

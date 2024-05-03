@@ -15,17 +15,20 @@ class Schedule extends Component
     public $booked_meetings;
 
     # Event Details
-    public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description;
+    public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $accept = false;
 
     # Listens for an event and proceed to the method.
     protected $listeners = ['viewBookMeetingModal' => 'viewMeetingDetails'];
 
     public function render()
     {
-        $id_attendees = Auth::user()->id;
-
         # Fetch data from DB
-        $TblBookedMeetingsModel = TblBookedMeetingsModel::whereRaw("FIND_IN_SET($id_attendees, attendees)")->get();
+        if (Auth::user()->account_type == 0) {
+            $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
+        } else {
+            $id_attendees = Auth::user()->id;
+            $TblBookedMeetingsModel = TblBookedMeetingsModel::whereRaw("FIND_IN_SET($id_attendees, attendees)")->get();
+        }
         $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
@@ -39,6 +42,7 @@ class Schedule extends Component
                 'textColor' => '#ffffff'
             ];
         });
+
         return view('livewire.schedule', [
             'booked_meetings'   =>  $this->booked_meetings
         ]);
@@ -49,6 +53,16 @@ class Schedule extends Component
         # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
         # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
         $this->reset('attendees');
+    }
+
+    public function approveMeeting()
+    {
+        $this->accept = true;
+    }
+
+    public function declineMeeting()
+    {
+        $this->accept = false;
     }
 
     public function viewMeetingDetails(TblBookedMeetingsModel $id)

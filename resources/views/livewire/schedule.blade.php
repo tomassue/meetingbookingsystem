@@ -37,7 +37,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="viewBookMeetingModalLabel">Meeting Details</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-start">
                     <table class="table table-borderless">
@@ -71,10 +71,15 @@
                             <th><span class="fw-light">{{ $meeting_description }}</span></th>
                         </tr>
                     </table>
+
+                    <hr>
+                    <h1>WEW</h1>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                    <a href="#" role="button" class="btn btn-primary" wire:click="approveMeeting">Accept</a>
+                    <a href="#" role="button" class="btn btn-danger" wire:click="declineMeeting">Decline</a>
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
                 </div>
             </div>
         </div>

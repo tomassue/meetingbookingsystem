@@ -7,7 +7,6 @@ use App\Models\TblFileDataModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -35,8 +34,15 @@ class Request extends Component
             'type_of_attendees',
             'id_file_data'
         )
+            ->whereExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('tbl_meeting_feedback')
+                    ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no');
+            })
             ->orderBy('start_date_time', 'ASC');
         $request = $query->get();
+
+        dd($request);
 
         return view('livewire.request', [
             'request'   =>  $request,
