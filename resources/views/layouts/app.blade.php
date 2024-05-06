@@ -41,7 +41,10 @@
   <link href="{{asset('summernote/summernote-lite.css')}}" rel="stylesheet">
 
   <!-- AlpineJS -->
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script> -->
+
+  <!-- sweetalert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     .sidebar-nav .nav-link.collapsed {
@@ -102,6 +105,42 @@
 
   Livewire.on('hideaddNewFileModal', key => {
     $('#addNewFileModal').modal('hide');
+  })
+
+  Livewire.on('hideviewBookMeetingModal', key => {
+    $('#viewBookMeetingModal').modal('hide');
+  })
+
+  Livewire.on('showApproveConfirmationAlert', key => {
+    Swal.fire({
+      title: 'Are you sure you want to approve?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#0a927c',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Livewire.emit('approveMeeting');
+      }
+    });
+  })
+
+  Livewire.on('showDeclineConfirmationAlert', key => {
+    Swal.fire({
+      title: 'Are you sure you want to decline?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Livewire.emit('declineMeeting');
+      }
+    });
   })
 
   // In your Javascript (external .js resource or <script> tag)

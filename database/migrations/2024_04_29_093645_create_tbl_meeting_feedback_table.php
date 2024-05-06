@@ -16,7 +16,7 @@ class CreateTblMeetingFeedbackTable extends Migration
         Schema::create('tbl_meeting_feedback', function (Blueprint $table) {
             $table->id();
             $table->string('id_booking_no'); # FK from tbl_booked_meetings
-            $table->integer('id_user'); # FK from users. Usually, they are the department heads.
+            $table->integer('attendee'); # FK from users. Usually, they are the department heads / attendees.
             $table->integer('meeting_status'); # 0 - Declined; 1 - Accepted
             $table->string('proxy')->nullable(); # NULL - if the department head didn't send someone(representative) as proxy.
             $table->timestamps();

@@ -37,12 +37,16 @@ class Request extends Component
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('tbl_meeting_feedback')
-                    ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no');
+                    ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no')
+                    ->whereIn('tbl_meeting_feedback.attendee', function ($query) {
+                        $query->select(DB::raw('CAST(attendees AS UNSIGNED)')) // By using CAST(attendees AS UNSIGNED), we convert the attendees array to a list of integers that can be used in the whereIn clause. All IDs in the attendees saved as an array will be casted and will be evaluated if these IDs already exist in the tbl_meeting_feedback.
+                            ->from('tbl_booked_meetings')
+                            ->whereRaw('tbl_booked_meetings.booking_no = tbl_meeting_feedback.id_booking_no');
+                    });
             })
             ->orderBy('start_date_time', 'ASC');
-        $request = $query->get();
 
-        dd($request);
+        $request = $query->get();
 
         return view('livewire.request', [
             'request'   =>  $request,

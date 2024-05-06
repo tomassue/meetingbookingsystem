@@ -24,9 +24,16 @@
 
     </div>
 
-    <div class="card" wire:ignore>
+    @if(session('success'))
+    <div class="text-start alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <div class="card">
         <div id="wrap">
-            <div id='calendar'></div>
+            <div id='calendar' wire:ignore></div>
             <div style='clear:both'></div>
         </div>
     </div>
@@ -37,7 +44,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="viewBookMeetingModalLabel">Meeting Details</h1>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body text-start">
                     <table class="table table-borderless">
@@ -72,13 +79,22 @@
                         </tr>
                     </table>
 
+
                     <hr>
-                    <h1>WEW</h1>
+
+                    <div class="form-check form-switch mb-2">
+                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" wire:model="representative">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Send a representative?</label>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="representative_name" class="form-label">Representative's Name</label>
+                        <input type="text" class="form-control" id="representative_name" data-ddg-inputtype="identities.representative_name" wire:model="representative_name" @if(!$representative) disabled @endif>
+                    </div>
 
                 </div>
                 <div class="modal-footer">
-                    <a href="#" role="button" class="btn btn-primary" wire:click="approveMeeting">Accept</a>
-                    <a href="#" role="button" class="btn btn-danger" wire:click="declineMeeting">Decline</a>
+                    <a href="#" role="button" class="btn btn-primary" style="background-color: #0a927c; border-color:#0a927c" wire:click="confirmApproveMeeting">Accept {{ $feedback }}</a>
+                    <a href="#" role="button" class="btn btn-danger" wire:click="confirmDeclineMeeting">Decline</a>
                     <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
                 </div>
             </div>

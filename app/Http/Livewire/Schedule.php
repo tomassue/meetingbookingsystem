@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\TblBookedMeetingsModel;
+use App\Models\TblMeetingFeedbackModel;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
@@ -15,10 +16,14 @@ class Schedule extends Component
     public $booked_meetings;
 
     # Event Details
-    public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $accept = false;
+    public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative = false, $representative_name, $attendee, $feedback;
 
     # Listens for an event and proceed to the method.
-    protected $listeners = ['viewBookMeetingModal' => 'viewMeetingDetails'];
+    protected $listeners = [
+        'viewBookMeetingModal' => 'viewMeetingDetails',
+        'approveMeeting'       => 'approveMeeting',
+        'declineMeeting'       => 'declineMeeting'
+    ];
 
     public function render()
     {
@@ -48,21 +53,55 @@ class Schedule extends Component
         ]);
     }
 
-    public function booted()
+    public function clear()
     {
         # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
         # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
-        $this->reset('attendees');
+        # Changed it from booted() since there are other requests that are being done. Such as the feedback.
+        $this->reset('attendees', 'representative', 'representative_name');
+    }
+
+    public function updatedRepresentative()
+    {
+        # When the $representative is updated, it will clear the $representative_name value.
+        $this->reset('representative_name');
     }
 
     public function approveMeeting()
     {
-        $this->accept = true;
+        TblMeetingFeedbackModel::create([
+            'id_booking_no' =>  $this->id_booked_meeting,
+            'attendee'   =>  $this->attendee,
+            'meeting_status'    =>  1, # Accepted
+            'proxy' =>  $this->representative_name
+        ]);
+        $this->emit('hideviewBookMeetingModal');
+        session()->flash('success', 'You successfully approved the meeting.');
+        $this->reset('id_booked_meeting', 'attendee', 'representative_name');
+        return redirect()->route('schedule');
+    }
+
+    public function confirmApproveMeeting()
+    {
+        $this->emit('showApproveConfirmationAlert');
+    }
+
+    public function confirmDeclineMeeting()
+    {
+        $this->emit('showDeclineConfirmationAlert');
     }
 
     public function declineMeeting()
     {
-        $this->accept = false;
+        TblMeetingFeedbackModel::create([
+            'id_booking_no' =>  $this->id_booked_meeting,
+            'attendee'   =>  $this->attendee,
+            'meeting_status'    =>  0, # Declined
+        ]);
+        $this->emit('hideviewBookMeetingModal');
+        session()->flash('success', 'You successfully declined the meeting.');
+        $this->reset('id_booked_meeting', 'attendee');
+        return redirect()->route('schedule');
     }
 
     public function viewMeetingDetails(TblBookedMeetingsModel $id)
@@ -86,11 +125,18 @@ class Schedule extends Component
                 $this->attendees[] = $query;
             }
         }
+        $this->id_booked_meeting = $id->booking_no;
+        $this->attendee = Auth::user()->id;
         $this->start_date_time = $start_datetime->format('M d, Y h:i A');
         $this->end_date_time = $end_datetime->format('M d, Y h:i A');
         $this->created_at_date = $created_at->format('M d, Y h:i A');
         $this->subject = $id->subject;
         $this->type_of_attendees = $id->type_of_attendees;
         $this->meeting_description = $id->meeting_description;
+
+        # Let's check if the user already responded to the meeting
+        $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $id->booking_no)
+            ->where('attendee', Auth::user()->id)
+            ->count();
     }
 }
