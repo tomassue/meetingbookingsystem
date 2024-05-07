@@ -79,9 +79,8 @@
                         </tr>
                     </table>
 
-
+                    @if($feedback == 0 && Auth::user()->account_type !== 0)
                     <hr>
-
                     <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" wire:model="representative">
                         <label class="form-check-label" for="flexSwitchCheckDefault">Send a representative?</label>
@@ -90,12 +89,18 @@
                         <label for="representative_name" class="form-label">Representative's Name</label>
                         <input type="text" class="form-control" id="representative_name" data-ddg-inputtype="identities.representative_name" wire:model="representative_name" @if(!$representative) disabled @endif>
                     </div>
+                    @endif
 
                 </div>
                 <div class="modal-footer">
-                    <a href="#" role="button" class="btn btn-primary" style="background-color: #0a927c; border-color:#0a927c" wire:click="confirmApproveMeeting">Accept {{ $feedback }}</a>
+                    @if($feedback == 0 && Auth::user()->account_type !== 0)
+                    <a href="#" role="button" class="btn btn-primary" style="background-color: #0a927c; border-color:#0a927c" wire:click="confirmApproveMeeting">Accept</a>
                     <a href="#" role="button" class="btn btn-danger" wire:click="confirmDeclineMeeting">Decline</a>
-                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                    @elseif($feedback == 1 && Auth::user()->account_type !== 0)
+                    <span class="badge rounded-pill bg-success">You already responded to this meeting.</span>
+                    @elseif( Auth::user()->account_type == 0)
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
+                    @endif
                 </div>
             </div>
         </div>

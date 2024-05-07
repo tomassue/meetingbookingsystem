@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblFileDataModel;
+use App\Models\TblMeetingFeedbackModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -38,11 +39,9 @@ class Request extends Component
                 $query->select(DB::raw(1))
                     ->from('tbl_meeting_feedback')
                     ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no')
-                    ->whereIn('tbl_meeting_feedback.attendee', function ($query) {
-                        $query->select(DB::raw('CAST(attendees AS UNSIGNED)')) // By using CAST(attendees AS UNSIGNED), we convert the attendees array to a list of integers that can be used in the whereIn clause. All IDs in the attendees saved as an array will be casted and will be evaluated if these IDs already exist in the tbl_meeting_feedback.
-                            ->from('tbl_booked_meetings')
-                            ->whereRaw('tbl_booked_meetings.booking_no = tbl_meeting_feedback.id_booking_no');
-                    });
+                    ->whereRaw('FIND_IN_SET(tbl_meeting_feedback.attendee, tbl_booked_meetings.attendees)') // Check if attendee responded
+                    ->groupBy('tbl_meeting_feedback.id_booking_no')
+                    ->havingRaw('COUNT(DISTINCT tbl_meeting_feedback.attendee) = LENGTH(tbl_booked_meetings.attendees) - LENGTH(REPLACE(tbl_booked_meetings.attendees, ",", "")) + 1'); // Ensure all attendees have responded
             })
             ->orderBy('start_date_time', 'ASC');
 
@@ -106,8 +105,22 @@ class Request extends Component
                 # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
                 $this->attendees[] = $query;
             }
+
+            // $one = TblMeetingFeedbackModel::join('users', 'tbl_meeting_feedback.attendee', '=', 'users.id')
+            //     ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+            //     ->where('tbl_meeting_feedback.id_booking_no', $booking_no)
+            //     ->select(
+            //         DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+            //         'users.sex',
+            //         'ref_departments.department_name'
+            //     )
+            //     ->get();
+
+            // dd($this->attendees[] = $one);
+            // $this->attendees[] = $one;
+
+            $this->subject = $booked_meeting->subject;
         }
-        $this->subject = $booked_meeting->subject;
     }
 
     public function saveMemo()

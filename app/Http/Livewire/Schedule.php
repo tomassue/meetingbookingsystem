@@ -27,7 +27,7 @@ class Schedule extends Component
 
     public function render()
     {
-        # Fetch data from DB
+        # Fetch data from DB and display it to fullcalendar
         if (Auth::user()->account_type == 0) {
             $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
         } else {
@@ -58,7 +58,7 @@ class Schedule extends Component
         # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
         # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
         # Changed it from booted() since there are other requests that are being done. Such as the feedback.
-        $this->reset('attendees', 'representative', 'representative_name');
+        $this->reset('attendees', 'representative', 'representative_name', 'feedback');
     }
 
     public function updatedRepresentative()

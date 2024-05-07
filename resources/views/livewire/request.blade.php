@@ -73,7 +73,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="attachedFileModalLabel">Attached File</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="hideAttachedFileModal"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="hideAttachedFileModal"></button>
                 </div>
                 <div class="modal-body text-center">
                     @if($files)
@@ -101,8 +101,13 @@
                         </tbody>
                     </table>
                     @endif
+                    <div class="my-5 py-5" wire:loading>
+                        <div class="spinner-grow text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                     @if($previewFile)
-                    <div>
+                    <div wire:loading.remove>
                         <embed src="data:application/pdf;base64,{{ $previewFile }}" title="{{ $title }}" type="application/pdf" style="height: 70vh; width: 100%;">
                     </div>
                     @endif
@@ -121,7 +126,7 @@
             <div class="modal-content text-start">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="addMemoModalLabel">Add Memo</h1>
-                    <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body">
                     <table class="table table-borderless">
@@ -146,10 +151,10 @@
                             <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
                         </tr>
                         <tr>
-                            <th scope="col" width="10%">Message: {{ $memo_message }}</th>
+                            <th scope="col" width="10%">Message:</th>
                             <th>
                                 <div wire:ignore>
-                                    <textarea class="form-control" id="memo_message" wire:model="memo_message"></textarea>
+                                    <textarea class="form-control note-editable" id="memo_message" wire:model="memo_message"></textarea>
                                     <!-- <textarea wire:model="memo_message"></textarea> -->
                                 </div>
                                 @error('memo_message')
@@ -160,8 +165,11 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
-                    <button type="button" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:click="saveMemo">Add Memo</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear" wire:loading.attr="disabled">Close</button>
+                    <button type="button" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:click="saveMemo" wire:loading.attr="disabled">Add Memo</button>
+                    <div class="spinner-grow text-success" role="status" wire:loading wire:target="saveMemo">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,6 +200,11 @@
                     @this.set('memo_message', contents);
                 }
             }
+        });
+
+        $('.note-editable').css({
+            'font-weight': 'normal',
+            'background-color': 'white'
         });
     });
 </script>
