@@ -17,8 +17,7 @@
         </div>
     </div>
 
-    <div class="card mt-2" style="margin-bottom: 13px;">
-
+    <!-- <div class="card mt-2" style="margin-bottom: 13px;">
         <div class="m-3">
             <table class="table table-borderless" style="margin-bottom: 0px;">
                 <thead>
@@ -64,6 +63,76 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div> -->
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title text-start">Meeting Requests</h5>
+
+            <!-- Bordered Tabs Justified -->
+            <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link w-100 active" id="upcomingMeetings-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-upcomingMeetings" type="button" role="tab" aria-controls="upcomingMeetings" aria-selected="true">Upcoming Meetings</button>
+                </li>
+                <li class="nav-item flex-fill" role="presentation">
+                    <button class="nav-link w-100" id="withMemo-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-withMemo" type="button" role="tab" aria-controls="withMemo" aria-selected="false" tabindex="-1">With Memo</button>
+                </li>
+            </ul>
+
+            <div class="tab-content pt-2" id="borderedTabJustifiedContent">
+                <div class="tab-pane fade active show" id="bordered-justified-upcomingMeetings" role="tabpanel" aria-labelledby="upcomingMeetings-tab">
+                    <div class="m-3">
+                        <table class="table table-borderless" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
+                                    <th class="fs-6" scope="col">Meeting Date <br> & Time</th>
+                                    <th class="fs-6" scope="col" style="align-content: center;">Subject</th>
+                                    <th class="fs-6" scope="col" width="15%">Type of <br> Attendees</th>
+                                    <th class="fs-6" scope="col">Attached <br> File</th>
+                                    <th class="fs-6" scope="col" style="align-content: baseline;">Memo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($request as $item)
+                                <tr wire:key="item-{{ $item->booking_no }}">
+                                    <td>
+                                        {{ $item->booking_no }}
+                                    </td>
+                                    <td width="15%">
+                                        <span class="text-lowercase">
+                                            {{ $item->start }}<br>{{ $item->end }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ $item->subject }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary" style="background-color: #0a927c !important;">
+                                            {{ $item->type_of_attendees }}
+                                        </span>
+                                    </td>
+                                    <td width="9%">
+                                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#attachedFileModal" wire:click="viewAttachedFile('{{ $item->id_file_data }}')">
+                                            <img src="{{asset('images/file-plus.png')}}" alt="attach-file">
+                                        </a>
+                                    </td>
+                                    <td width="5%">
+                                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')">
+                                            <img src="{{asset('images/file-text.png')}}" alt="attach-file">
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
+                    Nesciunt totam et. Consequuntur magnam aliquid eos nulla dolor iure eos quia. Accusantium distinctio omnis et atque fugiat. Itaque doloremque aliquid sint quasi quia distinctio similique. Voluptate nihil recusandae mollitia dolores. Ut laboriosam voluptatum dicta.
+                </div>
+            </div><!-- End Bordered Tabs Justified -->
         </div>
     </div>
 
@@ -140,7 +209,10 @@
                                 <span class="text-uppercase fw-light">
                                     @if($attendees)
                                     @foreach($attendees as $item)
-                                    <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>, <span class="fst-italic fw-lighter">{{ $item['department_name'] }}</span> <br>
+                                    <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>,
+                                    <span class="fst-italic fw-lighter">{{ $item['department_name'] }}</span>
+                                    <span class="fst-italic">{{ $item['proxy'] ? '['.$item['proxy'].']' : '' }}</span>
+                                    <br>
                                     @endforeach
                                     @endif
                                 </span>
@@ -182,7 +254,6 @@
 <script>
     $(document).ready(function() {
         $('#memo_message').summernote({
-            placeholder: '...',
             tabsize: 2,
             height: 300,
             toolbar: [

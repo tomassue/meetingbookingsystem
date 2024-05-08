@@ -58,7 +58,8 @@ class Schedule extends Component
         # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
         # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
         # Changed it from booted() since there are other requests that are being done. Such as the feedback.
-        $this->reset('attendees', 'representative', 'representative_name', 'feedback');
+        // $this->reset('attendees', 'representative', 'representative_name', 'feedback');
+        $this->reset();
     }
 
     public function updatedRepresentative()

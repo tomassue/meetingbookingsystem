@@ -27,6 +27,7 @@ class Request extends Component
 
     public function render()
     {
+        # Upcoming Meetings
         $query = TblBookedMeetingsModel::select(
             'booking_no',
             DB::raw("DATE_FORMAT(start_date_time, '%c/%d/%Y %h:%i %p') AS start"),
@@ -44,7 +45,6 @@ class Request extends Component
                     ->havingRaw('COUNT(DISTINCT tbl_meeting_feedback.attendee) = LENGTH(tbl_booked_meetings.attendees) - LENGTH(REPLACE(tbl_booked_meetings.attendees, ",", "")) + 1'); // Ensure all attendees have responded
             })
             ->orderBy('start_date_time', 'ASC');
-
         $request = $query->get();
 
         return view('livewire.request', [
@@ -91,36 +91,36 @@ class Request extends Component
     {
         $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
         $this->created_at_date = (new DateTime($booked_meeting->created_at))->format('F d, Y');
-        $e_attendees = explode(',', $booked_meeting->attendees);
-        foreach ($e_attendees as $item) {
-            $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-                ->where('users.id', $item)
-                ->select(
-                    DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-                    'users.sex',
-                    'ref_departments.department_name'
-                )
-                ->first(); // Using first() to get a single result
-            if ($query) {
-                # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
-                $this->attendees[] = $query;
-            }
-
-            // $one = TblMeetingFeedbackModel::join('users', 'tbl_meeting_feedback.attendee', '=', 'users.id')
-            //     ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-            //     ->where('tbl_meeting_feedback.id_booking_no', $booking_no)
-            //     ->select(
-            //         DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-            //         'users.sex',
-            //         'ref_departments.department_name'
-            //     )
-            //     ->get();
-
-            // dd($this->attendees[] = $one);
-            // $this->attendees[] = $one;
-
-            $this->subject = $booked_meeting->subject;
+        // $e_attendees = explode(',', $booked_meeting->attendees);
+        // foreach ($e_attendees as $item) {
+        //     $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+        //         ->where('users.id', $item)
+        //         ->select(
+        //             DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+        //             'users.sex',
+        //             'ref_departments.department_name'
+        //         )
+        //         ->first(); // Using first() to get a single result
+        //     if ($query) {
+        //         # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
+        //         $this->attendees[] = $query;
+        //     }
+        // }
+        $one = TblMeetingFeedbackModel::join('users', 'tbl_meeting_feedback.attendee', '=', 'users.id')
+            ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+            ->where('tbl_meeting_feedback.id_booking_no', $booking_no)
+            ->select(
+                DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                'users.sex',
+                'ref_departments.department_name',
+                'proxy'
+            )
+            ->get();
+        foreach ($one as $item) {
+            $this->attendees[] = $item;
         }
+
+        $this->subject = $booked_meeting->subject;
     }
 
     public function saveMemo()
