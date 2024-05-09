@@ -12,7 +12,7 @@ class TblMemoModel extends Model
     protected $table = 'tbl_memo';
 
     protected $fillable = [
-        'id_meeting_feedback',
+        'id_booking_no',
         // 'subject',
         'message',
     ];

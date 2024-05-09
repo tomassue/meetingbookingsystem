@@ -17,6 +17,13 @@
         </div>
     </div>
 
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show text-start" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <!-- <div class="card mt-2" style="margin-bottom: 13px;">
         <div class="m-3">
             <table class="table table-borderless" style="margin-bottom: 0px;">
@@ -67,8 +74,8 @@
     </div> -->
 
     <div class="card">
-        <div class="card-body">
-            <h5 class="card-title text-start">Meeting Requests</h5>
+        <div class="card-body" wire:ignore>
+            <h5 class="card-title text-start fw-bold" style="color: #0A927C;">Meeting Requests</h5>
 
             <!-- Bordered Tabs Justified -->
             <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
@@ -130,7 +137,53 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
-                    Nesciunt totam et. Consequuntur magnam aliquid eos nulla dolor iure eos quia. Accusantium distinctio omnis et atque fugiat. Itaque doloremque aliquid sint quasi quia distinctio similique. Voluptate nihil recusandae mollitia dolores. Ut laboriosam voluptatum dicta.
+                    <table class="table table-borderless" style="margin-bottom: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
+                                <th class="fs-6" scope="col">Meeting Date <br> & Time</th>
+                                <th class="fs-6" scope="col" style="align-content: center;">Subject</th>
+                                <th class="fs-6" scope="col" width="15%">Type of <br> Attendees</th>
+                                <th class="fs-6" scope="col">Attached <br> File</th>
+                                <th class="fs-6" scope="col" style="align-content: baseline;">Memo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($request2 as $item)
+                            <tr wire:key="item-{{ $item->booking_no }}">
+                                <td>
+                                    {{ $item->id_booking_no }}
+                                </td>
+                                <td width="15%">
+                                    <span class="text-lowercase">
+                                        {{ $item->start }}<br>{{ $item->end }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{ $item->subject }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-primary" style="background-color: #0a927c !important;">
+                                        {{ $item->type_of_attendees }}
+                                    </span>
+                                </td>
+                                <td width="9%">
+                                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#attachedFileModal" wire:click="viewAttachedFile('{{ $item->id_file_data }}')">
+                                        <img src="{{asset('images/file-plus.png')}}" alt="attach-file">
+                                    </a>
+                                </td>
+                                <td width="5%">
+                                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="bi bi-printer" viewBox="0 0 16 16">
+                                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                                            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div><!-- End Bordered Tabs Justified -->
         </div>
@@ -230,6 +283,9 @@
                                     <!-- <textarea wire:model="memo_message"></textarea> -->
                                 </div>
                                 @error('memo_message')
+                                <span style="color: red;">{{ $message }}</span> <br>
+                                @enderror
+                                @error('booking_no')
                                 <span style="color: red;">{{ $message }}</span>
                                 @enderror
                             </th>

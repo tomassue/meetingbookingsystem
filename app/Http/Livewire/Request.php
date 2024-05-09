@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblFileDataModel;
 use App\Models\TblMeetingFeedbackModel;
+use App\Models\TblMemoModel;
 use App\Models\User;
 use DateTime;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +20,15 @@ class Request extends Component
     public $files, $previewFile, $title;
 
     # addMemoModal
-    public $created_at_date, $attendees, $subject, $memo_message;
+    public $booking_no, $created_at_date, $attendees, $subject, $memo_message;
 
     protected $rules = [
+        'booking_no'   => 'required|unique:tbl_memo,id_booking_no',
         'memo_message' => 'required'
+    ];
+
+    protected $messages = [
+        'booking_no.unique' => 'Memo already exist!'
     ];
 
     public function render()
@@ -36,6 +42,11 @@ class Request extends Component
             'type_of_attendees',
             'id_file_data'
         )
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('tbl_memo')
+                    ->whereRaw('tbl_booked_meetings.booking_no = tbl_memo.id_booking_no');
+            })
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('tbl_meeting_feedback')
@@ -47,15 +58,28 @@ class Request extends Component
             ->orderBy('start_date_time', 'ASC');
         $request = $query->get();
 
+        # With Memo
+        $request2 = TblBookedMeetingsModel::rightJoin('tbl_memo', 'tbl_memo.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
+            ->select(
+                'tbl_memo.id_booking_no',
+                DB::raw("DATE_FORMAT(start_date_time, '%c/%d/%Y %h:%i %p') AS start"),
+                DB::raw("DATE_FORMAT(end_date_time, '%c/%d/%Y %h:%i %p') AS end"),
+                'subject',
+                'type_of_attendees',
+                'id_file_data'
+            )
+            ->get();
+
         return view('livewire.request', [
             'request'   =>  $request,
+            'request2'  =>  $request2
         ]);
     }
 
     public function clear()
     {
-        $this->reset();
         $this->resetValidation();
+        $this->reset();
     }
 
     public function hideAttachedFileModal()
@@ -89,6 +113,7 @@ class Request extends Component
 
     public function memo($booking_no)
     {
+        $this->booking_no = $booking_no;
         $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
         $this->created_at_date = (new DateTime($booked_meeting->created_at))->format('F d, Y');
         // $e_attendees = explode(',', $booked_meeting->attendees);
@@ -119,13 +144,18 @@ class Request extends Component
         foreach ($one as $item) {
             $this->attendees[] = $item;
         }
-
         $this->subject = $booked_meeting->subject;
     }
 
     public function saveMemo()
     {
         $this->validate();
-        dd($this->memo_message);
+        TblMemoModel::create([
+            'id_booking_no' =>  $this->booking_no,
+            'message'       =>  $this->memo_message
+        ]);
+        $this->clear();
+        session()->flash('success', 'Added a memo succesfully.');
+        return redirect()->route('request');
     }
 }
