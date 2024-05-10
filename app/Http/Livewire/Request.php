@@ -8,9 +8,11 @@ use App\Models\TblMeetingFeedbackModel;
 use App\Models\TblMemoModel;
 use App\Models\User;
 use DateTime;
+use Dompdf\Dompdf;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class Request extends Component
 {
@@ -21,6 +23,9 @@ class Request extends Component
 
     # addMemoModal
     public $booking_no, $created_at_date, $attendees, $subject, $memo_message;
+
+    # generate memo
+    public $pdfMemo;
 
     protected $rules = [
         'booking_no'   => 'required|unique:tbl_memo,id_booking_no',
@@ -157,5 +162,22 @@ class Request extends Component
         $this->clear();
         session()->flash('success', 'Added a memo succesfully.');
         return redirect()->route('request');
+    }
+
+    public function generateMemo($key)
+    {
+        $data = [
+            'id' => $key,
+            // 'css'   =>  file_get_contents(public_path() . '/theme/vendor/bootstrap/css/bootstrap.min.css'),
+            'cdo_logo' =>  base64_encode(file_get_contents(public_path('images/cdo-seal.png')))
+        ];
+
+        // Load HTML content from another Blade file
+        $htmlContent = view('livewire.generate-pdf.pdf-memo', $data)->render();
+        $dompdfMemo = new Dompdf();
+        $dompdfMemo->loadHtml($htmlContent);
+        $dompdfMemo->render();
+
+        $this->pdfMemo = 'data:application/pdf;base64,' . base64_encode($dompdfMemo->output());
     }
 }

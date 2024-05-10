@@ -150,7 +150,7 @@
                         </thead>
                         <tbody>
                             @foreach($request2 as $item)
-                            <tr wire:key="item-{{ $item->booking_no }}">
+                            <tr wire:key="item-{{ $item->id_booking_no }}">
                                 <td>
                                     {{ $item->id_booking_no }}
                                 </td>
@@ -173,7 +173,7 @@
                                     </a>
                                 </td>
                                 <td width="5%">
-                                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')">
+                                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#memoModal" wire:click="generateMemo('{{ $item->id_booking_no }}')">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="bi bi-printer" viewBox="0 0 16 16">
                                             <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
                                             <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
@@ -295,6 +295,27 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear" wire:loading.attr="disabled">Close</button>
                     <button type="button" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:click="saveMemo" wire:loading.attr="disabled">Add Memo</button>
+                    <div class="spinner-grow text-success" role="status" wire:loading wire:target="saveMemo">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- memoModal -->
+    <div wire:ignore.self class="modal fade" id="memoModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="memoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content text-start">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="memoModalLabel">Generate Memo</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                </div>
+                <div class="modal-body">
+                    <embed src="{{ $pdfMemo }}" type="application/pdf" width="100%" height="680px">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear" wire:loading.attr="disabled">Close</button>
                     <div class="spinner-grow text-success" role="status" wire:loading wire:target="saveMemo">
                         <span class="visually-hidden">Loading...</span>
                     </div>
