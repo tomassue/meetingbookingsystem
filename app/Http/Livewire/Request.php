@@ -166,10 +166,19 @@ class Request extends Component
 
     public function generateMemo($key)
     {
+        $memo = TblMemoModel::where('id_booking_no', $key)
+            ->select(
+                'id_booking_no',
+                'message',
+                DB::raw("DATE_FORMAT(created_at, '%e %b %Y') AS formatted_created_at")
+            )
+            ->first();
+
         $data = [
+            'memo' => $memo,
             'id' => $key,
-            // 'css'   =>  file_get_contents(public_path() . '/theme/vendor/bootstrap/css/bootstrap.min.css'),
-            'cdo_logo' =>  base64_encode(file_get_contents(public_path('images/cdo-seal.png')))
+            'cdo_logo' =>  base64_encode(file_get_contents(public_path('images/cdo-seal.png'))),
+            'headergoldencdologo' => base64_encode(file_get_contents(public_path('images/headergoldencdologo.png')))
         ];
 
         // Load HTML content from another Blade file
