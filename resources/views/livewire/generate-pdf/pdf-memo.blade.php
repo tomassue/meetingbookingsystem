@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
+    <style>{{ $css }}</style>
     <style>
+        .watermark {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: -1;
+        }
+
         .cdo-logo {
             float: left;
         }
@@ -43,28 +51,56 @@
             padding-right: 75px;
         }
 
-        table {
+        /* Header part table */
+        #header {
             padding-top: 20px;
             font-weight: bolder;
+            /* border: 1px solid black; */
         }
 
-        th,
-        td {
+        #header th,
+        #header td {
             padding-bottom: 25px;
+            vertical-align: top;
+            /* border: 1px solid black; */
         }
 
-        th {
+        #header th {
             text-align: left;
             width: 50px;
         }
 
-        td {
+        #header td {
             text-transform: uppercase;
+        }
+
+        /* Memo message table part */
+        #message table {
+            /* width: 100%; */
+            border-collapse: collapse;
+            padding-left: 50px;
+            padding-right: 50px;
+        }
+
+        #message table,
+        #message th,
+        #message td {
+            border: 1px solid black;
+        }
+
+        #message th,
+        #message td {
+            padding: 8px;
+            text-align: left;
         }
     </style>
 </head>
 
 <body>
+    <div class="watermark">
+        <img src="data:image/png;base64,{{ $cdo_logo }}" alt="rise-logo" width="500" />
+    </div>
+
     <div class="cdo-logo">
         <img src="data:image/png;base64,{{ $cdo_logo }}" alt="rise-logo" width="120" />
     </div>
@@ -90,22 +126,28 @@
 
     <div class="memo-body">
         <span style="text-transform: uppercase; font-weight: bolder; padding-left: 10px;">Memorandum <br> <span style="padding-left: 10px;">No. ___________</span></span>
-        <table>
+        <table id="header">
             <tr>
                 <th>For</th>
-                <td>Lalala</td>
+                <td>
+                    @foreach($attendee as $item)
+                    {{ $item }} <br>
+                    @endforeach
+                </td>
             </tr>
             <tr>
                 <th>Re</th>
-                <td>Lalala</td>
+                <td style="text-transform: uppercase !important;"> {{ $memo->subject }} </td>
             </tr>
             <tr>
                 <th>Date</th>
-                <td style="text-transform: capitalized !important;"> {{$memo->formatted_created_at}} </td>
+                <td style="text-transform: capitalized !important;"> {{ $memo->formatted_created_at }} </td>
             </tr>
         </table>
 
         <hr>
+
+        <span id="message">{!! base64_decode($memo->message) !!}</span>
 
     </div>
 

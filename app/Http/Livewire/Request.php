@@ -157,7 +157,7 @@ class Request extends Component
         $this->validate();
         TblMemoModel::create([
             'id_booking_no' =>  $this->booking_no,
-            'message'       =>  $this->memo_message
+            'message'       =>  base64_encode($this->memo_message)
         ]);
         $this->clear();
         session()->flash('success', 'Added a memo succesfully.');
@@ -166,15 +166,36 @@ class Request extends Component
 
     public function generateMemo($key)
     {
-        $memo = TblMemoModel::where('id_booking_no', $key)
+        $query_attendees = TblMeetingFeedbackModel::join('users', 'users.id', '=', 'tbl_meeting_feedback.attendee')
+            ->where('id_booking_no', $key)
             ->select(
-                'id_booking_no',
-                'message',
-                DB::raw("DATE_FORMAT(created_at, '%e %b %Y') AS formatted_created_at")
+                'tbl_meeting_feedback.proxy as proxy',
+                'tbl_meeting_feedback.attendee',
+                DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name")
+            )
+            ->get();
+        foreach ($query_attendees as $item) {
+            if ($item->proxy == NULL) {
+                $attendee[] = $item->full_name;
+            } elseif ($item->proxy !== NULL) {
+                $attendee[] = $item->proxy;
+            }
+        }
+
+        $memo = TblMemoModel::join('tbl_meeting_feedback', 'tbl_meeting_feedback.id_booking_no', '=', 'tbl_memo.id_booking_no')
+            ->join('tbl_booked_meetings', 'tbl_booked_meetings.booking_no', '=', 'tbl_memo.id_booking_no')
+            ->where('tbl_memo.id_booking_no', $key)
+            ->select(
+                'tbl_memo.id_booking_no',
+                'tbl_booked_meetings.subject',
+                'tbl_memo.message',
+                DB::raw("DATE_FORMAT(tbl_memo.created_at, '%e %b %Y') AS formatted_created_at")
             )
             ->first();
 
         $data = [
+            'css'   =>  file_get_contents(public_path() . '/theme/vendor/bootstrap/css/bootstrap.min.css'), # When using domPDF, most of the CSS aren't compatible so, what I did, since I'm using summernote and it uses bootstrap classes, I manually added an internal css where when there's a table tag, styles for tables are set automatically because of the css I manually set in the header tag.
+            'attendee' => $attendee,
             'memo' => $memo,
             'id' => $key,
             'cdo_logo' =>  base64_encode(file_get_contents(public_path('images/cdo-seal.png'))),
