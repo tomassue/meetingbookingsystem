@@ -8,11 +8,27 @@
 
     <style>{{ $css }}</style>
     <style>
-        .watermark {
-            position: absolute;
-            left: 0px;
-            top: 0px;
-            z-index: -1;
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #watermark {
+            position: fixed;
+
+            /** 
+                Set a position in the page for your image
+                This should center it vertically
+            **/
+            bottom: 12cm;
+            left: 3.3cm;
+
+            /** Change image dimensions**/
+            width: 8cm;
+            height: 8cm;
+
+            /** Your watermark should be behind every content**/
+            z-index: -1000;
+            opacity: 0.1;
         }
 
         .cdo-logo {
@@ -60,7 +76,7 @@
 
         #header th,
         #header td {
-            padding-bottom: 25px;
+            padding-bottom: 15px;
             vertical-align: top;
             /* border: 1px solid black; */
         }
@@ -97,7 +113,7 @@
 </head>
 
 <body>
-    <div class="watermark">
+    <div id="watermark">
         <img src="data:image/png;base64,{{ $cdo_logo }}" alt="rise-logo" width="500" />
     </div>
 

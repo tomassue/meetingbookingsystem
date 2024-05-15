@@ -95,16 +95,18 @@ class Request extends Component
 
     public function viewAttachedFile($id)
     {
-        # Explode the data into an array an loop them using foreach to look for it.
-        $id_file_data = explode(',', $id);
-        foreach ($id_file_data as $item) {
-            $query = TblFileDataModel::where('id', $item)
-                ->select(
-                    'id',
-                    'file_name'
-                );
-            $getfiles = $query->first();
-            $this->files[] = $getfiles; # Data that were found from the loop, we store them in an array property. This way, we can display them in our blade using foreach.
+        if ($id) {
+            # Explode the data into an array an loop them using foreach to look for it.
+            $id_file_data = explode(',', $id);
+            foreach ($id_file_data as $item) {
+                $query = TblFileDataModel::where('id', $item)
+                    ->select(
+                        'id',
+                        'file_name'
+                    );
+                $getfiles = $query->first();
+                $this->files[] = $getfiles; # Data that were found from the loop, we store them in an array property. This way, we can display them in our blade using foreach.
+            }
         }
     }
 

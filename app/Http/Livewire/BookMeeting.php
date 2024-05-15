@@ -23,7 +23,7 @@ class BookMeeting extends Component
         'type_of_attendees'      =>  'required',
         'attendees'              =>  'required',
         'subject'                =>  'required',
-        'files'                  =>  'required',
+        // 'files'                  =>  'required',
         'meeting_description'    =>  'required'
     ];
 
@@ -129,9 +129,23 @@ class BookMeeting extends Component
                 'end_date_time'         =>  $this->end_date_time,
                 'type_of_attendees'     =>  $this->type_of_attendees,
                 'attendees'             =>  implode(',', $this->attendees),
-                // 'attendees'             =>  json_encode($this->attendees),
+                // 'attendees'             =>  json_encode($this->attendees), // Other way to store array. What is good about this is that it returns as an object.
                 'subject'               =>  $this->subject,
                 'id_file_data'          =>  implode(',', $fileDataIds),
+                'meeting_description'   =>  $this->meeting_description
+            ]);
+            $this->reset();
+            session()->flash('success', 'You have successfully booked a meeting.');
+            return redirect()->route('book');
+        } elseif (empty($this->files)) {
+            TblBookedMeetingsModel::create([
+                'booking_no'            =>  $this->generateUniqueNumber(),
+                'start_date_time'       =>  $this->start_date_time,
+                'end_date_time'         =>  $this->end_date_time,
+                'type_of_attendees'     =>  $this->type_of_attendees,
+                'attendees'             =>  implode(',', $this->attendees),
+                // 'attendees'             =>  json_encode($this->attendees), // Other way to store array. What is good about this is that it returns as an object.
+                'subject'               =>  $this->subject,
                 'meeting_description'   =>  $this->meeting_description
             ]);
             $this->reset();

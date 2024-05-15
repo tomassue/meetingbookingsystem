@@ -222,6 +222,8 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @elseif(!$files)
+                    <p wire:loading.remove class="my-5">No files attached.</p>
                     @endif
                     <div class="my-5 py-5" wire:loading>
                         <div class="spinner-grow text-success" role="status">
@@ -276,7 +278,7 @@
                             <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
                         </tr>
                         <tr>
-                            <th scope="col" width="10%">Message:</th>
+                            <th scope="col" width="10%">Message: {{ $memo_message }}</th>
                             <th>
                                 <div wire:ignore>
                                     <textarea class="form-control note-editable" id="memo_message" wire:model="memo_message"></textarea>
@@ -336,13 +338,14 @@
             toolbar: [
                 ['style', ['style']],
                 ['font', ['bold', 'italic', 'underline', 'clear']],
-                ['fontname', ['fontname']], // Add font name option here
+                // ['fontname', ['fontname']], // Add font name option here
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['table', ['table']],
+                ['insert', ['link', 'picture']],
                 ['view', ['fullscreen', 'help']]
             ],
-            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana'], // Define the font names here
+            // fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New', 'Georgia', 'Impact', 'Lucida Console', 'Tahoma', 'Times New Roman', 'Trebuchet MS', 'Verdana'], // Define the font names here
             callbacks: {
                 onChange: function(contents, $editable) {
                     @this.set('memo_message', contents);
