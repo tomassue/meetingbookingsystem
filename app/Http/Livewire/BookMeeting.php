@@ -104,7 +104,6 @@ class BookMeeting extends Component
 
     public function save()
     {
-        // dd(base64_encode($this->attendees));
         $this->validate();
         if ($this->files) {
             # Iterate over each file.

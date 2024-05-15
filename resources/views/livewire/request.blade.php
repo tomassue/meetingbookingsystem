@@ -278,7 +278,7 @@
                             <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
                         </tr>
                         <tr>
-                            <th scope="col" width="10%">Message: {{ $memo_message }}</th>
+                            <th scope="col" width="10%">Message:</th>
                             <th>
                                 <div wire:ignore>
                                     <textarea class="form-control note-editable" id="memo_message" wire:model="memo_message"></textarea>
@@ -290,6 +290,22 @@
                                 @error('booking_no')
                                 <span style="color: red;">{{ $message }}</span>
                                 @enderror
+                            </th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Signatory:</th>
+                            <th>
+                                <div wire:ignore>
+                                    <select class="form-select @error('signatory') is-invalid @enderror" id="signatory-select" wire:model="signatory">
+                                        <option value="" selected>Select...</option>
+                                        @foreach($signatories as $item)
+                                        <option value="{{ $item->id }}">{{ $item->honorifics . ' ' . $item->full_name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('signatory')
+                                    <span style="color: red;">{{ $message }}</span>
+                                    @enderror
+                                </div>
                             </th>
                         </tr>
                     </table>
@@ -356,6 +372,12 @@
         $('.note-editable').css({
             'font-weight': 'normal',
             'background-color': 'white'
+        });
+
+        $('#signatory-select').select2({
+            dropdownParent: $('#addMemoModal'),
+            dropdownAutoWidth: true,
+            width: '100%',
         });
     });
 </script>

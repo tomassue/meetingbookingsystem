@@ -65,6 +65,7 @@
             padding-top: 75px;
             padding-left: 75px;
             padding-right: 75px;
+            text-align: justify;
         }
 
         /* Header part table */

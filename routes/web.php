@@ -2,6 +2,7 @@
 
 use App\Http\Livewire\BookMeeting;
 use App\Http\Livewire\RefDepartments;
+use App\Http\Livewire\RefSignatories;
 use App\Http\Livewire\Request;
 use App\Http\Livewire\Schedule;
 use App\Http\Livewire\UserManagement;
@@ -49,4 +50,5 @@ Route::group(['middleware' => ['auth', SuperadminAccess::class]], function () {
     Route::get('/request', Request::class)->name('request');
     Route::get('/user-management', UserManagement::class)->name('user-management');
     Route::get('/ref/departments', RefDepartments::class)->name('ref-departments');
+    Route::get('/ref/signatories', RefSignatories::class)->name('ref-signatories');
 });

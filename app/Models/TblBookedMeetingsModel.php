@@ -11,7 +11,7 @@ class TblBookedMeetingsModel extends Model
 
     protected $table = 'tbl_booked_meetings';
     protected $primaryKey = "booking_no";
-    public $keyType = 'string'; # This works like the cast 'key' => string.
+    public $keyType = 'string'; # This works like the cast 'key' => string. Since our primary key is a mixed integers and strings, we need to declare it as a string.
 
     protected $fillable = [
         'booking_no',

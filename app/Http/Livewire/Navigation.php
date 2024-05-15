@@ -123,6 +123,12 @@ class Navigation extends Component
                                 <span class="ref">Departments</span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('ref-signatories') }}">
+                                <i class="bi bi-circle"></i>
+                                <span class="ref">Signatories</span>
+                                </a>
+                            </li>
                             </ul>
                         </li>
 

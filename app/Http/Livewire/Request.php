@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\RefSignatoriesModel;
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblFileDataModel;
 use App\Models\TblMeetingFeedbackModel;
@@ -12,7 +13,6 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class Request extends Component
 {
@@ -22,14 +22,15 @@ class Request extends Component
     public $files, $previewFile, $title;
 
     # addMemoModal
-    public $booking_no, $created_at_date, $attendees, $subject, $memo_message;
+    public $booking_no, $created_at_date, $attendees, $subject, $memo_message, $signatory;
 
     # generate memo
     public $pdfMemo;
 
     protected $rules = [
         'booking_no'   => 'required|unique:tbl_memo,id_booking_no',
-        'memo_message' => 'required'
+        'memo_message' => 'required',
+        'signatory'    => 'required',
     ];
 
     protected $messages = [
@@ -38,6 +39,14 @@ class Request extends Component
 
     public function render()
     {
+        # Signatories
+        $signatories = RefSignatoriesModel::select(
+            'id',
+            'honorifics',
+            'full_name'
+        )
+            ->get();
+
         # Upcoming Meetings
         $query = TblBookedMeetingsModel::select(
             'booking_no',
@@ -77,7 +86,8 @@ class Request extends Component
 
         return view('livewire.request', [
             'request'   =>  $request,
-            'request2'  =>  $request2
+            'request2'  =>  $request2,
+            'signatories' => $signatories
         ]);
     }
 
