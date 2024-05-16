@@ -15,5 +15,6 @@ class TblMemoModel extends Model
         'id_booking_no',
         // 'subject',
         'message',
+        'id_ref_signatories'
     ];
 }

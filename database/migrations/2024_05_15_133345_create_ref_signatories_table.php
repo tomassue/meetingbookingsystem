@@ -17,6 +17,7 @@ class CreateRefSignatoriesTable extends Migration
             $table->id();
             $table->string('honorifics');
             $table->string('full_name');
+            $table->string('title');
             $table->binary('signature');
             $table->timestamps();
         });

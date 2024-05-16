@@ -12,12 +12,13 @@ class RefSignatories extends Component
     public $editModal = false;
 
     # wire:model
-    public $honorifics, $full_name, $signature;
+    public $honorifics, $full_name, $title, $signature;
 
     protected $rules = [
         'honorifics' => 'required',
         'full_name'  => 'required',
-        'signature'  => 'required'
+        'title'      => 'required',
+        'signature'  => 'required|image|mimes:png'
     ];
 
     use WithFileUploads;
@@ -27,6 +28,7 @@ class RefSignatories extends Component
         $query = RefSignatoriesModel::select(
             'honorifics',
             'full_name',
+            'title',
             'signature'
         )
             ->orderBy('created_at', 'desc');
@@ -51,6 +53,7 @@ class RefSignatories extends Component
         RefSignatoriesModel::create([
             'honorifics'    =>  $this->honorifics,
             'full_name'     =>  $this->full_name,
+            'title'         =>  $this->title,
             'signature'     =>  file_get_contents($this->signature->path())
         ]);
         $this->reset();

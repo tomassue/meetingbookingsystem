@@ -296,16 +296,16 @@
                             <th scope="col" width="10%">Signatory:</th>
                             <th>
                                 <div wire:ignore>
-                                    <select class="form-select @error('signatory') is-invalid @enderror" id="signatory-select" wire:model="signatory">
-                                        <option value="" selected>Select...</option>
+                                    <select class="form-select @error('signatory') is-invalid @enderror" id="signatory-select">
+                                        <option></option>
                                         @foreach($signatories as $item)
                                         <option value="{{ $item->id }}">{{ $item->honorifics . ' ' . $item->full_name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('signatory')
-                                    <span style="color: red;">{{ $message }}</span>
-                                    @enderror
                                 </div>
+                                @error('signatory')
+                                <span style="color: red;">{{ $message }}</span>
+                                @enderror
                             </th>
                         </tr>
                     </table>
@@ -378,6 +378,12 @@
             dropdownParent: $('#addMemoModal'),
             dropdownAutoWidth: true,
             width: '100%',
+            placeholder: 'Select a signatory'
+        });
+
+        $('#signatory-select').on('change', function(e) {
+            var selectedValue = $(this).val();
+            @this.set('signatory', selectedValue); // If you're using Livewire or a similar framework, use @this.set or an equivalent method.
         });
     });
 </script>

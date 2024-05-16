@@ -27,7 +27,9 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Full Name</th>
+                            <th scope="col">Title</th>
                             <th scope="col">Signature</th>
+                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,7 +37,9 @@
                         <tr>
                             <td>{{ $index+1 }}</td>
                             <td>{{ $item->full_name }}</td>
+                            <td>{{ $item->title }}</td>
                             <td><img src="data:img/png;base64,{{base64_encode($item->signature)}}" alt="" class="img-fluid img-thumbnail" width="90"></td>
+                            <td>Edit button</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -64,6 +68,11 @@
                             <input type="text" class="form-control @error('full_name') is-invalid @enderror" wire:model="full_name">
                             @error('full_name') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
+                        <div class="col-md-12">
+                            <label for="inputTitle" class="form-label">Title or position</label>
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" wire:model="title">
+                            @error('title') <span class="invalid-feedback"> {{$message}} </span> @enderror
+                        </div>
                         <div class="col-md-12 text-center" wire:loading wire:target="signature">
                             <div class="spinner-grow text-success" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -77,9 +86,10 @@
                         @endif
                         <div class="col-md-12">
                             <label for="uploadSignature" class="form-label">Upload signature</label>
-                            <input type="file" class="form-control @error('signature') is-invalid @enderror" wire:model="signature">
+                            <input type="file" class="form-control @error('signature') is-invalid @enderror" accept="image/*" wire:model="signature">
                             @error('signature') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

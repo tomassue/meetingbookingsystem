@@ -169,7 +169,8 @@ class Request extends Component
         $this->validate();
         TblMemoModel::create([
             'id_booking_no' =>  $this->booking_no,
-            'message'       =>  base64_encode($this->memo_message)
+            'message'       =>  base64_encode($this->memo_message),
+            'id_ref_signatories'    =>  $this->signatory
         ]);
         $this->clear();
         session()->flash('success', 'Added a memo succesfully.');
@@ -196,11 +197,15 @@ class Request extends Component
 
         $memo = TblMemoModel::join('tbl_meeting_feedback', 'tbl_meeting_feedback.id_booking_no', '=', 'tbl_memo.id_booking_no')
             ->join('tbl_booked_meetings', 'tbl_booked_meetings.booking_no', '=', 'tbl_memo.id_booking_no')
+            ->join('ref_signatories', 'ref_signatories.id', '=', 'tbl_memo.id_ref_signatories')
             ->where('tbl_memo.id_booking_no', $key)
             ->select(
                 'tbl_memo.id_booking_no',
                 'tbl_booked_meetings.subject',
                 'tbl_memo.message',
+                DB::raw("CONCAT(ref_signatories.honorifics, ' ', ref_signatories.full_name) AS signatory"),
+                'ref_signatories.signature',
+                'ref_signatories.title',
                 DB::raw("DATE_FORMAT(tbl_memo.created_at, '%e %b %Y') AS formatted_created_at")
             )
             ->first();
@@ -211,7 +216,8 @@ class Request extends Component
             'memo' => $memo,
             'id' => $key,
             'cdo_logo' =>  base64_encode(file_get_contents(public_path('images/cdo-seal.png'))),
-            'headergoldencdologo' => base64_encode(file_get_contents(public_path('images/headergoldencdologo.png')))
+            'headergoldencdologo' => base64_encode(file_get_contents(public_path('images/headergoldencdologo.png'))),
+            'riselogo'  =>  base64_encode(file_get_contents(public_path('images/rise.png')))
         ];
 
         // Load HTML content from another Blade file

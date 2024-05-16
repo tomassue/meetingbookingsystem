@@ -20,7 +20,7 @@
                 This should center it vertically
             **/
             bottom: 12cm;
-            left: 3.3cm;
+            left: 3cm;
 
             /** Change image dimensions**/
             width: 8cm;
@@ -61,8 +61,13 @@
             z-index: -1;
         }
 
+        hr {
+            opacity: 1;
+            padding-bottom: 13px !important;
+        }
+
         .memo-body {
-            padding-top: 75px;
+            margin-top: 75px !important;
             padding-left: 75px;
             padding-right: 75px;
             text-align: justify;
@@ -93,10 +98,13 @@
 
         /* Memo message table part */
         #message table {
-            /* width: 100%; */
+            table-layout: auto;
+            width: 100%;
             border-collapse: collapse;
-            padding-left: 50px;
-            padding-right: 50px;
+            word-wrap: break-word;
+            padding-top: 15px;
+            /* padding-left: 50px; */
+            /* padding-right: 50px; */
         }
 
         #message table,
@@ -110,12 +118,34 @@
             padding: 8px;
             text-align: left;
         }
+
+        .wew {
+            padding-top: 60px;
+            float: right;
+        }
+
+        .signatory {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .signature {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .footer {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            z-index: -1;
+        }
     </style>
 </head>
 
 <body>
     <div id="watermark">
-        <img src="data:image/png;base64,{{ $cdo_logo }}" alt="rise-logo" width="500" />
+        <img src="data:image/png;base64,{{ $cdo_logo }}" alt="rise-logo" width="450" />
     </div>
 
     <div class="cdo-logo">
@@ -166,6 +196,21 @@
 
         <span id="message">{!! base64_decode($memo->message) !!}</span>
 
+        <div class="wew">
+            <div class="signatory">
+                <img class="signature" src="data:image/png;base64,{{ base64_encode($memo->signature) }}" alt="" width="200" />
+            </div>
+            <div class="signatory">
+                <span>{{ $memo->signatory }}</span>
+                <br>
+                <span style="font-weight: lighter;">{{ $memo->title }}</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <img src="data:image/png;base64,{{ $riselogo }}" alt="rise-logo" width="120" />
     </div>
 
 </body>

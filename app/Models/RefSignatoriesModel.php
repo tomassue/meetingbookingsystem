@@ -14,6 +14,7 @@ class RefSignatoriesModel extends Model
     protected $fillable = [
         'honorifics',
         'full_name',
+        'title',
         'signature'
     ];
 }
