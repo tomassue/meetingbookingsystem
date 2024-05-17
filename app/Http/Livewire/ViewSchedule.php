@@ -28,8 +28,11 @@ class ViewSchedule extends Component
         # Departments *dropdown
         $departments = RefDepartmentsModel::select('id', 'department_name')->get();
 
-        # Meetings
+        //* Meetings
+        // Filter Meetings
+
         $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
+
         $meetings = $TblBookedMeetingsModel->map(function ($query) {
             $start_date_time = Carbon::parse($query->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($query->end_date_time)->toIso8601String();

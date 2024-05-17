@@ -95,6 +95,8 @@
 
                     <hr>
 
+                    <h1>SHOW MEMO HERE IF THERE'S ANY?</h1>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
