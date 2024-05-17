@@ -162,10 +162,10 @@
             //         className: 'success'
             //     }
             // ],
-            // events: booked_meetings, // This came from the Schedule component.
+            events: meetings, // This came from the ViewSchedule component.
             eventClick: function(info) {
                 // console.log(info);
-                Livewire.emit('createBookMeetingModal', info.id); // Pass the id as parameter to the livewire component.
+                Livewire.emit('viewBookMeetingModal', info.id); // Pass the id as parameter to the livewire component.
             },
         });
 

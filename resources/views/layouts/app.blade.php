@@ -91,7 +91,7 @@
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 
-  window.livewire.on('viewBookMeetingModal', startDate => {
+  window.livewire.on('showMeetingModal', startDate => {
     $('#viewBookMeetingModal').modal('show');
   })
 
@@ -141,6 +141,11 @@
         Livewire.emit('declineMeeting');
       }
     });
+  })
+
+  Livewire.on('showViewMeetingModal', key => {
+    // console.log('wew');
+    $('#viewMeetingModal').modal('show');
   })
 
   // In your Javascript (external .js resource or <script> tag)

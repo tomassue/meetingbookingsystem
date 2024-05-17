@@ -76,7 +76,7 @@ class Navigation extends Component
                         <li class="nav-item ">
                         <a class="nav-link collapsed {{ 'schedule' == request()->path() ? 'active' : '' }}" href="{{route('schedule')}}">
                             <span class="bi bi-grid"> </span>
-                            <span>My Schedule</span>
+                            <span>{{ (Auth::user()->account_type == 0 ? 'All Schedules' : 'My Schedule')}} </span>
                         </a>
                         </li>
                 

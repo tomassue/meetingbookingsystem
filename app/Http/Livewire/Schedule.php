@@ -139,5 +139,6 @@ class Schedule extends Component
         $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $id->booking_no)
             ->where('attendee', Auth::user()->id)
             ->count();
+        $this->emit('showMeetingModal');
     }
 }
