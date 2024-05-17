@@ -20,7 +20,7 @@
                 This should center it vertically
             **/
             bottom: 12cm;
-            left: 3cm;
+            left: 3.7cm;
 
             /** Change image dimensions**/
             width: 8cm;
@@ -57,7 +57,7 @@
             float: right;
             position: absolute;
             left: 0px;
-            top: 0px;
+            top: 29px;
             z-index: -1;
         }
 
@@ -139,6 +139,7 @@
             left: 0px;
             bottom: 0px;
             z-index: -1;
+            opacity: .6;
         }
     </style>
 </head>
@@ -168,7 +169,7 @@
     </div>
 
     <div class="headergoldencdologo">
-        <img src="data:image/png;base64,{{ $headergoldencdologo }}" alt="headergoldencdo-logo" width="200" />
+        <img src="data:image/png;base64,{{ $headergoldencdologo }}" alt="headergoldencdo-logo" width="150" />
     </div>
 
     <div class="memo-body">
@@ -210,7 +211,7 @@
     </div>
 
     <div class="footer">
-        <img src="data:image/png;base64,{{ $riselogo }}" alt="rise-logo" width="120" />
+        <img src="data:image/png;base64,{{ $riselogo }}" alt="rise-logo" width="150" />
     </div>
 
 </body>
