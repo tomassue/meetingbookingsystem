@@ -61,13 +61,24 @@ class Request extends Component
                     ->from('tbl_memo')
                     ->whereRaw('tbl_booked_meetings.booking_no = tbl_memo.id_booking_no');
             })
+            //// ->whereExists(function ($query) {
+            ////     $query->select(DB::raw(1))
+            ////         ->from('tbl_meeting_feedback')
+            ////         ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no')
+            ////         ->whereRaw('FIND_IN_SET(tbl_meeting_feedback.attendee, tbl_booked_meetings.attendees)') // Check if attendee responded
+            ////         ->groupBy('tbl_meeting_feedback.id_booking_no')
+            ////         ->havingRaw('COUNT(DISTINCT tbl_meeting_feedback.attendee) = LENGTH(tbl_booked_meetings.attendees) - LENGTH(REPLACE(tbl_booked_meetings.attendees, ",", "")) + 1'); // Ensure all attendees have responded
+            //// })
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
-                    ->from('tbl_meeting_feedback')
-                    ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no')
-                    ->whereRaw('FIND_IN_SET(tbl_meeting_feedback.attendee, tbl_booked_meetings.attendees)') // Check if attendee responded
-                    ->groupBy('tbl_meeting_feedback.id_booking_no')
-                    ->havingRaw('COUNT(DISTINCT tbl_meeting_feedback.attendee) = LENGTH(tbl_booked_meetings.attendees) - LENGTH(REPLACE(tbl_booked_meetings.attendees, ",", "")) + 1'); // Ensure all attendees have responded
+                    ->from('tbl_attendees as a')
+                    ->leftJoin('tbl_meeting_feedback as f', function ($join) {
+                        $join->on('a.id_booking_no', '=', 'f.id_booking_no')
+                            ->on('a.id_users', '=', 'f.attendee');
+                    })
+                    ->whereRaw('a.id_booking_no = tbl_booked_meetings.booking_no')
+                    ->groupBy('a.id_booking_no')
+                    ->havingRaw('COUNT(a.id_users) = SUM(CASE WHEN f.attendee IS NOT NULL THEN 1 ELSE 0 END)');
             })
             ->orderBy('start_date_time', 'ASC');
         $request = $query->get();

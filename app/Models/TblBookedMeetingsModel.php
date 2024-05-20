@@ -18,7 +18,8 @@ class TblBookedMeetingsModel extends Model
         'start_date_time',
         'end_date_time',
         'type_of_attendees',
-        'attendees',
+        //* Attendees are now saved in another table.
+        //// 'attendees',
         'subject',
         'id_file_data',
         'meeting_description'

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\RefDepartmentsModel;
+use App\Models\TblAttendeesModel;
 use App\Models\TblBookedMeetingsModel;
 use App\Models\User;
 use Carbon\Carbon;
@@ -25,14 +26,37 @@ class ViewSchedule extends Component
 
     public function render()
     {
-        # Departments *dropdown
+        /** 
+         * * Departments *dropdown 
+         */
         $departments = RefDepartmentsModel::select('id', 'department_name')->get();
 
-        //* Meetings
-        // Filter Meetings
+        /**
+         * Filter Meetings
+         * * Filtering will be based on our wire:model
+         * // Filtering based on the department is tricky. tbl_booked_meetings stores array of attendees. Each attendees came from different departments. If I want to filter it based on the department, I'll have to look for sets of attendees with matching department. The code FIND_IN_SET is helpful in joining the two tables.
+         * // FIND_IN_SET(), The FIND_IN_SET function in MySQL is used to check if an integer (user ID) is present in the comma-separated string (foreign_keys). This function will return the position of the first occurrence of users.id in table2.foreign_keys.
+         */
+        //// $TblBookedMeetingsModel = TblBookedMeetingsModel::whereExists(function ($query) {
+        ////     $query->select(DB::raw(1))
+        ////         ->from('users')
+        ////         ->whereRaw("FIND_IN_SET(users.id, tbl_booked_meetings.attendees)")
+        ////         ->where('users.id_department', 4);
+        //// })
+        ////     ->get();
 
-        $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
+        $TblBookedMeetingsModel = TblBookedMeetingsModel::join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
+            ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
+            ->where('users.id_department', 2)
+            ->get();
 
+        /**
+         * TODO: filter
+         */
+
+        // dd($TblBookedMeetingsModel);
+
+        // $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
         $meetings = $TblBookedMeetingsModel->map(function ($query) {
             $start_date_time = Carbon::parse($query->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($query->end_date_time)->toIso8601String();
@@ -63,35 +87,34 @@ class ViewSchedule extends Component
         $this->reset();
     }
 
-    public function viewMeetingModal(TblBookedMeetingsModel $id)
+    public function viewMeetingModal($id)
     {
-        $start_datetime = new DateTime($id->start_date_time);
-        $end_datetime = new DateTime($id->end_date_time);
-        $created_at = new DateTime($id->created_at);
-
-        $e_attendees = explode(',', $id->attendees);
+        $meeting = TblBookedMeetingsModel::findOrFail($id);
+        $start_datetime = new DateTime($meeting->start_date_time);
+        $end_datetime = new DateTime($meeting->end_date_time);
+        $created_at = new DateTime($meeting->created_at);
+        $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+            ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+            ->where('id_booking_no', $id)
+            ->select(
+                DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                'users.sex',
+                'ref_departments.department_name'
+            )
+            ->get();
         foreach ($e_attendees as $item) {
-            $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-                ->where('users.id', $item)
-                ->select(
-                    DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-                    'users.sex',
-                    'ref_departments.department_name'
-                )
-                ->first(); // Using first() to get a single result
-            if ($query) {
-                # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
-                $this->attendees[] = $query;
+            if ($item) {
+                $this->attendees[] = $item;
             }
         }
-        $this->id_booked_meeting = $id->booking_no;
+        $this->id_booked_meeting = $meeting->booking_no;
         $this->attendee = Auth::user()->id;
         $this->start_date_time = $start_datetime->format('M d, Y h:i A');
         $this->end_date_time = $end_datetime->format('M d, Y h:i A');
         $this->created_at_date = $created_at->format('M d, Y h:i A');
-        $this->subject = $id->subject;
-        $this->type_of_attendees = $id->type_of_attendees;
-        $this->meeting_description = $id->meeting_description;
+        $this->subject = $meeting->subject;
+        $this->type_of_attendees = $meeting->type_of_attendees;
+        $this->meeting_description = $meeting->meeting_description;
 
         $this->emit('showViewMeetingModal');
     }

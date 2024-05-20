@@ -137,53 +137,55 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
-                    <table class="table table-borderless" style="margin-bottom: 0px;">
-                        <thead>
-                            <tr>
-                                <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
-                                <th class="fs-6" scope="col">Meeting Date <br> & Time</th>
-                                <th class="fs-6" scope="col" style="align-content: center;">Subject</th>
-                                <th class="fs-6" scope="col" width="15%">Type of <br> Attendees</th>
-                                <th class="fs-6" scope="col">Attached <br> File</th>
-                                <th class="fs-6" scope="col" style="align-content: baseline;">Memo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($request2 as $item)
-                            <tr wire:key="item-{{ $item->id_booking_no }}">
-                                <td>
-                                    {{ $item->id_booking_no }}
-                                </td>
-                                <td width="15%">
-                                    <span class="text-lowercase">
-                                        {{ $item->start }}<br>{{ $item->end }}
-                                    </span>
-                                </td>
-                                <td>
-                                    {{ $item->subject }}
-                                </td>
-                                <td>
-                                    <span class="badge bg-primary" style="background-color: #0a927c !important;">
-                                        {{ $item->type_of_attendees }}
-                                    </span>
-                                </td>
-                                <td width="9%">
-                                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#attachedFileModal" wire:click="viewAttachedFile('{{ $item->id_file_data }}')">
-                                        <img src="{{asset('images/file-plus.png')}}" alt="attach-file">
-                                    </a>
-                                </td>
-                                <td width="5%">
-                                    <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#memoModal" wire:click="generateMemo('{{ $item->id_booking_no }}')">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="bi bi-printer" viewBox="0 0 16 16">
-                                            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
-                                            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
-                                        </svg>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="m-3">
+                        <table class="table table-borderless" style="margin-bottom: 0px;">
+                            <thead>
+                                <tr>
+                                    <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
+                                    <th class="fs-6" scope="col">Meeting Date <br> & Time</th>
+                                    <th class="fs-6" scope="col" style="align-content: center;">Subject</th>
+                                    <th class="fs-6" scope="col" width="15%">Type of <br> Attendees</th>
+                                    <th class="fs-6" scope="col">Attached <br> File</th>
+                                    <th class="fs-6" scope="col" style="align-content: baseline;">Memo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($request2 as $item)
+                                <tr wire:key="item-{{ $item->id_booking_no }}">
+                                    <td>
+                                        {{ $item->id_booking_no }}
+                                    </td>
+                                    <td width="15%">
+                                        <span class="text-lowercase">
+                                            {{ $item->start }}<br>{{ $item->end }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ $item->subject }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary" style="background-color: #0a927c !important;">
+                                            {{ $item->type_of_attendees }}
+                                        </span>
+                                    </td>
+                                    <td width="9%">
+                                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#attachedFileModal" wire:click="viewAttachedFile('{{ $item->id_file_data }}')">
+                                            <img src="{{asset('images/file-plus.png')}}" alt="attach-file">
+                                        </a>
+                                    </td>
+                                    <td width="5%">
+                                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#memoModal" wire:click="generateMemo('{{ $item->id_booking_no }}')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" class="bi bi-printer" viewBox="0 0 16 16">
+                                                <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
+                                                <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1" />
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div><!-- End Bordered Tabs Justified -->
         </div>

@@ -19,7 +19,8 @@ class CreateTblBookedMeetingsTable extends Migration
             $table->dateTime('start_date_time');
             $table->dateTime('end_date_time');
             $table->string('type_of_attendees');
-            $table->string('attendees');
+            //* Attendees will be saved in the other table.
+            //// $table->string('attendees');
             $table->string('subject');
             $table->string('id_file_data')->nullable(); # We will be storing array here. Same goes with the attendees.
             $table->longText('meeting_description');

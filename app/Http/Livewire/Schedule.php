@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\TblAttendeesModel;
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblMeetingFeedbackModel;
 use App\Models\User;
@@ -32,7 +33,11 @@ class Schedule extends Component
             $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
         } else {
             $id_attendees = Auth::user()->id;
-            $TblBookedMeetingsModel = TblBookedMeetingsModel::whereRaw("FIND_IN_SET($id_attendees, attendees)")->get();
+            // $TblBookedMeetingsModel = TblBookedMeetingsModel::whereRaw("FIND_IN_SET($id_attendees, attendees)")->get();
+            $TblBookedMeetingsModel = TblBookedMeetingsModel::join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
+                ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
+                ->where('tbl_attendees.id_users', $id_attendees)
+                ->get();
         }
         $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
@@ -58,7 +63,7 @@ class Schedule extends Component
         # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
         # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
         # Changed it from booted() since there are other requests that are being done. Such as the feedback.
-        // $this->reset('attendees', 'representative', 'representative_name', 'feedback');
+        //// $this->reset('attendees', 'representative', 'representative_name', 'feedback');
         $this->reset();
     }
 
@@ -105,38 +110,56 @@ class Schedule extends Component
         return redirect()->route('schedule');
     }
 
-    public function viewMeetingDetails(TblBookedMeetingsModel $id)
+    public function viewMeetingDetails($id)
     {
-        $start_datetime = new DateTime($id->start_date_time);
-        $end_datetime = new DateTime($id->end_date_time);
-        $created_at = new DateTime($id->created_at);
+        $meeting = TblBookedMeetingsModel::findOrFail($id);
+        $start_datetime = new DateTime($meeting->start_date_time);
+        $end_datetime = new DateTime($meeting->end_date_time);
+        $created_at = new DateTime($meeting->created_at);
 
-        $e_attendees = explode(',', $id->attendees);
+        //// $e_attendees = explode(',', $meeting->attendees);
+        //// foreach ($e_attendees as $item) {
+        ////     $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+        ////         ->where('users.id', $item)
+        ////         ->select(
+        ////             DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+        ////             'users.sex',
+        ////             'ref_departments.department_name'
+        ////         )
+        ////         ->first(); 
+        ////          Using first() to get a single result
+        ////     if ($query) {
+        ////         # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
+        ////         $this->attendees[] = $query;
+        ////     }
+        //// }
+
+        $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+            ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+            ->where('id_booking_no', $id)
+            ->select(
+                DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                'users.sex',
+                'ref_departments.department_name'
+            )
+            ->get();
         foreach ($e_attendees as $item) {
-            $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-                ->where('users.id', $item)
-                ->select(
-                    DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-                    'users.sex',
-                    'ref_departments.department_name'
-                )
-                ->first(); // Using first() to get a single result
-            if ($query) {
-                # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
-                $this->attendees[] = $query;
+            if ($item) {
+                $this->attendees[] = $item;
             }
         }
-        $this->id_booked_meeting = $id->booking_no;
+
+        $this->id_booked_meeting = $meeting->booking_no;
         $this->attendee = Auth::user()->id;
         $this->start_date_time = $start_datetime->format('M d, Y h:i A');
         $this->end_date_time = $end_datetime->format('M d, Y h:i A');
         $this->created_at_date = $created_at->format('M d, Y h:i A');
-        $this->subject = $id->subject;
-        $this->type_of_attendees = $id->type_of_attendees;
-        $this->meeting_description = $id->meeting_description;
+        $this->subject = $meeting->subject;
+        $this->type_of_attendees = $meeting->type_of_attendees;
+        $this->meeting_description = $meeting->meeting_description;
 
         # Let's check if the user already responded to the meeting
-        $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $id->booking_no)
+        $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $meeting->booking_no)
             ->where('attendee', Auth::user()->id)
             ->count();
         $this->emit('showMeetingModal');
