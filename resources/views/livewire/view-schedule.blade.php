@@ -1,10 +1,10 @@
 <div>
     <div class="card mt-5">
-        <form wire:submit.prevent="filter">
+        <form wire:submit.prevent="updateCalendar">
             <div class="row col-md-12 py-3 px-3 g-3">
                 <div class="col-md-12 col-lg-6">
                     <div class="input-group">
-                        <span class="input-group-text">Department</span>
+                        <span class="input-group-text">Department</span> {{ $department }}
                         <select class="form-select" wire:model="department">
                             <option value="" selected>Select...</option>
                             @foreach ($departments as $item)

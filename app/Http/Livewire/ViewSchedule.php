@@ -14,49 +14,53 @@ use Livewire\Component;
 
 class ViewSchedule extends Component
 {
-    # wire:model [filter]
+    // wire:model [for filter]
     public $department, $search, $from_date, $to_date;
 
-    # Event Details
+    // Event Details
     public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative_name, $attendee, $feedback;
 
     public $listeners = [
         'viewBookMeetingModal' => 'viewMeetingModal'
     ];
 
+    // public $meetings = [];
+
     public function render()
     {
         /** 
-         * * Departments *dropdown 
+         ** Departments *dropdown 
          */
         $departments = RefDepartmentsModel::select('id', 'department_name')->get();
 
         /**
-         * Filter Meetings
-         * * Filtering will be based on our wire:model
-         * // Filtering based on the department is tricky. tbl_booked_meetings stores array of attendees. Each attendees came from different departments. If I want to filter it based on the department, I'll have to look for sets of attendees with matching department. The code FIND_IN_SET is helpful in joining the two tables.
-         * // FIND_IN_SET(), The FIND_IN_SET function in MySQL is used to check if an integer (user ID) is present in the comma-separated string (foreign_keys). This function will return the position of the first occurrence of users.id in table2.foreign_keys.
+         ** Filter Meetings
+         *  Filtering will be based on our wire:model
+         *? Dunno why the code works ($subquery). XD
          */
-        //// $TblBookedMeetingsModel = TblBookedMeetingsModel::whereExists(function ($query) {
-        ////     $query->select(DB::raw(1))
-        ////         ->from('users')
-        ////         ->whereRaw("FIND_IN_SET(users.id, tbl_booked_meetings.attendees)")
-        ////         ->where('users.id_department', 4);
-        //// })
-        ////     ->get();
 
-        $TblBookedMeetingsModel = TblBookedMeetingsModel::join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
+        $subquery = DB::table('tbl_booked_meetings')
+            ->join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
             ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
-            ->where('users.id_department', 2)
+            ->select('tbl_booked_meetings.booking_no', DB::raw('MAX(users.id) as max_user_id'))
+            ->groupBy('tbl_booked_meetings.booking_no');
+
+        //* This filter is based on the department.
+        // if ($this->department) {
+        $subquery->where('users.id_department', $this->department);
+        // }
+
+        $TblBookedMeetingsModel = DB::table('tbl_booked_meetings')
+            ->joinSub($subquery, 'max_users', function ($join) {
+                $join->on('tbl_booked_meetings.booking_no', '=', 'max_users.booking_no');
+            })
+            ->join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
+            ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
+            ->whereColumn('users.id', '=', 'max_users.max_user_id')
+            ->select('tbl_booked_meetings.*', 'tbl_attendees.*', 'users.*')
             ->get();
 
-        /**
-         * TODO: filter
-         */
-
-        // dd($TblBookedMeetingsModel);
-
-        // $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
+        //// $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
         $meetings = $TblBookedMeetingsModel->map(function ($query) {
             $start_date_time = Carbon::parse($query->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($query->end_date_time)->toIso8601String();
@@ -83,8 +87,15 @@ class ViewSchedule extends Component
         # booted() runs on every request, after the component is mounted or hydrated, but before any update methods are called
         # We'll have to reset this property since it holds the data we are using for displaying the meeting details.
         # Changed it from booted() since there are other requests that are being done. Such as the feedback.
-        // $this->reset('attendees', 'representative', 'representative_name', 'feedback');
+        //// $this->reset('attendees', 'representative', 'representative_name', 'feedback');
         $this->reset();
+    }
+
+    public function updateCalendar()
+    {
+        //TODO: Department filter doesn't work
+        // Emit an event to trigger JavaScript to refresh the calendar
+        $this->emit('refreshCalendar');
     }
 
     public function viewMeetingModal($id)

@@ -169,7 +169,13 @@
             },
         });
 
+        Livewire.on('refreshCalendar', function() {
+            calendar.fullCalendar('refetchEvents'); // Refresh FullCalendar events
+            console.log('SANA MAG WORK KANA!');
+        });
+
     });
+
     /*!
      * FullCalendar v1.6.4
      * Docs & License: http://arshaw.com/fullcalendar/
