@@ -1,10 +1,11 @@
 <div>
     <div class="card mt-5">
+        <h3>{{ $search }}</h3>
         <form wire:submit.prevent="updateCalendar">
             <div class="row col-md-12 py-3 px-3 g-3">
                 <div class="col-md-12 col-lg-6">
                     <div class="input-group">
-                        <span class="input-group-text">Department</span> {{ $department }}
+                        <span class="input-group-text">Department</span>
                         <select class="form-select" wire:model="department">
                             <option value="" selected>Select...</option>
                             @foreach ($departments as $item)
@@ -44,6 +45,8 @@
             </div>
         </form>
     </div>
+
+    <!-- {{ dump($meetings) }} -->
 
     <div class="card" wire:ignore>
         <div id="wrap">
@@ -106,7 +109,7 @@
     </div>
 
     <script>
-        var meetings = @json($meetings); // Convert meetings array to JSON
+        var meetings = @json($meetings);
     </script>
 
     <!-- Calendar Script -->

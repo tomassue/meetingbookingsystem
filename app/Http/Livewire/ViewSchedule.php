@@ -20,17 +20,16 @@ class ViewSchedule extends Component
     // Event Details
     public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative_name, $attendee, $feedback;
 
-    public $listeners = [
-        'viewBookMeetingModal' => 'viewMeetingModal'
-    ];
+    public $meetings = []; //* IMPORTANT: Holds the data being rendered to the blade.
 
-    // public $meetings = [];
+    public $listeners = [
+        'viewBookMeetingModal' => 'viewMeetingModal',
+        'refreshCalendar'      =>  '$refresh'
+    ];
 
     public function render()
     {
-        /** 
-         ** Departments *dropdown 
-         */
+        //* Departments *dropdown
         $departments = RefDepartmentsModel::select('id', 'department_name')->get();
 
         /**
@@ -46,9 +45,9 @@ class ViewSchedule extends Component
             ->groupBy('tbl_booked_meetings.booking_no');
 
         //* This filter is based on the department.
-        // if ($this->department) {
-        $subquery->where('users.id_department', $this->department);
-        // }
+        if ($this->department) {
+            $subquery->where('users.id_department', $this->department);
+        }
 
         $TblBookedMeetingsModel = DB::table('tbl_booked_meetings')
             ->joinSub($subquery, 'max_users', function ($join) {
@@ -56,12 +55,28 @@ class ViewSchedule extends Component
             })
             ->join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
             ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
+            ->where('tbl_booked_meetings.subject', 'like', '%' . $this->search . '%') //* Filter through searching the subject.
+            //TODO: Filter start and end datetime.
+            // ->whereBetween('start_date_time', [Carbon::parse($this->from_date)->startOfDay(), Carbon::parse($this->to_date)->endOfDay()])
+            // ->orWhereBetween('end_date_time', [Carbon::parse($this->from_date)->startOfDay(), Carbon::parse($this->to_date)->endOfDay()])
             ->whereColumn('users.id', '=', 'max_users.max_user_id')
             ->select('tbl_booked_meetings.*', 'tbl_attendees.*', 'users.*')
             ->get();
 
-        //// $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
-        $meetings = $TblBookedMeetingsModel->map(function ($query) {
+        // if ($this->from_date) {
+        //     $TblBookedMeetingsModel->whereDate('tbl_booked_meetings.start_date_time', '>=', $this->from_date);
+        // }
+
+        // if ($this->to_date) {
+        //     $TblBookedMeetingsModel->whereDate('tbl_booked_meetings.end_date_time', '<=', $this->to_date);
+        // }
+
+        /**
+         * * Initially, this is not a property but only a variable that is being directly rendered to the blade. There are problems in terms of filtering since even the property used for filtering updates the query that is being rendered, the variable in our script for the fullcalendar doesn't update.
+         * * This is because due to Livewire's lifecycle and the timing of when data is available and rendered.
+         * * My solution is to store the data to a property and when a filter occurs, we basically update the property based on the filter values and emit it together with the event as a parameter. A listener in the script will listen to the event and do its thing.
+         */
+        $this->meetings = $TblBookedMeetingsModel->map(function ($query) {
             $start_date_time = Carbon::parse($query->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($query->end_date_time)->toIso8601String();
             return [
@@ -76,7 +91,7 @@ class ViewSchedule extends Component
         });
 
         $data = [
-            'meetings' => $meetings,
+            'meetings' => $this->meetings,
             'departments' => $departments,
         ];
         return view('livewire.view-schedule', $data);
@@ -93,9 +108,8 @@ class ViewSchedule extends Component
 
     public function updateCalendar()
     {
-        //TODO: Department filter doesn't work
-        // Emit an event to trigger JavaScript to refresh the calendar
-        $this->emit('refreshCalendar');
+        // Emit an event with a parameter to trigger JavaScript to refresh the calendar.
+        $this->emit('refreshCalendar', json_encode($this->meetings));
     }
 
     public function viewMeetingModal($id)
