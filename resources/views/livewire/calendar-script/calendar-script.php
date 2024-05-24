@@ -169,6 +169,19 @@
             },
         });
 
+        //* This script will be triggered once the event is fired.
+        Livewire.on('refreshCalendar2', function(booked_meetings) {
+            try {
+                booked_meetings = JSON.parse(booked_meetings); // Ensure the meetings data is parsed correctly
+                calendar.fullCalendar('removeEvents');
+                calendar.fullCalendar('addEventSource', booked_meetings);
+                calendar.fullCalendar('rerenderEvents');
+                console.log('Calendar events refreshed');
+            } catch (e) {
+                console.error('Error parsing meetings data', e);
+            }
+        });
+
     });
     /*!
      * FullCalendar v1.6.4

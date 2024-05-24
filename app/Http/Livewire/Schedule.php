@@ -19,6 +19,9 @@ class Schedule extends Component
     # Event Details
     public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative = false, $representative_name, $attendee, $feedback;
 
+    // wire:model [filter]
+    public $from_date, $to_date;
+
     # Listens for an event and proceed to the method.
     protected $listeners = [
         'viewBookMeetingModal' => 'viewMeetingDetails',
@@ -30,15 +33,31 @@ class Schedule extends Component
     {
         # Fetch data from DB and display it to fullcalendar
         if (Auth::user()->account_type == 0) {
-            $TblBookedMeetingsModel = TblBookedMeetingsModel::all();
+            $TblBookedMeetingsQuery = TblBookedMeetingsModel::query();
+
+            if ($this->from_date) {
+                $fromDate = Carbon::parse($this->from_date)->startOfDay();
+                $TblBookedMeetingsQuery->where('start_date_time', '>=', $fromDate);
+            }
+
+            if ($this->to_date) {
+                $toDate = Carbon::parse($this->to_date)->endOfDay();
+                $TblBookedMeetingsQuery->where('end_date_time', '<=', $toDate);
+            }
+
+            //* Fetch the filtered results
+            $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
         } else {
             $id_attendees = Auth::user()->id;
-            // $TblBookedMeetingsModel = TblBookedMeetingsModel::whereRaw("FIND_IN_SET($id_attendees, attendees)")->get();
-            $TblBookedMeetingsModel = TblBookedMeetingsModel::join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
+
+            $TblBookedMeetingsQuery = TblBookedMeetingsModel::join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
                 ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
-                ->where('tbl_attendees.id_users', $id_attendees)
-                ->get();
+                ->where('tbl_attendees.id_users', $id_attendees);
+
+            //* Fetch the filtered results
+            $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
         }
+
         $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
@@ -65,6 +84,12 @@ class Schedule extends Component
         # Changed it from booted() since there are other requests that are being done. Such as the feedback.
         //// $this->reset('attendees', 'representative', 'representative_name', 'feedback');
         $this->reset();
+    }
+
+    public function updateCalendar()
+    {
+        // Emit an event with a parameter to trigger JavaScript to refresh the calendar.
+        $this->emit('refreshCalendar2', json_encode($this->booked_meetings));
     }
 
     public function updatedRepresentative()

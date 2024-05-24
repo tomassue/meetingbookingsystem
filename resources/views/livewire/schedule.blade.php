@@ -1,27 +1,26 @@
 <div>
     <div class="card mt-5">
+        <form wire:submit.prevent="updateCalendar">
+            <div class="row p-3">
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text text-white">From</span>
+                        <input type="date" class="form-control" wire:model="from_date">
+                    </div>
+                </div>
 
-        <div class="row p-3">
-            <div class="col">
-                <div class="input-group">
-                    <span class="input-group-text text-white">From</span>
-                    <input type="date" class="form-control">
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text text-white">To</span>
+                        <input type="date" class="form-control" wire:model="to_date">
+
+                    </div>
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-success">Filter</button>
                 </div>
             </div>
-
-            <div class="col">
-                <div class="input-group">
-                    <span class="input-group-text text-white">To</span>
-                    <input type="date" class="form-control">
-
-                </div>
-            </div>
-
-            <div class="col">
-                <button type="submit" class="btn btn-success">Filter</button>
-            </div>
-        </div>
-
+        </form>
     </div>
 
     @if(session('success'))
