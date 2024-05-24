@@ -1,6 +1,5 @@
 <div>
     <div class="card mt-5">
-        <h3>{{ $search }}</h3>
         <form wire:submit.prevent="updateCalendar">
             <div class="row col-md-12 py-3 px-3 g-3">
                 <div class="col-md-12 col-lg-6">

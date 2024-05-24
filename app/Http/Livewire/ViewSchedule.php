@@ -24,7 +24,6 @@ class ViewSchedule extends Component
 
     public $listeners = [
         'viewBookMeetingModal' => 'viewMeetingModal',
-        'refreshCalendar'      =>  '$refresh'
     ];
 
     public function render()
@@ -49,27 +48,30 @@ class ViewSchedule extends Component
             $subquery->where('users.id_department', $this->department);
         }
 
-        $TblBookedMeetingsModel = DB::table('tbl_booked_meetings')
+        $TblBookedMeetingsQuery = DB::table('tbl_booked_meetings')
             ->joinSub($subquery, 'max_users', function ($join) {
                 $join->on('tbl_booked_meetings.booking_no', '=', 'max_users.booking_no');
             })
             ->join('tbl_attendees', 'tbl_attendees.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
             ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
-            ->where('tbl_booked_meetings.subject', 'like', '%' . $this->search . '%') //* Filter through searching the subject.
-            //TODO: Filter start and end datetime.
-            // ->whereBetween('start_date_time', [Carbon::parse($this->from_date)->startOfDay(), Carbon::parse($this->to_date)->endOfDay()])
-            // ->orWhereBetween('end_date_time', [Carbon::parse($this->from_date)->startOfDay(), Carbon::parse($this->to_date)->endOfDay()])
+            //* Search filter based in the meeting subject.
+            ->where('tbl_booked_meetings.subject', 'like', '%' . $this->search . '%')
             ->whereColumn('users.id', '=', 'max_users.max_user_id')
-            ->select('tbl_booked_meetings.*', 'tbl_attendees.*', 'users.*')
-            ->get();
+            ->select('tbl_booked_meetings.*', 'tbl_attendees.*', 'users.*');
 
-        // if ($this->from_date) {
-        //     $TblBookedMeetingsModel->whereDate('tbl_booked_meetings.start_date_time', '>=', $this->from_date);
-        // }
+        //* Apply date filters if they are set
+        if ($this->from_date) {
+            $fromDate = Carbon::parse($this->from_date)->startOfDay();
+            $TblBookedMeetingsQuery->where('tbl_booked_meetings.start_date_time', '>=', $fromDate);
+        }
 
-        // if ($this->to_date) {
-        //     $TblBookedMeetingsModel->whereDate('tbl_booked_meetings.end_date_time', '<=', $this->to_date);
-        // }
+        if ($this->to_date) {
+            $toDate = Carbon::parse($this->to_date)->endOfDay();
+            $TblBookedMeetingsQuery->where('tbl_booked_meetings.end_date_time', '<=', $toDate);
+        }
+
+        //* Fetch the filtered results
+        $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
 
         /**
          * * Initially, this is not a property but only a variable that is being directly rendered to the blade. There are problems in terms of filtering since even the property used for filtering updates the query that is being rendered, the variable in our script for the fullcalendar doesn't update.
