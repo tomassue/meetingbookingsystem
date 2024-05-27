@@ -18,7 +18,7 @@ class CreateRefSignatoriesTable extends Migration
             $table->string('honorifics');
             $table->string('full_name');
             $table->string('title');
-            $table->binary('signature');
+            $table->longText('signature');
             $table->timestamps();
         });
     }

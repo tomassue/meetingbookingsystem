@@ -95,9 +95,9 @@
                         </tr>
                     </table>
 
-                    <hr>
+                    <!-- <hr> -->
 
-                    <h1>SHOW MEMO HERE IF THERE'S ANY?</h1>
+                    <!-- <h1>SHOW MEMO HERE IF THERE'S ANY?</h1> -->
 
                 </div>
                 <div class="modal-footer">

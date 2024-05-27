@@ -57,6 +57,7 @@ class RefDepartments extends Component
         $this->editModal         = true;
         $this->id_ref_department = $key->id;
         $this->department_name   = $key->department_name;
+        $this->emit('showaddDepartmentModal');
     }
 
     public function update()

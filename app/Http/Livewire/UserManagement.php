@@ -10,6 +10,9 @@ use Livewire\Component;
 
 class UserManagement extends Component
 {
+    # modal
+    public $editModal = false;
+
     # wire:model
     public $first_name, $middle_name, $last_name, $extension, $sex, $email, $id_department, $account_type;
 
@@ -63,5 +66,11 @@ class UserManagement extends Component
         $this->emit('hideaddUserModal');
         session()->flash('success', 'User added successfully.');
         $this->reset();
+    }
+
+    //TODO: Edit, update, and reset password to default P@ssw0rd
+    public function edit($key)
+    {
+        dd($key);
     }
 }

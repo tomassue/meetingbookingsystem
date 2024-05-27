@@ -97,6 +97,10 @@
     $('#viewBookMeetingModal').modal('show');
   })
 
+  Livewire.on('showaddDepartmentModal', key => {
+    $('#addDepartmentModal').modal('show');
+  })
+
   Livewire.on('hideaddDepartmentModal', key => {
     $('#addDepartmentModal').modal('hide');
   })

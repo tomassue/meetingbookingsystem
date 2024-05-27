@@ -55,11 +55,19 @@ class RefSignatories extends Component
     public function save()
     {
         $this->validate();
+
+        // Get the content of the uploaded file
+        $SignaturefileContent = file_get_contents($this->signature->getRealPath());
+
+        // Encode the file content in Base64
+        $Signaturebase64FileContent = base64_encode($SignaturefileContent);
+
+        // Store the Base64-encoded string in the database
         RefSignatoriesModel::create([
             'honorifics'    =>  $this->honorifics,
             'full_name'     =>  $this->full_name,
             'title'         =>  $this->title,
-            'signature'     =>  file_get_contents($this->signature->path())
+            'signature'     =>  $Signaturebase64FileContent
         ]);
         $this->reset();
         session()->flash('success', 'You have successfully added a signatory.');
@@ -74,21 +82,37 @@ class RefSignatories extends Component
         $this->title = $query->title;
         $this->prev_signature = $query->signature;
 
-        //TODO: Display the data in the signature input field type.
-
         $this->editModal = true;
     }
 
     public function update()
     {
-        $this->validate();
+        $rules = [
+            'honorifics' => 'required',
+            'full_name'  => 'required',
+            'title'      => 'required',
+        ];
 
-        $query = RefSignatories::findOrFail($this->id_signatory);
-        $query->update([
+        $this->validate($rules);
+
+        $signatory = RefSignatoriesModel::findOrFail($this->id_signatory); // Find the specific signatory by ID, or fail if not found
+
+        $data = [
             'honorifics' => $this->honorifics,
-            'full_name' =>  $this->full_name,
-            'title' =>  $this->title,
-            'signature' => file_get_contents($this->signature->path())
-        ]);
+            'full_name' => $this->full_name,
+            'title' => $this->title
+        ];
+
+        if ($this->signature) {
+            $SignaturefileContent = file_get_contents($this->signature->getRealPath()); // Get the content of the uploaded file
+            $data['signature'] = base64_encode($SignaturefileContent); // Encode the file content in Base64
+        }
+
+        // Update the record with new values
+        $signatory->update($data);
+
+        $this->reset();
+        session()->flash('success', 'You have successfully added a signatory.');
+        return redirect()->route('ref-signatories');
     }
 }

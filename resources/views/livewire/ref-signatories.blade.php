@@ -38,7 +38,9 @@
                             <td>{{ $index+1 }}</td>
                             <td>{{ $item->full_name }}</td>
                             <td>{{ $item->title }}</td>
-                            <td><img src="data:img/png;base64,{{base64_encode($item->signature)}}" alt="" class="img-fluid img-thumbnail" width="90"></td>
+                            <td>
+                                <img src="data:image/png;base64,{{ $item->signature }}" alt="signature" class="img-fluid img-thumbnail" width="90">
+                            </td>
                             <td>
                                 <button class="btn btn-sm btn-warning text-start" data-bs-toggle="modal" data-bs-target="#signatoryModal" wire:click="edit('{{ $item->id }}')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square text-white" viewBox="0 0 16 16" style="margin-right: unset;">
@@ -93,9 +95,9 @@
                         @endif
                         @if ($editModal)
                         <div class="col-md-12">
-                            @if($prev_signature)
-                            <label for="preview" class="form-label">Recent signature preview:</label>
-                            <img src="data:img/png;base64,{{base64_encode($prev_signature)}}" class="img-thumbnail">
+                            @if($prev_signature && !$signature)
+                            <label for="preview" class="form-label">Signature Preview:</label>
+                            <img src="data:image/png;base64,{{$prev_signature}}" class="img-thumbnail">
                             @endif
                         </div>
                         @endif

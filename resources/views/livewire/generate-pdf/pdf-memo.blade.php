@@ -124,14 +124,21 @@
             float: right;
         }
 
+        .signatory-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .signatory {
             text-align: center;
             font-weight: bold;
         }
 
         .signature {
-            display: block;
-            margin: 0 auto;
+            /* display: block; */
+            /* margin: 0 auto; */
+            margin-bottom: -30px !important;
         }
 
         .footer {
@@ -198,13 +205,15 @@
         <span id="message">{!! base64_decode($memo->message) !!}</span>
 
         <div class="wew">
-            <div class="signatory">
-                <img class="signature" src="data:image/png;base64,{{ base64_encode($memo->signature) }}" alt="" width="200" />
-            </div>
-            <div class="signatory">
-                <span>{{ $memo->signatory }}</span>
-                <br>
-                <span style="font-weight: lighter;">{{ $memo->title }}</span>
+            <div class="signatory-container">
+                <div class="signatory">
+                    <img class="signature" src="data:image/png;base64,{{ $memo->signature }}" alt="" width="200" />
+                </div>
+                <div class="signatory">
+                    <span>{{ $memo->signatory }}</span>
+                    <br>
+                    <span style="font-weight: lighter;">{{ $memo->title }}</span>
+                </div>
             </div>
         </div>
 
