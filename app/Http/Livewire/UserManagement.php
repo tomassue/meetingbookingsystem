@@ -14,7 +14,12 @@ class UserManagement extends Component
     public $editModal = false;
 
     # wire:model
-    public $first_name, $middle_name, $last_name, $extension, $sex, $email, $id_department, $account_type;
+    public $first_name, $middle_name, $last_name, $extension, $sex, $email, $id_department, $account_type, $user_id;
+
+    protected $listeners = [
+        'confirmResetPasswordAlert' => 'confirmResetPassword',
+        'resetPassword'             => 'resetPassword'
+    ];
 
     # Validation
     protected $rules = [
@@ -37,7 +42,7 @@ class UserManagement extends Component
                 'ref_departments.department_name',
                 DB::raw("CASE 
                 WHEN users.account_type = 1 THEN 'Admin'
-                WHEN users.account_type = 2 THEN 'Editor'
+                WHEN users.account_type = 2 THEN 'Regular User'
                 ELSE 'Unknown'
                 END AS account_type")
             );
@@ -47,6 +52,11 @@ class UserManagement extends Component
             'departments'   =>  $ref_departments,
             'users'         =>  $users
         ]);
+    }
+
+    public function clear()
+    {
+        $this->reset();
     }
 
     public function save()
@@ -68,9 +78,63 @@ class UserManagement extends Component
         $this->reset();
     }
 
-    //TODO: Edit, update, and reset password to default P@ssw0rd
-    public function edit($key)
+    //TODO
+    /***
+     * // EDIT
+     * // UPDATE
+     * // RESET PASSWORD to DEFAULT
+     */
+    public function edit(User $key)
     {
-        dd($key);
+        $this->resetValidation();
+        $this->user_id = $key->id;
+        $this->first_name = $key->first_name;
+        $this->middle_name = $key->middle_name;
+        $this->last_name = $key->last_name;
+        $this->extension = $key->extension;
+        $this->email = $key->email;
+        $this->sex = $key->sex;
+        $this->id_department = $key->id_department;
+        $this->account_type = $key->account_type;
+
+        $this->editModal = true;
+
+        $this->emit('showaddUserModal');
+    }
+
+    public function update()
+    {
+        $this->validate();
+        $query = User::findOrFail($this->user_id);
+        $data = [
+            'first_name' => $this->first_name,
+            'middle_name' => $this->middle_name,
+            'last_name' => $this->last_name,
+            'extension' => $this->extension,
+            'email' => $this->email . '@email.com',
+            'sex' => $this->sex,
+            'id_department' => $this->id_department
+        ];
+        $query->update($data);
+        $this->emit('hideaddUserModal');
+        session()->flash('success', 'User updated successfully.');
+        $this->reset();
+    }
+
+    public function confirmResetPassword($key)
+    {
+        $this->user_id = $key;
+        $this->emit('showResetPasswordConfirmationAlert');
+    }
+
+    public function resetPassword()
+    {
+        $query = User::findOrFail($this->user_id);
+        $data = [
+            'password' => Hash::make('password')
+        ];
+        $query->update($data);
+        session()->flash('success', 'Success! The password has been reset successfully.');
+        $this->reset();
     }
 }

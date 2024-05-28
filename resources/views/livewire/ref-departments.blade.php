@@ -3,7 +3,7 @@
 
         <div class="card-body">
 
-            <h5 class="card-title">Departments</h5>
+            <h5 class="card-title" style="color: #0A927C;">Departments</h5>
 
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -36,7 +36,7 @@
                             <th scope="row">{{$index+1}}</th>
                             <td>{{$item->department_name}}</td>
                             <td>
-                                <a href="#" role="button" class="btn btn-sm btn-primary" wire:click="edit('{{$item->id}}')">
+                                <a href="#" role="button" class="btn btn-sm btn-warning" wire:click="edit('{{$item->id}}')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                         <path d="M11 2H9C4 2 2 4 2 9v6c0 5 2 7 7 7h6c5 0 7-2 7-7v-2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                         <path d="M16.04 3.02 8.16 10.9c-.3.3-.6.89-.66 1.32l-.43 3.01c-.16 1.09.61 1.85 1.7 1.7l3.01-.43c.42-.06 1.01-.36 1.32-.66l7.88-7.88c1.36-1.36 2-2.94 0-4.94-2-2-3.58-1.36-4.94 0Z" stroke="#ffffff" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>

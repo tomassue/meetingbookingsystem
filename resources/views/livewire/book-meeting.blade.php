@@ -1,7 +1,7 @@
 <div>
     <div class="card mt-5 ">
         <div class="card-body">
-            <h5 class="text-start text-uppercase card-title">Book a Meeting</h5>
+            <h5 class="text-start text-uppercase card-title" style="color: #0A927C;">Book a Meeting</h5>
 
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

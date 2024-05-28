@@ -3,7 +3,7 @@
 
         <div class="card-body">
 
-            <h5 class="card-title">Signatories</h5>
+            <h5 class="card-title" style="color: #0A927C;">Signatories</h5>
 
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

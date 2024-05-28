@@ -109,6 +109,10 @@
     $('#addUserModal').modal('hide');
   })
 
+  Livewire.on('showaddUserModal', key => {
+    $('#addUserModal').modal('show');
+  })
+
   Livewire.on('hideaddNewFileModal', key => {
     $('#addNewFileModal').modal('hide');
   })
@@ -152,6 +156,22 @@
   Livewire.on('showViewMeetingModal', key => {
     // console.log('wew');
     $('#viewMeetingModal').modal('show');
+  })
+
+  Livewire.on('showResetPasswordConfirmationAlert', key => {
+    Swal.fire({
+      title: 'Are you sure you want to continue?',
+      text: 'Once you reset the password, there is no way to go back!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Livewire.emit('resetPassword');
+      }
+    });
   })
 </script>
 

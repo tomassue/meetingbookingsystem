@@ -1,7 +1,7 @@
 <div>
     <div class="card mt-5 text-start">
         <div class="card-body">
-            <h5 class="card-title">User Management</h5>
+            <h5 class="card-title" style="color: #0A927C;">User Management</h5>
             @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="bi bi-check-circle me-1"></i>
@@ -10,7 +10,7 @@
             </div>
             @endif
             <div class="text-end">
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal" wire:click="clear">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM3.41 22c0-3.87 3.85-7 8.59-7 .96 0 1.89.13 2.76.37" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                         <path d="M22 18c0 .32-.04.63-.12.93-.09.4-.25.79-.46 1.13A3.97 3.97 0 0 1 18 22a3.92 3.92 0 0 1-2.66-1.03c-.3-.26-.56-.57-.76-.91A3.92 3.92 0 0 1 14 18a3.995 3.995 0 0 1 4-4c1.18 0 2.25.51 2.97 1.33.64.71 1.03 1.65 1.03 2.67ZM19.49 17.98h-2.98M18 16.52v2.99" stroke="#ffffff" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -43,7 +43,7 @@
                                         <path d="M14.91 4.15a7.144 7.144 0 0 0 4.94 4.94" stroke="#ffffff" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path>
                                     </svg>
                                 </a>
-                                <a href="#" role="button" class="btn btn-sm btn-danger" title="Reset Password">
+                                <a href="#" role="button" class="btn btn-sm btn-danger" title="Reset Password" wire:click="$emit('confirmResetPasswordAlert', '{{ $item->user_id }}')">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                         <path stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M22 12c0 5.52-4.48 10-10 10s-8.89-5.56-8.89-5.56m0 0h4.52m-4.52 0v5M2 12C2 6.48 6.44 2 12 2c6.67 0 10 5.56 10 5.56m0 0v-5m0 5h-4.44"></path>
                                     </svg>
@@ -66,7 +66,7 @@
                     <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form wire:submit.prevent="save" class="row g-3" data-bitwarden-watching="1" novalidate>
+                    <form wire:submit.prevent="{{ !$editModal ? 'save' : 'update' }}" class="row g-3" data-bitwarden-watching="1" novalidate>
                         <div class="col-md-6">
                             <label for="inputName5" class="form-label">First Name</label>
                             <input type="text" class="form-control @error('first_name') is-invalid @enderror" wire:model="first_name">
@@ -115,6 +115,7 @@
                                 for ($i = 1; $i <= 50; $i++) { $romanNumeral=arabicToRoman($i); echo "<option value=\" $romanNumeral\" " . (old('extension') == $romanNumeral ? 'selected' : '') . ">$romanNumeral</option>";
                                     }
                                     @endphp
+
                             </select>
                             @error('extension') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>
@@ -156,7 +157,7 @@
                             <select class="form-select @error('account_type') is-invalid @enderror" wire:model="account_type">
                                 <option selected="">Choose...</option>
                                 <option value="1">Admin</option>
-                                <option value="2">Editor</option>
+                                <option value="2">Regular User</option>
                             </select>
                             @error('account_type') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>

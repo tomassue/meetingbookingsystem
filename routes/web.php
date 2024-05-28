@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Livewire\AccountSettings;
 use App\Http\Livewire\BookMeeting;
 use App\Http\Livewire\RefDepartments;
 use App\Http\Livewire\RefSignatories;
@@ -36,14 +37,15 @@ Auth::routes();
 Route::group(['middleware'  =>  'auth'], function () {
 
     # Old routes
-    // Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'index'])->name('schedule');
-    // Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
-    // Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
-    // Route::get('/request', [App\Http\Controllers\RequestController::class, 'index'])->name('request');
+    //// Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'index'])->name('schedule');
+    //// Route::get('/book', [App\Http\Controllers\BookMeetingController::class, 'index'])->name('book');
+    //// Route::get('/viewsched', [App\Http\Controllers\ViewScheduleController::class, 'index'])->name('viewsched');
+    //// Route::get('/request', [App\Http\Controllers\RequestController::class, 'index'])->name('request');
 
     Route::get('/schedule', Schedule::class)->name('schedule');
     Route::get('/book', BookMeeting::class)->name('book');
     Route::get('/viewsched', ViewSchedule::class)->name('viewsched');
+    Route::get('/account', AccountSettings::class)->name('account-settings');
 });
 
 Route::group(['middleware' => ['auth', SuperadminAccess::class]], function () {
