@@ -34,7 +34,7 @@ Auth::routes();
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['middleware'  =>  'auth'], function () {
+Route::group(['middleware'  =>  ['auth', 'check.default.password']], function () {
 
     # Old routes
     //// Route::get('/schedule', [App\Http\Controllers\MyScheduleController::class, 'index'])->name('schedule');
@@ -45,12 +45,13 @@ Route::group(['middleware'  =>  'auth'], function () {
     Route::get('/schedule', Schedule::class)->name('schedule');
     Route::get('/book', BookMeeting::class)->name('book');
     Route::get('/viewsched', ViewSchedule::class)->name('viewsched');
-    Route::get('/account', AccountSettings::class)->name('account-settings');
 });
 
-Route::group(['middleware' => ['auth', SuperadminAccess::class]], function () {
+Route::group(['middleware' => ['auth', 'superadmin', 'check.default.password']], function () {
     Route::get('/request', Request::class)->name('request');
     Route::get('/user-management', UserManagement::class)->name('user-management');
     Route::get('/ref/departments', RefDepartments::class)->name('ref-departments');
     Route::get('/ref/signatories', RefSignatories::class)->name('ref-signatories');
 });
+
+Route::get('/account', AccountSettings::class)->name('account-settings');

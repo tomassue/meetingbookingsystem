@@ -78,6 +78,14 @@
 
                         <div class="tab-pane fade pt-3 active show" id="profile-change-password" role="tabpanel">
 
+                            <div class="text-center">
+                                @if($check_default_password)
+                                <span class="badge bg-warning text-dark mb-3">
+                                    <i class="bi bi-exclamation-triangle me-1"></i> You need to update your password. Thank you.
+                                </span>
+                                @endif
+                            </div>
+
                             <!-- Change Password Form -->
                             <form wire:submit.prevent="updatePassword" data-bitwarden-watching="1" novalidate>
 
