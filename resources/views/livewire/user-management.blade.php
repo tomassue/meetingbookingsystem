@@ -29,7 +29,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $index => $item)
+                        @forelse($users as $index => $item)
                         <tr wire:key="item-{{ $item->user_id }}">
                             <th scope="row">{{$index+1}}</th>
                             <td>{{$item->full_name}}</td>
@@ -50,9 +50,14 @@
                                 </a>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5">No data</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
+                {{ $users->links('livewire.custom-pagination.custom-pagination') }}
             </div>
         </div>
     </div>

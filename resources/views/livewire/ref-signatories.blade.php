@@ -33,7 +33,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($signatories as $index => $item)
+                        @forelse ($signatories as $index => $item)
                         <tr wire:key="item-{{ $item->id }}">
                             <td>{{ $index+1 }}</td>
                             <td>{{ $item->full_name }}</td>
@@ -50,9 +50,14 @@
                                 </button>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="5">No data</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
+                {{ $signatories->links('livewire.custom-pagination.custom-pagination') }}
             </div>
         </div>
     </div>

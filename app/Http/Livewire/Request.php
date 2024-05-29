@@ -13,10 +13,11 @@ use Dompdf\Dompdf;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class Request extends Component
 {
-    use WithFileUploads;
+    use WithFileUploads, WithPagination;
 
     # viewAttachedFileModal
     public $files, $previewFile, $title;
@@ -36,6 +37,8 @@ class Request extends Component
     protected $messages = [
         'booking_no.unique' => 'Memo already exist!'
     ];
+
+    protected $paginationTheme = 'bootstrap';
 
     public function render()
     {
@@ -61,14 +64,6 @@ class Request extends Component
                     ->from('tbl_memo')
                     ->whereRaw('tbl_booked_meetings.booking_no = tbl_memo.id_booking_no');
             })
-            //// ->whereExists(function ($query) {
-            ////     $query->select(DB::raw(1))
-            ////         ->from('tbl_meeting_feedback')
-            ////         ->whereRaw('tbl_meeting_feedback.id_booking_no = tbl_booked_meetings.booking_no')
-            ////         ->whereRaw('FIND_IN_SET(tbl_meeting_feedback.attendee, tbl_booked_meetings.attendees)') // Check if attendee responded
-            ////         ->groupBy('tbl_meeting_feedback.id_booking_no')
-            ////         ->havingRaw('COUNT(DISTINCT tbl_meeting_feedback.attendee) = LENGTH(tbl_booked_meetings.attendees) - LENGTH(REPLACE(tbl_booked_meetings.attendees, ",", "")) + 1'); // Ensure all attendees have responded
-            //// })
             ->whereExists(function ($query) {
                 $query->select(DB::raw(1))
                     ->from('tbl_attendees as a')
@@ -81,7 +76,7 @@ class Request extends Component
                     ->havingRaw('COUNT(a.id_users) = SUM(CASE WHEN f.attendee IS NOT NULL THEN 1 ELSE 0 END)');
             })
             ->orderBy('start_date_time', 'ASC');
-        $request = $query->get();
+        $request = $query->paginate(10, ['*'], 'tab1');
 
         # With Memo
         $request2 = TblBookedMeetingsModel::rightJoin('tbl_memo', 'tbl_memo.id_booking_no', '=', 'tbl_booked_meetings.booking_no')
@@ -93,7 +88,7 @@ class Request extends Component
                 'type_of_attendees',
                 'id_file_data'
             )
-            ->get();
+            ->paginate(10, ['*'], 'tab2');
 
         return view('livewire.request', [
             'request'   =>  $request,
@@ -102,10 +97,17 @@ class Request extends Component
         ]);
     }
 
+    public function updated()
+    {
+        $this->resetPage('tab1');
+        $this->resetPage('tab2');
+    }
+
     public function clear()
     {
         $this->resetValidation();
-        $this->reset();
+        // $this->reset();
+        //TODO: Avoid calling the modal through bootstrap. Make it like when viewing the schedules, load first the data then emit an event to 'show' the modal.
     }
 
     public function hideAttachedFileModal()
@@ -144,21 +146,7 @@ class Request extends Component
         $this->booking_no = $booking_no;
         $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
         $this->created_at_date = (new DateTime($booked_meeting->created_at))->format('F d, Y');
-        // $e_attendees = explode(',', $booked_meeting->attendees);
-        // foreach ($e_attendees as $item) {
-        //     $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-        //         ->where('users.id', $item)
-        //         ->select(
-        //             DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-        //             'users.sex',
-        //             'ref_departments.department_name'
-        //         )
-        //         ->first(); // Using first() to get a single result
-        //     if ($query) {
-        //         # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
-        //         $this->attendees[] = $query;
-        //     }
-        // }
+
         $one = TblMeetingFeedbackModel::join('users', 'tbl_meeting_feedback.attendee', '=', 'users.id')
             ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
             ->where('tbl_meeting_feedback.id_booking_no', $booking_no)

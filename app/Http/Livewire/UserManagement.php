@@ -7,9 +7,12 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class UserManagement extends Component
 {
+    use WithPagination;
+
     # modal
     public $editModal = false;
 
@@ -46,12 +49,17 @@ class UserManagement extends Component
                 ELSE 'Unknown'
                 END AS account_type")
             );
-        $users = $query->get();
+        $users = $query->paginate(10);
 
         return view('livewire.user-management', [
             'departments'   =>  $ref_departments,
             'users'         =>  $users
         ]);
+    }
+
+    public function updated()
+    {
+        $this->resetPage();
     }
 
     public function clear()
@@ -78,12 +86,6 @@ class UserManagement extends Component
         $this->reset();
     }
 
-    //TODO
-    /***
-     * // EDIT
-     * // UPDATE
-     * // RESET PASSWORD to DEFAULT
-     */
     public function edit(User $key)
     {
         $this->resetValidation();

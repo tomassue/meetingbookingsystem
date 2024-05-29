@@ -5,9 +5,12 @@ namespace App\Http\Livewire;
 use App\Models\RefSignatoriesModel;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 class RefSignatories extends Component
 {
+    use WithPagination;
+
     # id
     public $id_signatory;
 
@@ -37,13 +40,18 @@ class RefSignatories extends Component
         )
             ->orderBy('created_at', 'desc');
 
-        $signatories = $query->get();
+        $signatories = $query->paginate(10);
 
         $data = [
             'signatories' => $signatories
         ];
 
         return view('livewire.ref-signatories', $data);
+    }
+
+    public function updated()
+    {
+        $this->resetPage();
     }
 
     public function clear()

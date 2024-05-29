@@ -4,9 +4,12 @@ namespace App\Http\Livewire;
 
 use App\Models\RefDepartmentsModel;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class RefDepartments extends Component
 {
+    use WithPagination;
+
     # modal
     public $editModal;
     public $id_ref_department; # For update
@@ -25,11 +28,16 @@ class RefDepartments extends Component
             'department_name'
         );
 
-        $departments = $query->get();
+        $departments = $query->paginate(2);
 
         return view('livewire.ref-departments', [
             'departments'   =>  $departments
         ]);
+    }
+
+    public function updated()
+    {
+        $this->resetPage();
     }
 
     public function clear()

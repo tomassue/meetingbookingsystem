@@ -24,57 +24,8 @@
     </div>
     @endif
 
-    <!-- <div class="card mt-2" style="margin-bottom: 13px;">
-        <div class="m-3">
-            <table class="table table-borderless" style="margin-bottom: 0px;">
-                <thead>
-                    <tr>
-                        <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
-                        <th class="fs-6" scope="col">Meeting Date <br> & Time</th>
-                        <th class="fs-6" scope="col" style="align-content: center;">Subject</th>
-                        <th class="fs-6" scope="col" width="15%">Type of <br> Attendees</th>
-                        <th class="fs-6" scope="col">Attached <br> File</th>
-                        <th class="fs-6" scope="col" style="align-content: baseline;">Memo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($request as $item)
-                    <tr wire:key="item-{{ $item->booking_no }}">
-                        <td>
-                            {{ $item->booking_no }}
-                        </td>
-                        <td width="15%">
-                            <span class="text-lowercase">
-                                {{ $item->start }}<br>{{ $item->end }}
-                            </span>
-                        </td>
-                        <td>
-                            {{ $item->subject }}
-                        </td>
-                        <td>
-                            <span class="badge bg-primary" style="background-color: #0a927c !important;">
-                                {{ $item->type_of_attendees }}
-                            </span>
-                        </td>
-                        <td width="9%">
-                            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#attachedFileModal" wire:click="viewAttachedFile('{{ $item->id_file_data }}')">
-                                <img src="{{asset('images/file-plus.png')}}" alt="attach-file">
-                            </a>
-                        </td>
-                        <td width="5%">
-                            <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')">
-                                <img src="{{asset('images/file-text.png')}}" alt="attach-file">
-                            </a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div> -->
-
     <div class="card">
-        <div class="card-body" wire:ignore>
+        <div class="card-body">
             <h5 class="card-title text-start fw-bold" style="color: #0A927C;">Meeting Requests</h5>
 
             <!-- Bordered Tabs Justified -->
@@ -90,7 +41,7 @@
             <div class="tab-content pt-2" id="borderedTabJustifiedContent">
                 <div class="tab-pane fade active show" id="bordered-justified-upcomingMeetings" role="tabpanel" aria-labelledby="upcomingMeetings-tab">
                     <div class="m-3">
-                        <table class="table table-borderless" style="margin-bottom: 0px;">
+                        <table class="table table-borderless" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
                             <thead>
                                 <tr>
                                     <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
@@ -102,7 +53,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($request as $item)
+                                @forelse($request as $item)
                                 <tr wire:key="item-{{ $item->booking_no }}">
                                     <td>
                                         {{ $item->booking_no }}
@@ -131,9 +82,14 @@
                                         </a>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="6">No data</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
+                        {{ $request->links('livewire.custom-pagination.custom-pagination') }}
                     </div>
                 </div>
                 <div class="tab-pane fade" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
@@ -150,7 +106,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($request2 as $item)
+                                @forelse($request2 as $item)
                                 <tr wire:key="item-{{ $item->id_booking_no }}">
                                     <td>
                                         {{ $item->id_booking_no }}
@@ -182,7 +138,12 @@
                                         </a>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="6">No data</td>
+                                </tr>
+                                @endforelse
+                                {{ $request2->links() }}
                             </tbody>
                         </table>
                     </div>

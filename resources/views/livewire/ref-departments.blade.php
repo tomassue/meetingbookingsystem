@@ -31,7 +31,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($departments as $index => $item)
+                        @forelse($departments as $index => $item)
                         <tr wire:key="item-{{ $item->id }}">
                             <th scope="row">{{$index+1}}</th>
                             <td>{{$item->department_name}}</td>
@@ -45,9 +45,14 @@
                                 </a>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="3">No data</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
+                {{ $departments->links('livewire.custom-pagination.custom-pagination') }}
             </div>
         </div>
     </div>
