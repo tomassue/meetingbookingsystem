@@ -11,7 +11,7 @@
             <div class="col-lg-6">
                 <div class="input-group">
                     <span class="input-group-text text-white">Search</span>
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" wire:model.debounce.1500ms="search">
                 </div>
             </div>
         </div>
@@ -31,15 +31,17 @@
             <!-- Bordered Tabs Justified -->
             <ul class="nav nav-tabs nav-tabs-bordered d-flex" id="borderedTabJustified" role="tablist">
                 <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link w-100 active" id="upcomingMeetings-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-upcomingMeetings" type="button" role="tab" aria-controls="upcomingMeetings" aria-selected="true">Upcoming Meetings</button>
+                    <!-- <button class="nav-link w-100 active" id="upcomingMeetings-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-upcomingMeetings" type="button" role="tab" aria-controls="upcomingMeetings" aria-selected="true">Upcoming Meetings</button> -->
+                    <button class="nav-link w-100 @if($tab == 'tab1') active @endif" wire:click="$set('tab', 'tab1')" type="button" role="tab" aria-controls="upcomingMeetings" aria-selected="true">Upcoming Meetings</button>
                 </li>
                 <li class="nav-item flex-fill" role="presentation">
-                    <button class="nav-link w-100" id="withMemo-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-withMemo" type="button" role="tab" aria-controls="withMemo" aria-selected="false" tabindex="-1">With Memo</button>
+                    <!-- <button class="nav-link w-100" id="withMemo-tab" data-bs-toggle="tab" data-bs-target="#bordered-justified-withMemo" type="button" role="tab" aria-controls="withMemo" aria-selected="false" tabindex="-1">With Memo</button> -->
+                    <button class="nav-link w-100 @if($tab == 'tab2') active @endif" wire:click="$set('tab', 'tab2')" type="button" role="tab" aria-controls="withMemo" aria-selected="false" tabindex="-1">With Memo</button>
                 </li>
             </ul>
 
             <div class="tab-content pt-2" id="borderedTabJustifiedContent">
-                <div class="tab-pane fade active show" id="bordered-justified-upcomingMeetings" role="tabpanel" aria-labelledby="upcomingMeetings-tab">
+                <div class="tab-pane fade @if($tab == 'tab1') active show @endif" id="bordered-justified-upcomingMeetings" role="tabpanel" aria-labelledby="upcomingMeetings-tab">
                     <div class="m-3">
                         <table class="table table-borderless" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
                             <thead>
@@ -77,7 +79,8 @@
                                         </a>
                                     </td>
                                     <td width="5%">
-                                        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')">
+                                        <!-- <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#addMemoModal" wire:click="memo('{{ $item->booking_no }}')"> -->
+                                        <a href="#" role="button" wire:click="memo('{{ $item->booking_no }}')">
                                             <img src="{{asset('images/file-text.png')}}" alt="attach-file">
                                         </a>
                                     </td>
@@ -92,9 +95,9 @@
                         {{ $request->links('livewire.custom-pagination.custom-pagination') }}
                     </div>
                 </div>
-                <div class="tab-pane fade" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
+                <div class="tab-pane fade @if($tab == 'tab2') active show @endif" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
                     <div class="m-3">
-                        <table class="table table-borderless" style="margin-bottom: 0px;">
+                        <table class="table table-borderless" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
                             <thead>
                                 <tr>
                                     <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
@@ -259,7 +262,7 @@
                             <th scope="col" width="10%">Signatory:</th>
                             <th>
                                 <div wire:ignore>
-                                    <select class="form-select @error('signatory') is-invalid @enderror" id="signatory-select">
+                                    <select class="form-select @error('signatory') is-invalid @enderror" id="signatory-select" wire:loading.attr="disabled">
                                         <option></option>
                                         @foreach($signatories as $item)
                                         <option value="{{ $item->id }}">{{ $item->honorifics . ' ' . $item->full_name }}</option>
@@ -292,8 +295,13 @@
                     <h1 class="modal-title fs-5" id="memoModalLabel">Generate Memo</h1>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
-                <div class="modal-body">
-                    <embed src="{{ $pdfMemo }}" type="application/pdf" width="100%" height="680px">
+                <div class="modal-body d-flex justify-content-center align-items-center">
+                    <div class="py-5">
+                        <div class="spinner-grow text-success" role="status" wire:loading>
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <embed src="{{ $pdfMemo }}" type="application/pdf" width="100%" height="680px" wire:loading.remove>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear" wire:loading.attr="disabled">Close</button>

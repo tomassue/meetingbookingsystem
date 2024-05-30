@@ -28,6 +28,12 @@ class Request extends Component
     # generate memo
     public $pdfMemo;
 
+    # tabs (multiple)
+    public $tab = 'tab1'; //* I used wire:click="$set('property_name', 'value')" on this one.
+
+    # search
+    public $search;
+
     protected $rules = [
         'booking_no'   => 'required|unique:tbl_memo,id_booking_no',
         'memo_message' => 'required',
@@ -75,6 +81,8 @@ class Request extends Component
                     ->groupBy('a.id_booking_no')
                     ->havingRaw('COUNT(a.id_users) = SUM(CASE WHEN f.attendee IS NOT NULL THEN 1 ELSE 0 END)');
             })
+            ->where('subject', 'like', '%' . $this->search . '%')
+            ->orWhere('type_of_attendees', 'like', '%' . $this->search . '%')
             ->orderBy('start_date_time', 'ASC');
         $request = $query->paginate(10, ['*'], 'tab1');
 
@@ -88,6 +96,8 @@ class Request extends Component
                 'type_of_attendees',
                 'id_file_data'
             )
+            ->where('subject', 'like', '%' . $this->search . '%')
+            ->orWhere('type_of_attendees', 'like', '%' . $this->search . '%')
             ->paginate(10, ['*'], 'tab2');
 
         return view('livewire.request', [
@@ -107,7 +117,7 @@ class Request extends Component
     {
         $this->resetValidation();
         // $this->reset();
-        //TODO: Avoid calling the modal through bootstrap. Make it like when viewing the schedules, load first the data then emit an event to 'show' the modal.
+        $this->reset(['booking_no', 'created_at_date', 'attendees', 'subject', 'memo_message', 'signatory', 'pdfMemo']);
     }
 
     public function hideAttachedFileModal()
@@ -143,6 +153,7 @@ class Request extends Component
 
     public function memo($booking_no)
     {
+        // dd($booking_no);
         $this->booking_no = $booking_no;
         $booked_meeting = TblBookedMeetingsModel::where('booking_no', $booking_no)->first();
         $this->created_at_date = (new DateTime($booked_meeting->created_at))->format('F d, Y');
@@ -161,6 +172,8 @@ class Request extends Component
             $this->attendees[] = $item;
         }
         $this->subject = $booked_meeting->subject;
+
+        $this->emit('showaddMemoModal');
     }
 
     public function saveMemo()
