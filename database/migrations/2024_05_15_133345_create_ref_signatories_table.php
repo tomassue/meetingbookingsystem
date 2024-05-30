@@ -18,7 +18,7 @@ class CreateRefSignatoriesTable extends Migration
             $table->string('honorifics');
             $table->string('full_name');
             $table->string('title');
-            $table->longText('signature');
+            $table->binary('signature'); //! Error were found where the "Data were too long for `signature`. What I did is modify the database' data type into LONGBLOB. But in Laravel migration, I don't know if it will work in BINARY. 
             $table->timestamps();
         });
     }

@@ -28,7 +28,7 @@ class RefDepartments extends Component
             'department_name'
         );
 
-        $departments = $query->paginate(2);
+        $departments = $query->paginate(10);
 
         return view('livewire.ref-departments', [
             'departments'   =>  $departments

@@ -53,7 +53,7 @@
                         <label for="attendees" class="form-label">Attendees</label>
                         <select class="form-select multiple @error('attendees') is-invalid @enderror" id="multiple-select" multiple="multiple" wire:loading.remove>
                             @foreach($users as $item)
-                            <option value="{{ $item->id }}">{{ $item->full_name . ' - ' . $item->department_name }}</option>
+                            <option value="{{ $item->id }}">{{ $item->department_name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -134,7 +134,6 @@
                 <div class="row p-3">
                     <div class="col-md-12">
                         <label for="inputPassword5" class="form-label">Meeting Discription</label>
-                        <!-- <input type="text" class="form-control" wire:model="meeting_description"> -->
                         <textarea class="form-control @error('meeting_description') is-invalid @enderror" style="height: 100px" spellcheck="false" wire:model="meeting_description"></textarea>
                         @error('meeting_description')
                         <div class="invalid-feedback text-start">
@@ -185,19 +184,144 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        $('#multiple-select').select2({
-            dropdownAutoWidth: true,
-            width: '100%'
+        // function formatState(state) {
+        //     if (!state.id) {
+        //         return state.text;
+        //     }
+        //     var isSelected = state.selected ? 'checked' : '';
+        //     var $state = $(
+        //         '<div class="option-content">' +
+        //         '<input type="checkbox" class="checkbox-select2" ' + isSelected + ' />' +
+        //         '<span class="option-text">' + state.text + '</span>' +
+        //         '</div>'
+        //     );
+        //     return $state;
+        // }
+
+        // function formatStateSelection(state) {
+        //     if (!state.id) {
+        //         return state.text;
+        //     }
+        //     // Only show the text without the checkbox in the selected option
+        //     var $state = $(
+        //         '<div class="option-content">' +
+        //         '<span class="option-text">' + state.text + '</span>' +
+        //         '</div>'
+        //     );
+        //     return $state;
+        // }
+
+        // $(document).ready(function() {
+        //     $('#multiple-select').select2({
+        //         dropdownAutoWidth: true,
+        //         width: '100%',
+        //         templateResult: formatState,
+        //         templateSelection: formatStateSelection
+        //     });
+
+        //     $('#multiple-select').on('change', function(e) {
+        //         var selectedValues = [];
+        //         $('#multiple-select option:selected').each(function() {
+        //             selectedValues.push($(this).val());
+        //         });
+        //         @this.set('attendees', selectedValues);
+        //     });
+        // });
+
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var isSelected = state.selected ? 'checked' : '';
+            var $state = $(
+                '<div class="option-content">' +
+                '<input type="checkbox" class="checkbox-select2" ' + isSelected + ' />' +
+                '<span class="option-text">' + state.text + '</span>' +
+                '</div>'
+            );
+            return $state;
+        }
+
+        function formatStateSelection(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            // Only show the text without the checkbox in the selected option
+            var $state = $(
+                '<div class="option-content">' +
+                '<span class="option-text">' + state.text + '</span>' +
+                '</div>'
+            );
+            return $state;
+        }
+
+        $(document).ready(function() {
+            $('#multiple-select').select2({
+                dropdownAutoWidth: true,
+                width: '100%',
+                templateResult: formatState,
+                templateSelection: formatStateSelection
+            });
+
+            $('#multiple-select').on('change', function(e) {
+                var selectedValues = [];
+                $('#multiple-select option:selected').each(function() {
+                    selectedValues.push($(this).val());
+                });
+                @this.set('attendees', selectedValues);
+            });
         });
 
-        $('#multiple-select').on('change', function(e) {
-            var selectedValues = [];
-            $('#multiple-select option:selected').each(function() {
-                selectedValues.push($(this).val());
-                // console.log(typeof selectedValues);
-            });
-            @this.set('attendees', selectedValues);
-        });
     });
 </script>
 @endpush
+
+<style>
+    /* .checkbox-select2 {
+        margin-right: 10px;
+    }
+
+    .option-content {
+        display: flex;
+        align-items: center;
+    } */
+
+    /* Align the content inside the select2 container */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 5px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        margin-right: 5px;
+        margin-top: 5px;
+    }
+
+    /* Style for the text within the selected option */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice .option-text {
+        margin-right: auto;
+    }
+
+    /* Ensure the close button is aligned properly */
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        display: flex;
+        align-items: center;
+        margin-left: 5px;
+    }
+
+    /* Align the content inside the dropdown options */
+    .option-content {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .checkbox-select2 {
+        margin-right: 8px;
+    }
+
+    .option-text {
+        flex-grow: 1;
+    }
+</style>

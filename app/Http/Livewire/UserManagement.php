@@ -28,7 +28,7 @@ class UserManagement extends Component
     protected $rules = [
         'first_name'    =>  'required',
         'last_name'     =>  'required',
-        'email'         =>  'required|string',
+        'email'         =>  'required|email:rfc,dns',
         'sex'           =>  'required',
         'id_department' =>  'required',
         'account_type'  =>  'required'
@@ -75,7 +75,7 @@ class UserManagement extends Component
             'middle_name'   =>  $this->middle_name,
             'last_name'     =>  $this->last_name,
             'extension'     =>  $this->extension,
-            'email'         =>  $this->email . '@email.com',
+            'email'         =>  $this->email,
             'sex'           =>  $this->sex,
             'id_department' =>  $this->id_department,
             'password'      =>  Hash::make('password'),
@@ -113,7 +113,7 @@ class UserManagement extends Component
             'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
             'extension' => $this->extension,
-            'email' => $this->email . '@email.com',
+            'email' => $this->email,
             'sex' => $this->sex,
             'id_department' => $this->id_department
         ];

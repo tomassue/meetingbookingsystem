@@ -68,7 +68,7 @@
             <div class="modal-content text-start">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="addUserModalLabel">{{ !$editModal ? 'Add' : 'Edit' }} User</h1>
-                    <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close" wire:loading.attr="disabled" wire:target="save, update"></button>
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="{{ !$editModal ? 'save' : 'update' }}" class="row g-3" data-bitwarden-watching="1" novalidate>
@@ -136,14 +136,13 @@
                         <div class="col-12">
                             <label for="inputEmail5" class="form-label">
                                 Username (Email)
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Please enter only your username without the @ sign and the domain. Your username will be username@email.com.">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Your email will be your username.">
                                     <path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10ZM12 8v5" stroke="#697689" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                     <path d="M11.995 16h.009" stroke="#697689" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                                 </svg>
                             </label>
                             <div class="input-group">
                                 <input type="text" class="form-control @error('email') is-invalid @enderror" aria-describedby="basic-addon2" wire:model="email">
-                                <span class="input-group-text" id="basic-addon2">@email.com</span>
                                 @error('email') <div class="invalid-feedback"> {{$message}} </div> @enderror
                             </div>
                         </div>
@@ -168,8 +167,8 @@
                         </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:loading.attr="disabled" wire:target="save, update">Close</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #0A927C; border-color: #0A927C;" wire:loading.attr="disabled" wire:target="save, update">Save changes</button>
                     </form>
                 </div>
             </div>
