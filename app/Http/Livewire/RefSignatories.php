@@ -21,7 +21,6 @@ class RefSignatories extends Component
     public $honorifics, $full_name, $title, $signature;
 
     protected $rules = [
-        'honorifics' => 'required',
         'full_name'  => 'required',
         'title'      => 'required',
         'signature'  => 'required|image|mimes:png'
@@ -96,7 +95,6 @@ class RefSignatories extends Component
     public function update()
     {
         $rules = [
-            'honorifics' => 'required',
             'full_name'  => 'required',
             'title'      => 'required',
         ];

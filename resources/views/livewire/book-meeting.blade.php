@@ -35,10 +35,9 @@
                         <label for="type_of_attendees" class="form-label">Type of Attendees</label>
                         <select id="type_of_attendees" class="form-select @error('type_of_attendees') is-invalid @enderror" wire:model="type_of_attendees">
                             <option selected>Choose...</option>
-                            <option value="Department Heads">Department Heads</option>
-                            <option value="Assistant Head Departments">Assistant Head Departments</option>
-                            <option value="Something Chier">Something Chier</option>
-                            <option value="Officer Something">Officer Something</option>
+                            <option value="Department Heads">Department Head</option>
+                            <option value="Assistant Head">Assistant Head</option>
+                            <option value="Representative">Representative</option>
                         </select>
                         @error('type_of_attendees')
                         <div class="invalid-feedback text-start">
@@ -183,60 +182,64 @@
 
 @push('scripts')
 <script>
+    // $(document).ready(function() {
+    //     function formatState(state) {
+    //         if (!state.id) {
+    //             return state.text;
+    //         }
+    //         var isSelected = state.selected ? 'checked' : '';
+    //         var $state = $(
+    //             '<div class="option-content">' +
+    //             '<input type="checkbox" class="checkbox-select2" ' + isSelected + ' />' +
+    //             '<span class="text-start option-text">' + state.text + '</span>' +
+    //             '</div>'
+    //         );
+    //         return $state;
+    //     }
+
+    //     function formatStateSelection(state) {
+    //         if (!state.id) {
+    //             return state.text;
+    //         }
+    //         // Only show the text without the checkbox in the selected option
+    //         var $state = $(
+    //             '<div class="option-content">' +
+    //             '<span class="text-start option-text">' + state.text + '</span>' +
+    //             '</div>'
+    //         );
+    //         return $state;
+    //     }
+
+    //     $(document).ready(function() {
+    //         $('#multiple-select').select2({
+    //             closeOnSelect: false,
+    //             dropdownAutoWidth: true,
+    //             width: '100%',
+    //             templateResult: formatState,
+    //             templateSelection: formatStateSelection
+    //         });
+
+    //         $('#multiple-select').on('change', function(e) {
+    //             var selectedValues = [];
+    //             $('#multiple-select option:selected').each(function() {
+    //                 selectedValues.push($(this).val());
+    //             });
+    //             @this.set('attendees', selectedValues);
+    //         });
+    //     });
+
+    // });
+
     $(document).ready(function() {
-        // function formatState(state) {
-        //     if (!state.id) {
-        //         return state.text;
-        //     }
-        //     var isSelected = state.selected ? 'checked' : '';
-        //     var $state = $(
-        //         '<div class="option-content">' +
-        //         '<input type="checkbox" class="checkbox-select2" ' + isSelected + ' />' +
-        //         '<span class="option-text">' + state.text + '</span>' +
-        //         '</div>'
-        //     );
-        //     return $state;
-        // }
-
-        // function formatStateSelection(state) {
-        //     if (!state.id) {
-        //         return state.text;
-        //     }
-        //     // Only show the text without the checkbox in the selected option
-        //     var $state = $(
-        //         '<div class="option-content">' +
-        //         '<span class="option-text">' + state.text + '</span>' +
-        //         '</div>'
-        //     );
-        //     return $state;
-        // }
-
-        // $(document).ready(function() {
-        //     $('#multiple-select').select2({
-        //         dropdownAutoWidth: true,
-        //         width: '100%',
-        //         templateResult: formatState,
-        //         templateSelection: formatStateSelection
-        //     });
-
-        //     $('#multiple-select').on('change', function(e) {
-        //         var selectedValues = [];
-        //         $('#multiple-select option:selected').each(function() {
-        //             selectedValues.push($(this).val());
-        //         });
-        //         @this.set('attendees', selectedValues);
-        //     });
-        // });
-
         function formatState(state) {
             if (!state.id) {
                 return state.text;
             }
-            var isSelected = state.selected ? 'checked' : '';
+            var isSelected = $('#multiple-select').find('option[value="' + state.id + '"]').prop('selected') ? 'checked' : '';
             var $state = $(
                 '<div class="option-content">' +
                 '<input type="checkbox" class="checkbox-select2" ' + isSelected + ' />' +
-                '<span class="option-text">' + state.text + '</span>' +
+                '<span class="text-start option-text">' + state.text + '</span>' +
                 '</div>'
             );
             return $state;
@@ -246,32 +249,59 @@
             if (!state.id) {
                 return state.text;
             }
-            // Only show the text without the checkbox in the selected option
             var $state = $(
                 '<div class="option-content">' +
-                '<span class="option-text">' + state.text + '</span>' +
+                '<span class="text-start option-text">' + state.text + '</span>' +
                 '</div>'
             );
             return $state;
         }
 
-        $(document).ready(function() {
-            $('#multiple-select').select2({
-                dropdownAutoWidth: true,
-                width: '100%',
-                templateResult: formatState,
-                templateSelection: formatStateSelection
-            });
+        $('#multiple-select').select2({
+            closeOnSelect: false,
+            dropdownAutoWidth: true,
+            width: '100%',
+            templateResult: formatState,
+            templateSelection: formatStateSelection
+        });
 
-            $('#multiple-select').on('change', function(e) {
-                var selectedValues = [];
-                $('#multiple-select option:selected').each(function() {
-                    selectedValues.push($(this).val());
+        // Update checkboxes on change event
+        $('#multiple-select').on('change', function() {
+            var selectedValues = [];
+
+            $('#multiple-select option:selected').each(function() {
+                selectedValues.push($(this).val());
+            });
+            @this.set('attendees', selectedValues);
+
+            $('#multiple-select option').each(function() {
+                var optionValue = $(this).val();
+                var isSelected = $(this).prop('selected');
+                $('.select2-results__option').each(function() {
+                    var $option = $(this);
+                    if ($option.attr('id') && $option.attr('id').endsWith(optionValue)) {
+                        var $checkbox = $option.find('.checkbox-select2');
+                        $checkbox.prop('checked', isSelected);
+                    }
                 });
-                @this.set('attendees', selectedValues);
             });
         });
 
+        // Toggle the checkbox state and update the selection
+        $(document).on('click', '.checkbox-select2', function(e) {
+            e.stopPropagation();
+            var $checkbox = $(this);
+            var $option = $checkbox.closest('.select2-results__option');
+            var optionValue = $option.attr('id').split('-').pop();
+
+            if ($checkbox.is(':checked')) {
+                $('#multiple-select').find('option[value="' + optionValue + '"]').prop('selected', true);
+            } else {
+                $('#multiple-select').find('option[value="' + optionValue + '"]').prop('selected', false);
+            }
+
+            $('#multiple-select').trigger('change');
+        });
     });
 </script>
 @endpush
@@ -284,6 +314,45 @@
     .option-content {
         display: flex;
         align-items: center;
+    } */
+
+    /* Align the content inside the select2 container */
+    /* .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 5px;
+        background-color: #e9ecef;
+        border-radius: 4px;
+        margin-right: 5px;
+        margin-top: 5px;
+    } */
+
+    /* Style for the text within the selected option */
+    /* .select2-container--default .select2-selection--multiple .select2-selection__choice .option-text {
+        margin-right: auto;
+    } */
+
+    /* Ensure the close button is aligned properly */
+    /* .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        display: flex;
+        align-items: center;
+        margin-left: 5px;
+    } */
+
+    /* Align the content inside the dropdown options */
+    /* .option-content {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    .checkbox-select2 {
+        margin-right: 8px;
+    }
+
+    .option-text {
+        flex-grow: 1;
     } */
 
     /* Align the content inside the select2 container */

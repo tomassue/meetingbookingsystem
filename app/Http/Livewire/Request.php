@@ -81,10 +81,14 @@ class Request extends Component
                     ->groupBy('a.id_booking_no')
                     ->havingRaw('COUNT(a.id_users) = SUM(CASE WHEN f.attendee IS NOT NULL THEN 1 ELSE 0 END)');
             })
-            ->where('subject', 'like', '%' . $this->search . '%')
-            ->orWhere('type_of_attendees', 'like', '%' . $this->search . '%')
+            ->where(function ($query) {
+                $query->where('subject', 'like', '%' . $this->search . '%')
+                    ->orWhere('type_of_attendees', 'like', '%' . $this->search . '%');
+            })
             ->orderBy('start_date_time', 'ASC');
+
         $request = $query->paginate(10, ['*'], 'tab1');
+
 
         # With Memo
         $request2 = TblBookedMeetingsModel::rightJoin('tbl_memo', 'tbl_memo.id_booking_no', '=', 'tbl_booked_meetings.booking_no')

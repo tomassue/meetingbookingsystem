@@ -43,7 +43,7 @@
             <div class="tab-content pt-2" id="borderedTabJustifiedContent">
                 <div class="tab-pane fade @if($tab == 'tab1') active show @endif" id="bordered-justified-upcomingMeetings" role="tabpanel" aria-labelledby="upcomingMeetings-tab">
                     <div class="m-3">
-                        <table class="table table-borderless" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
+                        <table class="table table-hover" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
                             <thead>
                                 <tr>
                                     <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="tab-pane fade @if($tab == 'tab2') active show @endif" id="bordered-justified-withMemo" role="tabpanel" aria-labelledby="withMemo-tab">
                     <div class="m-3">
-                        <table class="table table-borderless" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
+                        <table class="table table-hover" style="margin-bottom: 0px;" wire:loading.class="opacity-50">
                             <thead>
                                 <tr>
                                     <th class="fs-6" scope="col" width="10%" style="align-content: baseline;">Booking No.</th>
@@ -211,7 +211,7 @@
     </div>
 
     <!-- addMemoModal -->
-    <div wire:ignore.self class="modal fade" id="addMemoModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="addMemoModalLabel" aria-hidden="true">
+    <div wire:ignore.self class="modal fade text-start" id="addMemoModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="addMemoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content text-start">
                 <div class="modal-header">

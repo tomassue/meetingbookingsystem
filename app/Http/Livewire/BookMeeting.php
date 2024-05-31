@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\TblAttendeesModel;
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblFileDataModel;
+use App\Models\TblNotificationsModel;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -48,18 +49,6 @@ class BookMeeting extends Component
             'users' =>  $users
         ]);
     }
-
-    // public function addAttendee()
-    // {
-    //     $this->attendees[] = ['users_id' => null];
-    //     $this->emit('attendeeAdded');
-    // }
-
-    // public function removeAttendee($index)
-    // {
-    //     unset($this->attendees[$index]);
-    //     $this->attendees = array_values($this->attendees);
-    // }
 
     public function addAdditionalFile()
     {
@@ -106,10 +95,7 @@ class BookMeeting extends Component
     public function save()
     {
         $this->validate();
-        // dd($this->attendees);
-        // foreach ($this->attendees as $item) {
-        //     dd($item);
-        // }
+
         $uniqueNumber = $this->generateUniqueNumber();
         if ($this->files) {
             # Iterate over each file.
@@ -128,24 +114,30 @@ class BookMeeting extends Component
             } catch (\Exception $e) {
                 dd($e->getMessage());
             }
+
             TblBookedMeetingsModel::create([
                 'booking_no'            =>  $uniqueNumber,
                 'start_date_time'       =>  $this->start_date_time,
                 'end_date_time'         =>  $this->end_date_time,
                 'type_of_attendees'     =>  $this->type_of_attendees,
-                //// 'attendees'             =>  implode(',', $this->attendees),
-                //// 'attendees'             =>  json_encode($this->attendees), // Other way to store array. What is good about this is that it returns as an object.
                 'subject'               =>  $this->subject,
                 'id_file_data'          =>  implode(',', $fileDataIds),
                 'meeting_description'   =>  $this->meeting_description
             ]);
+
             //* Save attendees as rows.
             foreach ($this->attendees as $item) {
                 TblAttendeesModel::create([
                     'id_booking_no'          =>  $uniqueNumber,
                     'id_users'               =>  $item
                 ]);
+
+                TblNotificationsModel::create([
+                    'id_booking_no' =>  $uniqueNumber,
+                    'id_users'  =>  $item
+                ]);
             }
+
             $this->reset();
             session()->flash('success', 'You have successfully booked a meeting.');
             return redirect()->route('book');
@@ -155,18 +147,23 @@ class BookMeeting extends Component
                 'start_date_time'       =>  $this->start_date_time,
                 'end_date_time'         =>  $this->end_date_time,
                 'type_of_attendees'     =>  $this->type_of_attendees,
-                //// 'attendees'             =>  implode(',', $this->attendees),
-                //// 'attendees'             =>  json_encode($this->attendees), // Other way to store array. What is good about this is that it returns as an object.
                 'subject'               =>  $this->subject,
                 'meeting_description'   =>  $this->meeting_description
             ]);
+
             //* Save attendees as rows.
             foreach ($this->attendees as $item) {
                 TblAttendeesModel::create([
                     'id_booking_no'         =>  $uniqueNumber,
                     'id_users'               =>  $item
                 ]);
+
+                TblNotificationsModel::create([
+                    'id_booking_no' =>  $uniqueNumber,
+                    'id_users'  =>  $item
+                ]);
             }
+
             $this->reset();
             session()->flash('success', 'You have successfully booked a meeting.');
             return redirect()->route('book');
