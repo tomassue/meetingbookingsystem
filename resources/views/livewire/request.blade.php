@@ -69,7 +69,11 @@
                                         {{ $item->subject }}
                                     </td>
                                     <td>
-                                        <span class="badge bg-primary" style="background-color: #0a927c !important;">
+                                        <span class="badge bg-primary" @if($item->type_of_attendees == 'Assistant Head')
+                                            style="background-color: #0a927c !important;"
+                                            @elseif($item->type_of_attendees == 'Representative')
+                                            style="background-color: #f0ad4e !important;"
+                                            @endif>
                                             {{ $item->type_of_attendees }}
                                         </span>
                                     </td>
@@ -123,7 +127,11 @@
                                         {{ $item->subject }}
                                     </td>
                                     <td>
-                                        <span class="badge bg-primary" style="background-color: #0a927c !important;">
+                                        <span class="badge bg-primary" @if($item->type_of_attendees == 'Assistant Head')
+                                            style="background-color: #0a927c !important;"
+                                            @elseif($item->type_of_attendees == 'Representative')
+                                            style="background-color: #f0ad4e !important;"
+                                            @endif>
                                             {{ $item->type_of_attendees }}
                                         </span>
                                     </td>

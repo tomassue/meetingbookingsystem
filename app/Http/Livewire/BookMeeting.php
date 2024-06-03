@@ -134,7 +134,7 @@ class BookMeeting extends Component
 
                 TblNotificationsModel::create([
                     'id_booking_no' =>  $uniqueNumber,
-                    'id_users'  =>  $item
+                    'id_user'      =>  $item
                 ]);
             }
 
@@ -155,12 +155,12 @@ class BookMeeting extends Component
             foreach ($this->attendees as $item) {
                 TblAttendeesModel::create([
                     'id_booking_no'         =>  $uniqueNumber,
-                    'id_users'               =>  $item
+                    'id_users'              =>  $item
                 ]);
 
                 TblNotificationsModel::create([
                     'id_booking_no' =>  $uniqueNumber,
-                    'id_users'  =>  $item
+                    'id_user'      =>  $item
                 ]);
             }
 

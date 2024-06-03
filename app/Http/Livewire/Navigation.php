@@ -2,10 +2,33 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\TblNotificationsModel;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Navigation extends Component
 {
+    # Notification
+    public $notification, $notification_count, $timestamp;
+
+    public function mount()
+    {
+        $query = TblNotificationsModel::join('tbl_booked_meetings', 'tbl_booked_meetings.booking_no', '=', 'tbl_notifications.id_booking_no')
+            ->select(
+                'tbl_notifications.id_booking_no as id_booking_no',
+                'tbl_booked_meetings.subject as subject',
+                'tbl_booked_meetings.meeting_description as description',
+                DB::raw("DATE_FORMAT(tbl_booked_meetings.created_at, '%b %d, %Y %h:%i%p') AS formatted_created_at")
+            )
+            ->where('tbl_notifications.id_user', Auth::user()->id)
+            ->where('tbl_notifications.is_read', 0);
+
+        $this->notification = $query->get();
+        $this->notification_count = $query->count();
+    }
+
     public function render()
     {
         return <<<'blade'
@@ -38,72 +61,38 @@ class Navigation extends Component
                 
                         <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-bell"></i>
-                            <span class="badge bg-primary badge-number">4</span>
+                            <span class="badge bg-primary badge-number">{{ $notification_count }}</span>
                         </a>
                         <!-- End Notification Icon -->
                 
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                             <li class="dropdown-header">
-                            You have 4 new notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                            You have {{ $notification_count }} new notifications
+                            <!-- <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a> -->
                             </li>
+
                             <li>
                             <hr class="dropdown-divider">
                             </li>
-                
-                            <li class="notification-item">
-                            <i class="bi bi-exclamation-circle text-warning"></i>
-                            <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>30 min. ago</p>
-                            </div>
-                            </li>
-                
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li>
-                
-                            <li class="notification-item">
-                            <i class="bi bi-x-circle text-danger"></i>
-                            <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>1 hr. ago</p>
-                            </div>
-                            </li>
-                
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li>
-                
-                            <li class="notification-item">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>2 hrs. ago</p>
-                            </div>
-                            </li>
-                
-                            <li>
-                            <hr class="dropdown-divider">
-                            </li>
-                
-                            <li class="notification-item">
+                            @forelse($notification as $item)
+                            <li class="notification-item" wire:key="item-{{ $item->id_booking_no }}">
                             <i class="bi bi-info-circle text-primary"></i>
-                            <div>
-                                <h4>Dicta reprehenderit</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
-                                <p>4 hrs. ago</p>
+                            <div wire:click="markAsRead('{{ $item->id_booking_no }}')">
+                                <h4 class="text-truncate" style="max-width: 150px;">{{ $item->subject }}</h4>
+                                <p class="text-truncate" style="max-width: 250px;">{{ $item->description }}</p>
+                                <p>{{ $item->formatted_created_at }}</p>
                             </div>
                             </li>
                 
                             <li>
                             <hr class="dropdown-divider">
                             </li>
+
+                            @empty
+                            @endforelse
+
                             <li class="dropdown-footer">
-                            <a href="#">Show all notifications</a>
+                            <a href="#" @if($notification_count == 0) style="pointer-events: none; color: #a3a3a3;" @endif wire:click="markAllAsRead">Mark all as read</a>
                             </li>
                 
                         </ul>
@@ -119,18 +108,24 @@ class Navigation extends Component
                             <span class="d-none d-md-block dropdown-toggle ps-2"> {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</span>
                         </a>
                         <!-- End Profile Iamge Icon -->
-                
+
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="">
                             <li class="dropdown-header">
-                            <h6> {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</h6>
-                            <span> {{ Auth::user()->ref_departments->department_name }} </span>
+                            <h6 style="color:#0a927c;"> {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</h6>
+                            <span> 
+                                @php
+                                try{
+                                    echo Auth::user()->ref_departments->department_name;
+                                } catch (\Exception $e) {
+                                    // echo $e->getMessage();
+                                }
+                                @endphp
+                            </span>
                             </li>
                             <li>
                             <hr class="dropdown-divider">
                             </li>
-                
-                            
-                
+
                             <li>
                             <a class="dropdown-item d-flex align-items-center" href="{{ route('account-settings') }}">
                                 <i class="bi bi-gear"></i>
@@ -153,17 +148,18 @@ class Navigation extends Component
                             @csrf
                             </form>
                             </li>
-                
+
                         </ul>
                         <!-- End Profile Dropdown Items -->
                         </li>
                         <!-- End Profile Nav -->
-                
+
                     </ul>
                     </nav>
                     <!-- End Icons Navigation -->
             
-                </header><!-- End Header -->
+                </header>
+                <!-- End Header -->
             
                 <!-- ======= Sidebar ======= -->
                 <aside id="sidebar" class="sidebar mt-5" style="padding-right: 0px;">
@@ -256,5 +252,26 @@ class Navigation extends Component
                 
             </div>
         blade;
+    }
+
+    public function markAsRead($key)
+    {
+        $query = TblNotificationsModel::where('id_booking_no', $key)
+            ->where('id_user', Auth::user()->id);
+        $query->update([
+            'is_read' => 1
+        ]);
+
+        return redirect()->route('schedule');
+    }
+
+    public function markAllAsRead()
+    {
+        $query = TblNotificationsModel::where('id_user', Auth::user()->id);
+        $query->update([
+            'is_read' => 1
+        ]);
+
+        return redirect()->route('schedule');
     }
 }
