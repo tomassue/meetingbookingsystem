@@ -37,6 +37,47 @@
         </div>
     </div>
 
+    @if(Auth::user()->account_type !== 0)
+    <!-- addPersonalMeetingModal -->
+    <div wire:ignore.self class="modal fade" id="addPersonalMeetingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="addPersonalMeetingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addPersonalMeetingModalLabel">Add Personal Meeting</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                </div>
+                <div class="modal-body text-start">
+
+                    <form wire:submit.prevent="savePersonalMeeting" class="row g-3" data-bitwarden-watching="1" novalidate>
+                        <div class="col-md-6">
+                            <label for="inputStartDate" class="form-label">Start Date</label>
+                            <input type="datetime-local" class="form-control" id="inputStartDate" wire:model="p_start_date">
+                            @error('p_start_date') <span>{{ $message }}</span> @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputEndDate" class="form-label">End Date</label>
+                            <input type="datetime-local" class="form-control" id="inputEndDate" wire:model="p_end_date">
+                        </div>
+                        <div class="col-md-12">
+                            <label for="inputName5" class="form-label">Subject</label>
+                            <input type="text" class="form-control" id="inputName5" data-ddg-inputtype="identities.fullName" wire:model="p_subject">
+                        </div>
+                        <div class="col-12">
+                            <label for="inputAddress5" class="form-label">Description</label>
+                            <textarea class="form-control" style="height: 100px" spellcheck="false" wire:model="p_description"></textarea>
+                        </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
+                    <button type="submit" class="btn" style="background-color: #0A927C; border-color: #0A927C; color: #ffffff">Save Meeting</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- viewBookMeetingModal -->
     <div wire:ignore.self class="modal fade" id="viewBookMeetingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="viewBookMeetingModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg">

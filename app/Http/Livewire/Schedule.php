@@ -22,6 +22,9 @@ class Schedule extends Component
     // wire:model [filter]
     public $from_date, $to_date;
 
+    # addPersonalMeetingModal
+    public $p_start_date, $p_end_date, $p_subject, $p_description;
+
     # Listens for an event and proceed to the method.
     protected $listeners = [
         'viewBookMeetingModal' => 'viewMeetingDetails',
@@ -58,16 +61,45 @@ class Schedule extends Component
             $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
         }
 
-        $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
+        //* This commented code is for merely displaying data to the embedded calendar.
+        // $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
+        //     $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
+        //     $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
+        //     return [
+        //         'id'    => $meetings->booking_no,
+        //         'title' => $meetings->subject,
+        //         'start' => $start_date_time,
+        //         'end'   => $end_date_time,
+        //         'allDay' => false,
+        //         'backgroundColor' => '#0a927c',
+        //         'textColor' => '#ffffff'
+        //     ];
+        // });
+
+        //* I have added a new feature to color code the meeting displayed based on its status.
+        # Color indicators depending on the meetings' status
+        $id_booking_no = $TblBookedMeetingsModel->pluck('booking_no')->toArray();
+        $approved_feedback = TblMeetingFeedbackModel::where('attendee', Auth::user()->id)->where('meeting_status', 1)->whereIn('id_booking_no', $id_booking_no)->pluck('id_booking_no')->toArray();
+        $declined_feedback = TblMeetingFeedbackModel::where('attendee', Auth::user()->id)->where('meeting_status', 0)->whereIn('id_booking_no', $id_booking_no)->pluck('id_booking_no')->toArray();
+
+        $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) use ($approved_feedback, $declined_feedback) {
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
             $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
+            $backgroundColor = '#787878'; // Default color if no condition matches
+
+            if (in_array($meetings->booking_no, $approved_feedback)) {
+                $backgroundColor = '#0a927c'; // Color if the attendee approved the meeting
+            } elseif (in_array($meetings->booking_no, $declined_feedback)) {
+                $backgroundColor = '#d9534f'; // Color if the attendee declined the meeting
+            }
+
             return [
                 'id'    => $meetings->booking_no,
                 'title' => $meetings->subject,
                 'start' => $start_date_time,
                 'end'   => $end_date_time,
                 'allDay' => false,
-                'backgroundColor' => '#0a927c',
+                'backgroundColor' => $backgroundColor,
                 'textColor' => '#ffffff'
             ];
         });
@@ -188,5 +220,28 @@ class Schedule extends Component
             ->where('attendee', Auth::user()->id)
             ->count();
         $this->emit('showMeetingModal');
+    }
+
+    public function savePersonalMeeting()
+    {
+        $rules = [
+            'p_start_date'  => 'required',
+            'p_end_date'    =>  'required',
+            'p_subject' =>  'required',
+            'p_description' =>  'required'
+        ];
+
+        // $messages = [
+        //     'p_start_date.required' => 'The start date field is required'
+        // ];
+
+        /**
+         * TODO: Personal meeting functionality
+         * * Table
+         * * Validation, custome message.
+         * * Displaying
+         */
+
+        $this->validate($rules);
     }
 }

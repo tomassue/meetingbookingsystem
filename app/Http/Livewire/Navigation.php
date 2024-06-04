@@ -59,10 +59,12 @@ class Navigation extends Component
                         
                         <li class="nav-item dropdown">
                 
+                        @if(Auth::user()->account_type !== 0)
                         <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-bell"></i>
                             <span class="badge bg-primary badge-number">{{ $notification_count }}</span>
                         </a>
+                        @endif
                         <!-- End Notification Icon -->
                 
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">

@@ -93,6 +93,10 @@
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 
+  Livewire.on('showAddPersonalMeeting', key => {
+    $('#addPersonalMeetingModal').modal('show');
+  });
+
   Livewire.on('showaddMemoModal', key => {
     $('#addMemoModal').modal('show');
   })

@@ -57,6 +57,38 @@ class Request extends Component
             ->get();
 
         # Upcoming Meetings
+        // $query = TblBookedMeetingsModel::select(
+        //     'booking_no',
+        //     DB::raw("DATE_FORMAT(start_date_time, '%c/%d/%Y %h:%i %p') AS start"),
+        //     DB::raw("DATE_FORMAT(end_date_time, '%c/%d/%Y %h:%i %p') AS end"),
+        //     'subject',
+        //     'type_of_attendees',
+        //     'id_file_data'
+        // )
+        //     ->whereNotExists(function ($query) {
+        //         $query->select(DB::raw(1))
+        //             ->from('tbl_memo')
+        //             ->whereRaw('tbl_booked_meetings.booking_no = tbl_memo.id_booking_no');
+        //     })
+        //     ->whereExists(function ($query) {
+        //         $query->select(DB::raw(1))
+        //             ->from('tbl_attendees as a')
+        //             ->leftJoin('tbl_meeting_feedback as f', function ($join) {
+        //                 $join->on('a.id_booking_no', '=', 'f.id_booking_no')
+        //                     ->on('a.id_users', '=', 'f.attendee');
+        //             })
+        //             ->whereRaw('a.id_booking_no = tbl_booked_meetings.booking_no')
+        //             ->groupBy('a.id_booking_no')
+        //             ->havingRaw('COUNT(a.id_users) = SUM(CASE WHEN f.attendee IS NOT NULL THEN 1 ELSE 0 END)');
+        //     })
+        //     ->where(function ($query) {
+        //         $query->where('subject', 'like', '%' . $this->search . '%')
+        //             ->orWhere('type_of_attendees', 'like', '%' . $this->search . '%');
+        //     })
+        //     ->orderBy('start_date_time', 'ASC');
+
+        // $request = $query->paginate(10, ['*'], 'tab1');
+
         $query = TblBookedMeetingsModel::select(
             'booking_no',
             DB::raw("DATE_FORMAT(start_date_time, '%c/%d/%Y %h:%i %p') AS start"),
@@ -75,7 +107,8 @@ class Request extends Component
                     ->from('tbl_attendees as a')
                     ->leftJoin('tbl_meeting_feedback as f', function ($join) {
                         $join->on('a.id_booking_no', '=', 'f.id_booking_no')
-                            ->on('a.id_users', '=', 'f.attendee');
+                            ->on('a.id_users', '=', 'f.attendee')
+                            ->where('f.meeting_status', '=', 1); // Added this condition where attendees with approved feedback will only be shown in the upcoming meeting tab.
                     })
                     ->whereRaw('a.id_booking_no = tbl_booked_meetings.booking_no')
                     ->groupBy('a.id_booking_no')
@@ -88,7 +121,6 @@ class Request extends Component
             ->orderBy('start_date_time', 'ASC');
 
         $request = $query->paginate(10, ['*'], 'tab1');
-
 
         # With Memo
         $request2 = TblBookedMeetingsModel::rightJoin('tbl_memo', 'tbl_memo.id_booking_no', '=', 'tbl_booked_meetings.booking_no')

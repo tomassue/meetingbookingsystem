@@ -90,6 +90,9 @@
                     //     }
                     //     calendar.fullCalendar('unselect');
                     // });
+                    //* This is for showing a modal for personal meeting.
+                    // console.log('wew');
+                    Livewire.emit('showAddPersonalMeeting');
                 }
             },
             droppable: true, // this allows things to be dropped onto the calendar !!!
