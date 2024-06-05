@@ -91,8 +91,8 @@
                     //     calendar.fullCalendar('unselect');
                     // });
                     //* This is for showing a modal for personal meeting.
-                    // console.log('wew');
-                    Livewire.emit('showAddPersonalMeeting');
+                    Livewire.emit('showAddPersonalMeeting', startDate);
+                    // console.log(startDate);
                 }
             },
             droppable: true, // this allows things to be dropped onto the calendar !!!
@@ -165,7 +165,7 @@
             //         className: 'success'
             //     }
             // ],
-            events: booked_meetings, // This came from the Schedule component.
+            events: all_meetings, // This came from the Schedule component.
             eventClick: function(info) {
                 // console.log(info);
                 Livewire.emit('viewBookMeetingModal', info.id); // Pass the id as parameter to the livewire component.

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\RefDepartmentsModel;
 use App\Models\TblAttendeesModel;
 use App\Models\TblBookedMeetingsModel;
+use App\Models\TblPersonalMeetingsModel;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
@@ -20,7 +21,7 @@ class ViewSchedule extends Component
     // Event Details
     public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative_name, $attendee, $feedback;
 
-    public $meetings = []; //* IMPORTANT: Holds the data being rendered to the blade.
+    public $meetings = [], $personal_meetings = []; //* IMPORTANT: Holds the data being rendered to the blade.
 
     public $listeners = [
         'viewBookMeetingModal' => 'viewMeetingModal',
@@ -92,9 +93,33 @@ class ViewSchedule extends Component
             ];
         });
 
+        //* PERSONAL MEETINGS
+        $q_personal_meetings = DB::table('tbl_personal_meetings')
+            ->join('users', 'users.id', '=', 'tbl_personal_meetings.id_user');
+
+        if ($this->department) {
+            $q_personal_meetings->where('users.id_department', $this->department);
+        }
+
+        $TblPersonalMeetingsModel = $q_personal_meetings->get();
+
+        $this->personal_meetings = $TblPersonalMeetingsModel->map(function ($query) {
+            $p_start_date_time = Carbon::parse($query->start_date_time)->toIso8601String();
+            $p_end_date_time = Carbon::parse($query->end_date_time)->toIso8601String();
+            return [
+                'id' => $query->booking_no,
+                'title' => $query->subject,
+                'start' => $p_start_date_time,
+                'end'   =>  $p_end_date_time,
+                'allDay' => false,
+                'backgroundColor' => '#f0ad4e',
+                'textColor' => '#ffffff'
+            ];
+        });
+
         $data = [
-            'meetings' => $this->meetings,
-            'departments' => $departments,
+            //// 'meetings' => $this->meetings,
+            'departments' => $departments
         ];
         return view('livewire.view-schedule', $data);
     }
@@ -111,7 +136,13 @@ class ViewSchedule extends Component
     public function updateCalendar()
     {
         // Emit an event with a parameter to trigger JavaScript to refresh the calendar.
-        $this->emit('refreshCalendar', json_encode($this->meetings));
+        //* The code below is for rerendering of the property due to filter requests. However, we have now two properties to filter, so I erased this one.
+        //// $this->emit('refreshCalendar', json_encode($this->meetings), json_encode($this->personal_meetings));
+
+        // Convert collections to arrays and merge them
+        $all_meetings = array_merge($this->meetings->toArray(), $this->personal_meetings->toArray()); //! This line is working just fine.
+        // Emit the combined meetings as a JSON-encoded string
+        $this->emit('refreshCalendar', json_encode($all_meetings));
     }
 
     public function viewMeetingModal($id)

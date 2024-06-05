@@ -162,20 +162,20 @@
             //         className: 'success'
             //     }
             // ],
-            events: meetings, // This came from the ViewSchedule component.
+            events: all_meetings, // This came from the ViewSchedule component.
             eventClick: function(info) {
                 Livewire.emit('viewBookMeetingModal', info.id); // Pass the id as parameter to the livewire component.
             },
         });
 
-        //* This script will be triggered once the event is fired.
-        Livewire.on('refreshCalendar', function(meetings) {
+        //* This script will be triggered once the event is fired. This is to refresh the calendar's content
+        Livewire.on('refreshCalendar', function(all_meetings) {
             try {
-                meetings = JSON.parse(meetings); // Ensure the meetings data is parsed correctly
+                all_meetings = JSON.parse(all_meetings); // Ensure the meetings data is parsed correctly
                 calendar.fullCalendar('removeEvents');
-                calendar.fullCalendar('addEventSource', meetings);
+                calendar.fullCalendar('addEventSource', all_meetings);
                 calendar.fullCalendar('rerenderEvents');
-                // console.log('Calendar events refreshed');
+                console.log('Calendar events refreshed');
             } catch (e) {
                 console.error('Error parsing meetings data', e);
             }

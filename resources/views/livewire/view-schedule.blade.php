@@ -6,7 +6,7 @@
                     <div class="input-group">
                         <span class="input-group-text">Department</span>
                         <select class="form-select" wire:model="department">
-                            <option value="" selected>Select...</option>
+                            <option value="" selected>All</option>
                             @foreach ($departments as $item)
                             <option value="{{ $item->id }}">{{ $item->department_name }}</option>
                             @endforeach
@@ -109,6 +109,9 @@
 
     <script>
         var meetings = @json($meetings);
+        var personal_meetings = @json($personal_meetings);
+
+        var all_meetings = meetings.concat(personal_meetings);
     </script>
 
     <!-- Calendar Script -->

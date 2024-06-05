@@ -15,7 +15,7 @@ class CreateTblBookedMeetingsTable extends Migration
     {
         Schema::create('tbl_booked_meetings', function (Blueprint $table) {
             // $table->id();
-            $table->string('booking_no'); // Primary Key
+            $table->string('booking_no')->primary(); // Primary Key
             $table->dateTime('start_date_time');
             $table->dateTime('end_date_time');
             $table->string('type_of_attendees');

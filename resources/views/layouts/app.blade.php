@@ -93,9 +93,17 @@
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
 
-  Livewire.on('showAddPersonalMeeting', key => {
+  Livewire.on('showAddPersonalMeetingModal', key => {
     $('#addPersonalMeetingModal').modal('show');
-  });
+  })
+
+  Livewire.on('hideAddPersonalMeetingModal', key => {
+    $('#addPersonalMeetingModal').modal('hide');
+  })
+
+  Livewire.on('showViewPersonalMeetingModal', key => {
+    $('#viewPersonalMeetingModal').modal('show');
+  })
 
   Livewire.on('showaddMemoModal', key => {
     $('#addMemoModal').modal('show');

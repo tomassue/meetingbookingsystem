@@ -51,20 +51,23 @@
                     <form wire:submit.prevent="savePersonalMeeting" class="row g-3" data-bitwarden-watching="1" novalidate>
                         <div class="col-md-6">
                             <label for="inputStartDate" class="form-label">Start Date</label>
-                            <input type="datetime-local" class="form-control" id="inputStartDate" wire:model="p_start_date">
-                            @error('p_start_date') <span>{{ $message }}</span> @enderror
+                            <input type="datetime-local" class="form-control @error('p_start_date') is-invalid @enderror" id="inputStartDate" wire:model="p_start_date">
+                            @error('p_start_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="inputEndDate" class="form-label">End Date</label>
-                            <input type="datetime-local" class="form-control" id="inputEndDate" wire:model="p_end_date">
+                            <input type="datetime-local" class="form-control @error('p_end_date') is-invalid @enderror" id="inputEndDate" wire:model="p_end_date">
+                            @error('p_end_date') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-md-12">
-                            <label for="inputName5" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="inputName5" data-ddg-inputtype="identities.fullName" wire:model="p_subject">
+                            <label for="inputSubject" class="form-label">Subject</label>
+                            <input type="text" class="form-control @error('p_subject') is-invalid @enderror" id="inputSubject" data-ddg-inputtype="identities.fullName" wire:model="p_subject">
+                            @error('p_subject') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
                         <div class="col-12">
                             <label for="inputAddress5" class="form-label">Description</label>
-                            <textarea class="form-control" style="height: 100px" spellcheck="false" wire:model="p_description"></textarea>
+                            <textarea class="form-control @error('p_description') is-invalid @enderror" style="height: 100px" spellcheck="false" wire:model="p_description"></textarea>
+                            @error('p_description') <div class="invalid-feedback">{{ $message }}</div> @enderror
                         </div>
 
                 </div>
@@ -77,6 +80,41 @@
         </div>
     </div>
     @endif
+
+    <!-- viewPersonalMeetingModal -->
+    <div wire:ignore.self class="modal fade" id="viewPersonalMeetingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="viewPersonalMeetingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="viewPersonalMeetingModalLabel">Personal Meeting Details</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                </div>
+                <div class="modal-body text-start">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th scope="col" width="10%">Date:</th>
+                            <th><span class="fw-light">{{ $created_at_date }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Schedule:</th>
+                            <th><span class="fw-light">{{ $start_date_time }} <br> {{ $end_date_time }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Re:</th>
+                            <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th><span class="fw-light">{{ $meeting_description }}</span></th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- viewBookMeetingModal -->
     <div wire:ignore.self class="modal fade" id="viewBookMeetingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="viewBookMeetingModalLabel" aria-hidden="true">
@@ -148,6 +186,11 @@
 
     <script>
         var booked_meetings = @json($booked_meetings); // Convert booked_meetings array to JSON
+        var personal_booked_meetings = @json($personal_booked_meetings);
+
+        // Combine both arrays into one
+        //* This is helpful when you want to display lots of data in different variables.
+        var all_meetings = booked_meetings.concat(personal_booked_meetings);
     </script>
 
     <!-- Calendar Script -->

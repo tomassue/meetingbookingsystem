@@ -5,16 +5,19 @@ namespace App\Http\Livewire;
 use App\Models\TblAttendeesModel;
 use App\Models\TblBookedMeetingsModel;
 use App\Models\TblMeetingFeedbackModel;
+use App\Models\TblPersonalMeetingsModel;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class Schedule extends Component
 {
-    public $booked_meetings;
+    # Variables passed to fullcalendar for rendering data
+    public $booked_meetings, $personal_booked_meetings;
 
     # Event Details
     public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative = false, $representative_name, $attendee, $feedback;
@@ -27,9 +30,10 @@ class Schedule extends Component
 
     # Listens for an event and proceed to the method.
     protected $listeners = [
-        'viewBookMeetingModal' => 'viewMeetingDetails',
-        'approveMeeting'       => 'approveMeeting',
-        'declineMeeting'       => 'declineMeeting'
+        'viewBookMeetingModal'   => 'viewMeetingDetails',
+        'approveMeeting'         => 'approveMeeting',
+        'declineMeeting'         => 'declineMeeting',
+        'showAddPersonalMeeting' => 'personalMeetingModal'
     ];
 
     public function render()
@@ -61,7 +65,8 @@ class Schedule extends Component
             $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
         }
 
-        //* This commented code is for merely displaying data to the embedded calendar.
+        //! Don't erase!
+        //* This commented code is for merely displaying data to the embedded calendar without any special customization.
         // $this->booked_meetings = $TblBookedMeetingsModel->map(function ($meetings) {
         //     $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
         //     $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
@@ -104,9 +109,24 @@ class Schedule extends Component
             ];
         });
 
-        return view('livewire.schedule', [
-            'booked_meetings'   =>  $this->booked_meetings
-        ]);
+        $TblPersonalMeetings = TblPersonalMeetingsModel::where('id_user', Auth::user()->id)
+            ->get();
+
+        $this->personal_booked_meetings = $TblPersonalMeetings->map(function ($meetings) {
+            $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();
+            $end_date_time = Carbon::parse($meetings->end_date_time)->toIso8601String();
+            return [
+                'id'    => $meetings->booking_no,
+                'title' => $meetings->subject,
+                'start' => $start_date_time,
+                'end'   => $end_date_time,
+                'allDay' => false,
+                'backgroundColor' => '#f0ad4e',
+                'textColor' => '#ffffff'
+            ];
+        });
+
+        return view('livewire.schedule');
     }
 
     public function clear()
@@ -116,6 +136,7 @@ class Schedule extends Component
         # Changed it from booted() since there are other requests that are being done. Such as the feedback.
         //// $this->reset('attendees', 'representative', 'representative_name', 'feedback');
         $this->reset();
+        $this->resetValidation();
     }
 
     public function updateCalendar()
@@ -169,79 +190,200 @@ class Schedule extends Component
 
     public function viewMeetingDetails($id)
     {
-        $meeting = TblBookedMeetingsModel::findOrFail($id);
-        $start_datetime = new DateTime($meeting->start_date_time);
-        $end_datetime = new DateTime($meeting->end_date_time);
-        $created_at = new DateTime($meeting->created_at);
+        // $meeting = TblBookedMeetingsModel::findOrFail($id);
+        // if ($meeting) {
+        //     $start_datetime = new DateTime($meeting->start_date_time);
+        //     $end_datetime = new DateTime($meeting->end_date_time);
+        //     $created_at = new DateTime($meeting->created_at);
 
-        //// $e_attendees = explode(',', $meeting->attendees);
-        //// foreach ($e_attendees as $item) {
-        ////     $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-        ////         ->where('users.id', $item)
-        ////         ->select(
-        ////             DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-        ////             'users.sex',
-        ////             'ref_departments.department_name'
-        ////         )
-        ////         ->first(); 
-        ////          Using first() to get a single result
-        ////     if ($query) {
-        ////         # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
-        ////         $this->attendees[] = $query;
-        ////     }
-        //// }
+        //     //// $e_attendees = explode(',', $meeting->attendees);
+        //     //// foreach ($e_attendees as $item) {
+        //     ////     $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+        //     ////         ->where('users.id', $item)
+        //     ////         ->select(
+        //     ////             DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+        //     ////             'users.sex',
+        //     ////             'ref_departments.department_name'
+        //     ////         )
+        //     ////         ->first(); 
+        //     ////          Using first() to get a single result
+        //     ////     if ($query) {
+        //     ////         # Data remains in these array causing it to stack and data that aren't supposed to be shown are shown between subsequent requests. To solve this, I have a closeMeetingDetails() method to reset everytime user closes the modal that displays the meeting details.
+        //     ////         $this->attendees[] = $query;
+        //     ////     }
+        //     //// }
 
-        $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
-            ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-            ->where('id_booking_no', $id)
-            ->select(
-                DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-                'users.sex',
-                'ref_departments.department_name'
-            )
-            ->get();
-        foreach ($e_attendees as $item) {
-            if ($item) {
-                $this->attendees[] = $item;
+        //     $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+        //         ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+        //         ->where('id_booking_no', $id)
+        //         ->select(
+        //             DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+        //             'users.sex',
+        //             'ref_departments.department_name'
+        //         )
+        //         ->get();
+        //     foreach ($e_attendees as $item) {
+        //         if ($item) {
+        //             $this->attendees[] = $item;
+        //         }
+        //     }
+
+        //     $this->id_booked_meeting = $meeting->booking_no;
+        //     $this->attendee = Auth::user()->id;
+        //     $this->start_date_time = $start_datetime->format('M d, Y h:i A');
+        //     $this->end_date_time = $end_datetime->format('M d, Y h:i A');
+        //     $this->created_at_date = $created_at->format('M d, Y h:i A');
+        //     $this->subject = $meeting->subject;
+        //     $this->type_of_attendees = $meeting->type_of_attendees;
+        //     $this->meeting_description = $meeting->meeting_description;
+
+        //     # Let's check if the user already responded to the meeting
+        //     $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $meeting->booking_no)
+        //         ->where('attendee', Auth::user()->id)
+        //         ->count();
+        //     $this->emit('showMeetingModal');
+        // } else {
+        //     dd('luh');
+        // }
+
+        // Reset the attendees array to avoid stacking data
+        $this->attendees = [];
+
+        try {
+            // Find the meeting or return null
+            $meeting = TblBookedMeetingsModel::find($id);
+
+            // If the meeting is not found, it might be under personal meeting
+            if ($meeting) {
+                // Parse date and time
+                $start_datetime = new DateTime($meeting->start_date_time);
+                $end_datetime = new DateTime($meeting->end_date_time);
+                $created_at = new DateTime($meeting->created_at);
+
+                // Fetch attendees with the necessary joins and selections
+                $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+                    ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+                    ->where('id_booking_no', $id)
+                    ->select(
+                        DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                        'users.sex',
+                        'ref_departments.department_name'
+                    )
+                    ->get();
+
+                // Append each attendee to the array
+                foreach ($e_attendees as $item) {
+                    $this->attendees[] = $item;
+                }
+
+                // Set meeting details
+                $this->id_booked_meeting = $meeting->booking_no;
+                $this->attendee = Auth::user()->id;
+                $this->start_date_time = $start_datetime->format('M d, Y h:i A');
+                $this->end_date_time = $end_datetime->format('M d, Y h:i A');
+                $this->created_at_date = $created_at->format('M d, Y h:i A');
+                $this->subject = $meeting->subject;
+                $this->type_of_attendees = $meeting->type_of_attendees;
+                $this->meeting_description = $meeting->meeting_description;
+
+                // Check if the user has already responded to the meeting
+                $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $meeting->booking_no)
+                    ->where('attendee', Auth::user()->id)
+                    ->count();
+
+                // Emit event to show the modal
+                $this->emit('showMeetingModal');
+            } else {
+                $personal_meeting = TblPersonalMeetingsModel::find($id);
+
+                $this->created_at_date = (new DateTime($personal_meeting->created_at))->format('M d, Y h:i A');
+                $this->start_date_time = (new DateTime($personal_meeting->start_date_time))->format('M d, Y h:i A');
+                $this->end_date_time = (new DateTime($personal_meeting->end_date_time))->format('M d, Y h:i A');
+                $this->subject = $personal_meeting->subject;
+                $this->meeting_description = $personal_meeting->description;
+
+                $this->emit('showViewPersonalMeetingModal');
             }
+        } catch (\Exception $e) {
+            // Handle the error gracefully
+            dd('An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    # Method to generate a unique number
+    private function generateUniqueNumber()
+    {
+        // Get the current Unix timestamp
+        $timestamp = time();
+
+        // Extract the last four digits of the timestamp
+        $uniqueIdentifier = substr($timestamp, -4);
+
+        // Generate two random lowercase letters (a-z)
+        $randomLetters = '';
+        for ($i = 0; $i < 2; $i++) {
+            $randomLetters .= strtoupper(chr(mt_rand(97, 122))); // ASCII values for lowercase letters
         }
 
-        $this->id_booked_meeting = $meeting->booking_no;
-        $this->attendee = Auth::user()->id;
-        $this->start_date_time = $start_datetime->format('M d, Y h:i A');
-        $this->end_date_time = $end_datetime->format('M d, Y h:i A');
-        $this->created_at_date = $created_at->format('M d, Y h:i A');
-        $this->subject = $meeting->subject;
-        $this->type_of_attendees = $meeting->type_of_attendees;
-        $this->meeting_description = $meeting->meeting_description;
+        // Concatenate the random letters with the four-digit number
+        $uniqueNumber = $uniqueIdentifier . $randomLetters;
 
-        # Let's check if the user already responded to the meeting
-        $this->feedback = TblMeetingFeedbackModel::where('id_booking_no', $meeting->booking_no)
-            ->where('attendee', Auth::user()->id)
-            ->count();
-        $this->emit('showMeetingModal');
+        // Shuffle the unique number (digits and letters)
+        $shuffledNumber = str_shuffle($uniqueNumber);
+
+        return $shuffledNumber;
+    }
+
+    public function personalMeetingModal($startDay)
+    {
+        //* There are instances that the timezone in fullcalendar is different.
+        // Parse the date string and convert it to the application's timezone
+        $date = Carbon::parse($startDay)->setTimezone('Asia/Singapore');
+
+        // Format the date for the datetime-local input field
+        $this->p_start_date = $date->format('Y-m-d\TH:i');
+        $this->p_end_date = $date->format('Y-m-d\TH:i');
+        $this->emit('showAddPersonalMeetingModal');
     }
 
     public function savePersonalMeeting()
     {
-        $rules = [
-            'p_start_date'  => 'required',
-            'p_end_date'    =>  'required',
-            'p_subject' =>  'required',
-            'p_description' =>  'required'
-        ];
-
-        // $messages = [
-        //     'p_start_date.required' => 'The start date field is required'
-        // ];
-
         /**
          * TODO: Personal meeting functionality
-         * * Table
-         * * Validation, custome message.
-         * * Displaying
+         * //Table
+         * // Validation, custome message.
+         * // Saving
+         * TODO: Displaying
          */
 
-        $this->validate($rules);
+        $rules = [
+            'p_start_date'  => 'required',
+            'p_end_date'    =>  'required|after_or_equal:p_start_date',
+            'p_subject'     =>  'required'
+        ];
+
+        $messages = [
+            'p_start_date.required'     => 'The start date field is required.',
+            'p_end_date.required'       => 'The start date field is required.',
+            'p_end_date.after_or_equal' => 'The end date must be a date after or equal to start date.'
+        ];
+
+        $this->validate($rules, $messages);
+
+        $data = [
+            'booking_no' => $this->generateUniqueNumber(),
+            'start_date_time' => $this->p_start_date,
+            'end_date_time' =>  $this->p_end_date,
+            'subject'   =>  $this->p_subject,
+            'description' => $this->p_description,
+            'id_user'   =>  Auth::user()->id
+        ];
+
+        TblPersonalMeetingsModel::create($data);
+
+        $this->reset();
+        $this->emit('hideAddPersonalMeetingModal');
+        session()->flash('success', 'Personal meeting is added successfully.');
+        return redirect()->route('schedule');
     }
 }
