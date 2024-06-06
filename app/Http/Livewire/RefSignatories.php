@@ -90,6 +90,7 @@ class RefSignatories extends Component
         $this->prev_signature = $query->signature;
 
         $this->editModal = true;
+        $this->emit('showEditSignatoryModal');
     }
 
     public function update()

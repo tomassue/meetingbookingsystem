@@ -192,6 +192,10 @@
       }
     });
   })
+
+  Livewire.on('showEditSignatoryModal', key => {
+    $('#signatoryModal').modal('show');
+  })
 </script>
 
 </html>
