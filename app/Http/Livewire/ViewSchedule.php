@@ -147,33 +147,112 @@ class ViewSchedule extends Component
 
     public function viewMeetingModal($id)
     {
-        $meeting = TblBookedMeetingsModel::findOrFail($id);
-        $start_datetime = new DateTime($meeting->start_date_time);
-        $end_datetime = new DateTime($meeting->end_date_time);
-        $created_at = new DateTime($meeting->created_at);
-        $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
-            ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
-            ->where('id_booking_no', $id)
-            ->select(
-                DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
-                'users.sex',
-                'ref_departments.department_name'
-            )
-            ->get();
-        foreach ($e_attendees as $item) {
-            if ($item) {
-                $this->attendees[] = $item;
-            }
-        }
-        $this->id_booked_meeting = $meeting->booking_no;
-        $this->attendee = Auth::user()->id;
-        $this->start_date_time = $start_datetime->format('M d, Y h:i A');
-        $this->end_date_time = $end_datetime->format('M d, Y h:i A');
-        $this->created_at_date = $created_at->format('M d, Y h:i A');
-        $this->subject = $meeting->subject;
-        $this->type_of_attendees = $meeting->type_of_attendees;
-        $this->meeting_description = $meeting->meeting_description;
+        // $meeting = TblBookedMeetingsModel::findOrFail($id);
+        // $start_datetime = new DateTime($meeting->start_date_time);
+        // $end_datetime = new DateTime($meeting->end_date_time);
+        // $created_at = new DateTime($meeting->created_at);
+        // $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+        //     ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+        //     ->where('id_booking_no', $id)
+        //     ->select(
+        //         DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+        //         'users.sex',
+        //         'ref_departments.department_name'
+        //     )
+        //     ->get();
+        // foreach ($e_attendees as $item) {
+        //     if ($item) {
+        //         $this->attendees[] = $item;
+        //     }
+        // }
+        // $this->id_booked_meeting = $meeting->booking_no;
+        // $this->attendee = Auth::user()->id;
+        // $this->start_date_time = $start_datetime->format('M d, Y h:i A');
+        // $this->end_date_time = $end_datetime->format('M d, Y h:i A');
+        // $this->created_at_date = $created_at->format('M d, Y h:i A');
+        // $this->subject = $meeting->subject;
+        // $this->type_of_attendees = $meeting->type_of_attendees;
+        // $this->meeting_description = $meeting->meeting_description;
 
-        $this->emit('showViewMeetingModal');
+        // $this->emit('showViewMeetingModal');
+
+        // $meeting = TblBookedMeetingsModel::findOrFail($id);
+        // $start_datetime = new DateTime($meeting->start_date_time);
+        // $end_datetime = new DateTime($meeting->end_date_time);
+        // $created_at = new DateTime($meeting->created_at);
+        // $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+        //     ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+        //     ->where('id_booking_no', $id)
+        //     ->select(
+        //         DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+        //         'users.sex',
+        //         'ref_departments.department_name'
+        //     )
+        //     ->get();
+        // foreach ($e_attendees as $item) {
+        //     if ($item) {
+        //         $this->attendees[] = $item;
+        //     }
+        // }
+        // $this->id_booked_meeting = $meeting->booking_no;
+        // $this->attendee = Auth::user()->id;
+        // $this->start_date_time = $start_datetime->format('M d, Y h:i A');
+        // $this->end_date_time = $end_datetime->format('M d, Y h:i A');
+        // $this->created_at_date = $created_at->format('M d, Y h:i A');
+        // $this->subject = $meeting->subject;
+        // $this->type_of_attendees = $meeting->type_of_attendees;
+        // $this->meeting_description = $meeting->meeting_description;
+
+        // $this->emit('showViewMeetingModal');
+
+        $this->attendee = [];
+
+        try {
+            $meeting = TblBookedMeetingsModel::find($id);
+
+            if ($meeting) {
+
+                $start_datetime = new DateTime($meeting->start_date_time);
+                $end_datetime = new DateTime($meeting->end_date_time);
+                $created_at = new DateTime($meeting->created_at);
+                $e_attendees = TblAttendeesModel::join('users', 'users.id', '=', 'tbl_attendees.id_users')
+                    ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
+                    ->where('id_booking_no', $id)
+                    ->select(
+                        DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                        'users.sex',
+                        'ref_departments.department_name'
+                    )
+                    ->get();
+                foreach ($e_attendees as $item) {
+                    if ($item) {
+                        $this->attendees[] = $item;
+                    }
+                }
+                $this->id_booked_meeting = $meeting->booking_no;
+                $this->attendee = Auth::user()->id;
+                $this->start_date_time = $start_datetime->format('M d, Y h:i A');
+                $this->end_date_time = $end_datetime->format('M d, Y h:i A');
+                $this->created_at_date = $created_at->format('M d, Y h:i A');
+                $this->subject = $meeting->subject;
+                $this->type_of_attendees = $meeting->type_of_attendees;
+                $this->meeting_description = $meeting->meeting_description;
+
+                $this->emit('showViewMeetingModal');
+            } else {
+                $personal_meeting = TblPersonalMeetingsModel::find($id);
+
+                $this->created_at_date = (new DateTime($personal_meeting->created_at))->format('M d, Y h:i A');
+                $this->start_date_time = (new DateTime($personal_meeting->start_date_time))->format('M d, Y h:i A');
+                $this->end_date_time = (new DateTime($personal_meeting->end_date_time))->format('M d, Y h:i A');
+                $this->subject = $personal_meeting->subject;
+                $this->meeting_description = $personal_meeting->description;
+
+                $this->emit('showViewPersonalMeetingModal');
+            }
+        } catch (\Exception $e) {
+            // Handle the error gracefully
+            dd('An error occurred: ' . $e->getMessage());
+        }
     }
 }

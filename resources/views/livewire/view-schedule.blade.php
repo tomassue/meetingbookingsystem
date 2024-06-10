@@ -107,6 +107,41 @@
         </div>
     </div>
 
+    <!-- viewPersonalMeetingModal -->
+    <div wire:ignore.self class="modal fade" id="viewPersonalMeetingModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="viewPersonalMeetingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="viewPersonalMeetingModalLabel">Personal Meeting Details</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                </div>
+                <div class="modal-body text-start">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th scope="col" width="10%">Date:</th>
+                            <th><span class="fw-light">{{ $created_at_date }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Schedule:</th>
+                            <th><span class="fw-light">{{ $start_date_time }} <br> {{ $end_date_time }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Re:</th>
+                            <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th><span class="fw-light">{{ $meeting_description }}</span></th>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         var meetings = @json($meetings);
         var personal_meetings = @json($personal_meetings);

@@ -54,6 +54,21 @@ class Schedule extends Component
 
             //* Fetch the filtered results
             $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
+
+            $TblPersonalMeetingsQuery = TblPersonalMeetingsModel::query();
+
+            if ($this->from_date) {
+                $fromDate = Carbon::parse($this->from_date)->startOfDay();
+                $TblPersonalMeetingsQuery->where('start_date_time', '>=', $fromDate);
+            }
+
+            if ($this->to_date) {
+                $toDate = Carbon::parse($this->to_date)->endOfDay();
+                $TblPersonalMeetingsQuery->where('end_date_time', '<=', $toDate);
+            }
+
+            //* Fetch the filtered results
+            $TblPersonalMeetings = $TblPersonalMeetingsQuery->get();
         } else {
             $id_attendees = Auth::user()->id;
 
@@ -63,6 +78,9 @@ class Schedule extends Component
 
             //* Fetch the filtered results
             $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
+
+            $TblPersonalMeetings = TblPersonalMeetingsModel::where('id_user', Auth::user()->id)
+                ->get();
         }
 
         //! Don't erase!
@@ -109,8 +127,8 @@ class Schedule extends Component
             ];
         });
 
-        $TblPersonalMeetings = TblPersonalMeetingsModel::where('id_user', Auth::user()->id)
-            ->get();
+        // $TblPersonalMeetings = TblPersonalMeetingsModel::where('id_user', Auth::user()->id)
+        //     ->get();
 
         $this->personal_booked_meetings = $TblPersonalMeetings->map(function ($meetings) {
             $start_date_time = Carbon::parse($meetings->start_date_time)->toIso8601String();

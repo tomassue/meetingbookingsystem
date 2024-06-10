@@ -114,7 +114,7 @@ class Navigation extends Component
                         <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="">
                             <li class="dropdown-header">
                             <h6 style="color:#0a927c;"> {{ Auth::user()->first_name . ' ' . Auth::user()->last_name }}</h6>
-                            <span> 
+                            <span class="d-inline-block text-truncate" style="max-width: 150px;"> 
                                 @php
                                 try{
                                     echo Auth::user()->ref_departments->department_name;
