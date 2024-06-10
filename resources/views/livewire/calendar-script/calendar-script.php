@@ -173,11 +173,11 @@
         });
 
         //* This script will be triggered once the event is fired.
-        Livewire.on('refreshCalendar2', function(booked_meetings) {
+        Livewire.on('refreshCalendar2', function(all_meetings) {
             try {
-                booked_meetings = JSON.parse(booked_meetings); // Ensure the meetings data is parsed correctly
+                all_meetings = JSON.parse(all_meetings); // Ensure the meetings data is parsed correctly
                 calendar.fullCalendar('removeEvents');
-                calendar.fullCalendar('addEventSource', booked_meetings);
+                calendar.fullCalendar('addEventSource', all_meetings);
                 calendar.fullCalendar('rerenderEvents');
                 console.log('Calendar events refreshed');
             } catch (e) {

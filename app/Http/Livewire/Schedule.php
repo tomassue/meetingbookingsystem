@@ -19,7 +19,7 @@ class Schedule extends Component
     # Variables passed to fullcalendar for rendering data
     public $booked_meetings, $personal_booked_meetings;
 
-    # Event Details
+    # Event Details (Both Personal and Work Meetings)
     public $id_booked_meeting, $created_at_date, $start_date_time, $end_date_time, $type_of_attendees, $attendees, $subject, $meeting_description, $representative = false, $representative_name, $attendee, $feedback;
 
     // wire:model [filter]
@@ -55,6 +55,7 @@ class Schedule extends Component
             //* Fetch the filtered results
             $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
 
+
             $TblPersonalMeetingsQuery = TblPersonalMeetingsModel::query();
 
             if ($this->from_date) {
@@ -76,11 +77,34 @@ class Schedule extends Component
                 ->join('users', 'users.id', '=', 'tbl_attendees.id_users')
                 ->where('tbl_attendees.id_users', $id_attendees);
 
+            if ($this->from_date) {
+                $fromDate = Carbon::parse($this->from_date)->startOfDay();
+                $TblBookedMeetingsQuery->where('tbl_booked_meetings.start_date_time', '>=', $fromDate);
+            }
+
+            if ($this->to_date) {
+                $toDate = Carbon::parse($this->to_date)->endOfDay();
+                $TblBookedMeetingsQuery->where('tbl_booked_meetings.end_date_time', '<=', $toDate);
+            }
+
             //* Fetch the filtered results
             $TblBookedMeetingsModel = $TblBookedMeetingsQuery->get();
 
-            $TblPersonalMeetings = TblPersonalMeetingsModel::where('id_user', Auth::user()->id)
-                ->get();
+            //! NOT WORKING
+            $TblPersonalMeetingsQuery = TblPersonalMeetingsModel::where('id_user', Auth::user()->id);
+
+            if ($this->from_date) {
+                $fromDate = Carbon::parse($this->from_date)->startOfDay();
+                $TblPersonalMeetingsQuery->where('start_date_time', '>=', $fromDate);
+            }
+
+            if ($this->to_date) {
+                $toDate = Carbon::parse($this->to_date)->endOfDay();
+                $TblPersonalMeetingsQuery->where('end_date_time', '<=', $toDate);
+            }
+
+            //* Fetch the filtered results
+            $TblPersonalMeetings = $TblPersonalMeetingsQuery->get();
         }
 
         //! Don't erase!
@@ -100,7 +124,7 @@ class Schedule extends Component
         // });
 
         //* I have added a new feature to color code the meeting displayed based on its status.
-        # Color indicators depending on the meetings' status
+        // Color indicators depending on the meetings' status
         $id_booking_no = $TblBookedMeetingsModel->pluck('booking_no')->toArray();
         $approved_feedback = TblMeetingFeedbackModel::where('attendee', Auth::user()->id)->where('meeting_status', 1)->whereIn('id_booking_no', $id_booking_no)->pluck('id_booking_no')->toArray();
         $declined_feedback = TblMeetingFeedbackModel::where('attendee', Auth::user()->id)->where('meeting_status', 0)->whereIn('id_booking_no', $id_booking_no)->pluck('id_booking_no')->toArray();
@@ -160,7 +184,12 @@ class Schedule extends Component
     public function updateCalendar()
     {
         // Emit an event with a parameter to trigger JavaScript to refresh the calendar.
-        $this->emit('refreshCalendar2', json_encode($this->booked_meetings));
+        // $this->emit('refreshCalendar2', json_encode($this->booked_meetings));
+
+        // Convert collections to arrays and merge them
+        $all_meetings = array_merge($this->booked_meetings->toArray(),  $this->personal_booked_meetings->toArray()); //! This line is working just fine.
+        // Emit the combined meetings as a JSON-encoded string
+        $this->emit('refreshCalendar2', json_encode($all_meetings));
     }
 
     public function updatedRepresentative()
@@ -314,9 +343,16 @@ class Schedule extends Component
             } else {
                 $personal_meeting = TblPersonalMeetingsModel::find($id);
 
+                /**
+                 * TODO: Work on displaying the owner of the personal meeting.
+                 * TODO: Schedule (ONGOING)
+                 * TODO: View Schedule
+                 */
+
                 $this->created_at_date = (new DateTime($personal_meeting->created_at))->format('M d, Y h:i A');
                 $this->start_date_time = (new DateTime($personal_meeting->start_date_time))->format('M d, Y h:i A');
                 $this->end_date_time = (new DateTime($personal_meeting->end_date_time))->format('M d, Y h:i A');
+                $this->attendee = $personal_meeting->id_user;
                 $this->subject = $personal_meeting->subject;
                 $this->meeting_description = $personal_meeting->description;
 

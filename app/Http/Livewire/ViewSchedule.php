@@ -101,6 +101,17 @@ class ViewSchedule extends Component
             $q_personal_meetings->where('users.id_department', $this->department);
         }
 
+        //* Apply date filters if they are set
+        if ($this->from_date) {
+            $fromDate = Carbon::parse($this->from_date)->startOfDay();
+            $q_personal_meetings->where('start_date_time', '>=', $fromDate);
+        }
+
+        if ($this->to_date) {
+            $toDate = Carbon::parse($this->to_date)->endOfDay();
+            $q_personal_meetings->where('end_date_time', '<=', $toDate);
+        }
+
         $TblPersonalMeetingsModel = $q_personal_meetings->get();
 
         $this->personal_meetings = $TblPersonalMeetingsModel->map(function ($query) {
@@ -121,6 +132,7 @@ class ViewSchedule extends Component
             //// 'meetings' => $this->meetings,
             'departments' => $departments
         ];
+
         return view('livewire.view-schedule', $data);
     }
 

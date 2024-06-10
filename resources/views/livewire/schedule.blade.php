@@ -100,6 +100,10 @@
                             <th><span class="fw-light">{{ $start_date_time }} <br> {{ $end_date_time }}</span></th>
                         </tr>
                         <tr>
+                            <th scope="col" width="10%">Owner:</th>
+                            <th><span class="text-uppercase fw-light">{{ $attendee }}</span></th>
+                        </tr>
+                        <tr>
                             <th scope="col" width="10%">Re:</th>
                             <th><span class="text-uppercase fw-light">{{ $subject }}</span></th>
                         </tr>
