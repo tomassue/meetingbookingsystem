@@ -341,18 +341,13 @@ class Schedule extends Component
                 // Emit event to show the modal
                 $this->emit('showMeetingModal');
             } else {
-                $personal_meeting = TblPersonalMeetingsModel::find($id);
 
-                /**
-                 * TODO: Work on displaying the owner of the personal meeting.
-                 * TODO: Schedule (ONGOING)
-                 * TODO: View Schedule
-                 */
+                $personal_meeting = TblPersonalMeetingsModel::with('user')->find($id);
 
                 $this->created_at_date = (new DateTime($personal_meeting->created_at))->format('M d, Y h:i A');
                 $this->start_date_time = (new DateTime($personal_meeting->start_date_time))->format('M d, Y h:i A');
                 $this->end_date_time = (new DateTime($personal_meeting->end_date_time))->format('M d, Y h:i A');
-                $this->attendee = $personal_meeting->id_user;
+                $this->attendee = $personal_meeting->user->first_name . ' ' . $personal_meeting->user->last_name;
                 $this->subject = $personal_meeting->subject;
                 $this->meeting_description = $personal_meeting->description;
 

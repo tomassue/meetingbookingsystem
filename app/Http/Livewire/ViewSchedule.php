@@ -252,11 +252,12 @@ class ViewSchedule extends Component
 
                 $this->emit('showViewMeetingModal');
             } else {
-                $personal_meeting = TblPersonalMeetingsModel::find($id);
+                $personal_meeting = TblPersonalMeetingsModel::with('user')->find($id);
 
                 $this->created_at_date = (new DateTime($personal_meeting->created_at))->format('M d, Y h:i A');
                 $this->start_date_time = (new DateTime($personal_meeting->start_date_time))->format('M d, Y h:i A');
                 $this->end_date_time = (new DateTime($personal_meeting->end_date_time))->format('M d, Y h:i A');
+                $this->attendee = $personal_meeting->user->first_name . ' ' . $personal_meeting->user->last_name;
                 $this->subject = $personal_meeting->subject;
                 $this->meeting_description = $personal_meeting->description;
 

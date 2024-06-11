@@ -22,4 +22,12 @@ class TblPersonalMeetingsModel extends Model
         'description',
         'id_user'
     ];
+
+    public function user()
+    {
+        /**
+         * * Normally, on my other developed systems, I always include the third argument which is the related key of the other model. By default, if the related key of the other model is the 'primary key', then the third argument is not necessary.
+         */
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }

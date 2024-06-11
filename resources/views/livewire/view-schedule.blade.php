@@ -79,7 +79,9 @@
                                 <span class="text-uppercase fw-light">
                                     @if($attendees)
                                     @foreach($attendees as $item)
-                                    <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>, <span class="fst-italic fw-lighter">{{ $item['department_name'] }}</span> <br>
+                                    <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>,
+                                    <span class="fst-italic fw-lighter" style="font-size: smaller;">{{ $item['department_name'] }}</span>
+                                    <br>
                                     @endforeach
                                     @endif
                                 </span>
@@ -124,6 +126,10 @@
                         <tr>
                             <th scope="col" width="10%">Schedule:</th>
                             <th><span class="fw-light">{{ $start_date_time }} <br> {{ $end_date_time }}</span></th>
+                        </tr>
+                        <tr>
+                            <th scope="col" width="10%">Owner:</th>
+                            <th><span class="text-uppercase fw-light">{{ $attendee }}</span></th>
                         </tr>
                         <tr>
                             <th scope="col" width="10%">Re:</th>
