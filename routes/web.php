@@ -8,7 +8,6 @@ use App\Http\Livewire\Request;
 use App\Http\Livewire\Schedule;
 use App\Http\Livewire\UserManagement;
 use App\Http\Livewire\ViewSchedule;
-use App\Http\Middleware\SuperadminAccess;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -54,4 +53,4 @@ Route::group(['middleware' => ['auth', 'superadmin', 'check.default.password']],
     Route::get('/ref/signatories', RefSignatories::class)->name('ref-signatories');
 });
 
-Route::get('/account', AccountSettings::class)->name('account-settings');
+Route::get('/account', AccountSettings::class)->name('account-settings')->middleware('auth');
