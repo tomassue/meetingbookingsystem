@@ -49,7 +49,7 @@
 
     <div class="card" wire:ignore>
         <div id="wrap">
-            <div id='calendar'></div>
+            <div id='calendar' wire:ignore wire:loading.class="opacity-50"></div>
             <div style='clear:both'></div>
         </div>
     </div>
