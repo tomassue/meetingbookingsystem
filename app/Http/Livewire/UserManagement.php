@@ -41,7 +41,8 @@ class UserManagement extends Component
         $query = User::join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
             ->select(
                 'users.id AS user_id',
-                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.middle_name, ''), ' ', users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) AS full_name"),
+                // DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.middle_name, ''), ' ', users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) AS full_name"),
+                DB::raw("CONCAT(users.first_name, ' ', COALESCE(users.middle_name, ''), ' ', users.last_name, IF(TRIM(IFNULL(users.extension, '')) != '', CONCAT(', ', users.extension), '')) AS full_name"),
                 'ref_departments.department_name',
                 DB::raw("CASE 
                 WHEN users.account_type = 1 THEN 'Admin'

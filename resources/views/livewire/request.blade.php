@@ -239,7 +239,7 @@
                                     @if($attendees)
                                     @foreach($attendees as $item)
                                     <span class="fw-bold">{{ ($item['sex'] == 'M') ? 'Mr.' : 'Ms.' }} {{ $item['full_name'] }}</span>,
-                                    <span class="fst-italic fw-lighter">{{ $item['department_name'] }}</span>
+                                    <span class="fst-italic fw-lighter" style="font-size: smaller;">{{ $item['department_name'] }}</span>
                                     <span class="fst-italic">{{ $item['proxy'] ? '['.$item['proxy'].']' : '' }}</span>
                                     <br>
                                     @endforeach

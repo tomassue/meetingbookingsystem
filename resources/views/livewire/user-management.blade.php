@@ -17,7 +17,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive" wire:loading.class="opacity-50">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -74,22 +74,22 @@
                     <form wire:submit.prevent="{{ !$editModal ? 'save' : 'update' }}" class="row g-3" data-bitwarden-watching="1" novalidate>
                         <div class="col-md-6">
                             <label for="inputName5" class="form-label">First Name</label>
-                            <input type="text" class="form-control @error('first_name') is-invalid @enderror" wire:model="first_name">
+                            <input type="text" class="form-control @error('first_name') is-invalid @enderror" wire:model.defer="first_name">
                             @error('first_name') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="inputName5" class="form-label">Middle Name</label>
-                            <input type="text" class="form-control @error('middle_name') is-invalid @enderror" wire:model="middle_name">
+                            <input type="text" class="form-control @error('middle_name') is-invalid @enderror" wire:model.defer="middle_name">
                             @error('middle_name') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="inputName5" class="form-label">Last Name</label>
-                            <input type="text" class="form-control @error('last_name') is-invalid @enderror" wire:model="last_name">
+                            <input type="text" class="form-control @error('last_name') is-invalid @enderror" wire:model.defer="last_name">
                             @error('last_name') <div class="invalid-feedback"> {{$message}} </div> @enderror
                         </div>
                         <div class="col-md-3">
                             <label for="inputName5" class="form-label">Extension Name</label>
-                            <select class="form-select @error('extension') is-invalid @enderror" name="extension" id="extension" aria-label="extension" wire:model="extension">
+                            <select class="form-select @error('extension') is-invalid @enderror" name="extension" id="extension" aria-label="extension" wire:model.defer="extension">
                                 <option value="" {{ old('extension') ? '' : 'selected' }}>Select...</option>
 
                                 @php
@@ -126,7 +126,7 @@
                         </div>
                         <div class="col-md-3">
                             <label for="sex" class="form-label">Sex</label>
-                            <select class="form-select @error('sex') is-invalid @enderror" name="sex" id="sex" aria-label="sex" wire:model="sex">
+                            <select class="form-select @error('sex') is-invalid @enderror" name="sex" id="sex" aria-label="sex" wire:model.defer="sex">
                                 <option value="">Choose...</option>
                                 <option value="M">Male</option>
                                 <option value="F">Female</option>
@@ -142,13 +142,13 @@
                                 </svg>
                             </label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('email') is-invalid @enderror" aria-describedby="basic-addon2" wire:model="email">
+                                <input type="text" class="form-control @error('email') is-invalid @enderror" aria-describedby="basic-addon2" wire:model.defer="email">
                                 @error('email') <div class="invalid-feedback"> {{$message}} </div> @enderror
                             </div>
                         </div>
                         <div class="col-12">
                             <label for="inputAddress5" class="form-label">Department</label>
-                            <select class="form-select @error('id_department') is-invalid @enderror" wire:model="id_department">
+                            <select class="form-select @error('id_department') is-invalid @enderror" wire:model.defer="id_department">
                                 <option selected="">Choose...</option>
                                 @foreach($departments as $item)
                                 <option value="{{$item->id}}">{{$item->department_name}}</option>
@@ -158,7 +158,7 @@
                         </div>
                         <div class="col-12">
                             <label for="inputAddress2" class="form-label">User Role</label>
-                            <select class="form-select @error('account_type') is-invalid @enderror" wire:model="account_type">
+                            <select class="form-select @error('account_type') is-invalid @enderror" wire:model.defer="account_type">
                                 <option selected="">Choose...</option>
                                 <option value="1">Admin</option>
                                 <option value="2">Regular User</option>

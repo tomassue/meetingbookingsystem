@@ -231,7 +231,7 @@ class ViewSchedule extends Component
                     ->join('ref_departments', 'users.id_department', '=', 'ref_departments.id')
                     ->where('id_booking_no', $id)
                     ->select(
-                        DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(users.extension IS NOT NULL, CONCAT(', ', users.extension), '')) as full_name"),
+                        DB::raw("CONCAT(users.first_name, COALESCE(users.middle_name, ''), ' ',users.last_name, IF(TRIM(IFNULL(users.extension, '')) != '', CONCAT(', ', users.extension), '')) as full_name"),
                         'users.sex',
                         'ref_departments.department_name'
                     )

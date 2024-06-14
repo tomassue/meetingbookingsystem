@@ -21,7 +21,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive" wire:loading.class="opacity-50">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -69,7 +69,7 @@
                     <form wire:submit.prevent="{{!$editModal ? 'save' : 'update'}}" class="row g-3" data-bitwarden-watching="1">
                         <div class="col-md-12">
                             <label for="inputName5" class="form-label">Department Name</label>
-                            <input type="text" class="form-control @error('department_name') is-invalid @enderror" wire:model="department_name">
+                            <input type="text" class="form-control @error('department_name') is-invalid @enderror" wire:model.defer="department_name">
                             @error('department_name') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
                 </div>

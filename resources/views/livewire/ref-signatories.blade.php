@@ -21,7 +21,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive" wire:loading.class="opacity-50">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -67,24 +67,24 @@
         <div class="modal-dialog">
             <div class="modal-content text-start">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="signatoryModalLabel">{{ !$editModal ? 'Add' : 'Edit' }} a signatory <span class="badge bg-warning" wire:dirty wire:target="honorifics, full_name, title, signature">Unsaved changes</span></h1>
+                    <h1 class="modal-title fs-5" id="signatoryModalLabel">{{ !$editModal ? 'Add' : 'Edit' }} a signatory</h1>
                     <button type="button" class="btn-close btn-light" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent="{{!$editModal ? 'save' : 'update'}}" class="row g-3" data-bitwarden-watching="1">
                         <div class="col-md-12">
                             <label for="inputHonorifics" class="form-label">Honorifics</label>
-                            <input type="text" class="form-control @error('honorifics') is-invalid @enderror" wire:model.lazy="honorifics">
+                            <input type="text" class="form-control @error('honorifics') is-invalid @enderror" wire:model.defer="honorifics">
                             @error('honorifics') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
                         <div class="col-md-12">
                             <label for="inputFull_name" class="form-label">Full Name</label>
-                            <input type="text" class="form-control @error('full_name') is-invalid @enderror" wire:model.lazy="full_name">
+                            <input type="text" class="form-control @error('full_name') is-invalid @enderror" wire:model.defer="full_name">
                             @error('full_name') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
                         <div class="col-md-12">
                             <label for="inputTitle" class="form-label">Title or position</label>
-                            <input type="text" class="form-control @error('title') is-invalid @enderror" wire:model.lazy="title">
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" wire:model.defer="title">
                             @error('title') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
                         <div class="col-md-12 text-center" wire:loading wire:target="signature">
@@ -108,7 +108,7 @@
                         @endif
                         <div class="col-md-12">
                             <label for="uploadSignature" class="form-label">Upload signature</label>
-                            <input type="file" class="form-control @error('signature') is-invalid @enderror" accept="image/*" wire:model.lazy="signature">
+                            <input type="file" class="form-control @error('signature') is-invalid @enderror" accept="image/*" wire:model.defer="signature">
                             @error('signature') <span class="invalid-feedback"> {{$message}} </span> @enderror
                         </div>
                 </div>

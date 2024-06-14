@@ -118,8 +118,8 @@ class RefSignatories extends Component
         // Update the record with new values
         $signatory->update($data);
 
-        $this->reset();
         session()->flash('success', 'You have successfully added a signatory.');
+        // $this->reset();
         return redirect()->route('ref-signatories');
     }
 }
